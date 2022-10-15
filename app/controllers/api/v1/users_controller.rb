@@ -1,13 +1,8 @@
 class Api::V1::UsersController < ApplicationController
-  before_action :set_user
+  before_action :authenticate_api_v1_user!
+  skip_after_action :update_auth_header
 
   def destroy
-    @user.destroy
-  end
-
-  private
-
-  def set_user
-    @user = User.find(params[:id])
+    current_api_v1_user.destroy
   end
 end
