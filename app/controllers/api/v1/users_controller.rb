@@ -2,7 +2,6 @@ class Api::V1::UsersController < ApplicationController
   before_action :set_user
 
   def destroy
-    puts @user.email
     @user.destroy
   end
 
