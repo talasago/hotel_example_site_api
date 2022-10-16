@@ -11,7 +11,7 @@ Rails.application.routes.draw do
         }
       )
 
-      resource :mypage, controller: 'users', only: [:destroy]
+      resource :mypage, controller: 'users', only: [:show, :destroy]
     end
   end
 end
