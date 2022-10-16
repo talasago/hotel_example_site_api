@@ -2,7 +2,7 @@ require 'rails_helper'
 require 'json'
 
 RSpec.describe 'Api::V1::Mypages', type: :request do
-  describe 'DELETE /mypages/:id' do
+  describe 'DELETE /mypage' do
     # 遅延評価だとexpect内でUserが作成されてすぐ削除される。
     # Userの件数がexpect内で+1,-1となり件数が0となってしまう。その為遅延評価は使用しない。
     let!(:auth_params) {
