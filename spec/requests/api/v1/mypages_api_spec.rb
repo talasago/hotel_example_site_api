@@ -2,16 +2,12 @@ require 'rails_helper'
 require 'json'
 
 RSpec.describe 'Api::V1::Mypages', type: :request do
-  describe 'DELETE /mypage' do
-    # 遅延評価だとexpect内でUserが作成されてすぐ削除される。
-    # Userの件数がexpect内で+1,-1となり件数が0となってしまう。その為遅延評価は使用しない。
-    let!(:auth_params) {
-      post '/api/v1/auth', params: { user: FactoryBot.attributes_for(:user) }
-      get_auth_params_from_login_response_headers(response)
-    }
+  let(:user) { FactoryBot.attributes_for(:user) }
 
+  describe 'DELETE /mypage' do
     context 'as an authenticated user' do
       it 'delete a user' do
+        auth_params = sign_in(user)
         aggregate_failures do
           expect {
             delete '/api/v1/mypage', headers: auth_params
@@ -24,15 +20,8 @@ RSpec.describe 'Api::V1::Mypages', type: :request do
 
   describe 'GET /mypage' do
     context 'as an authenticated user' do
-      # ユーザー作成
-      # FIXME:ここら辺共通化したい。sign_inメソッドつくってもいいかもしれない。
-      let!(:user) { FactoryBot.attributes_for(:user) }
-      let!(:auth_params) {
-        post '/api/v1/auth', params: { user: user }
-        get_auth_params_from_login_response_headers(response)
-      }
-
       it 'get a user-info' do
+        auth_params = sign_in(user)
         get '/api/v1/mypage', headers: auth_params
         res_body = JSON.parse(response.body)
 
@@ -47,13 +36,5 @@ RSpec.describe 'Api::V1::Mypages', type: :request do
         end
       end
     end
-  end
-
-  def get_auth_params_from_login_response_headers(response)
-    {
-      'access-token': response.headers['access-token'],
-      client: response.headers['client'],
-      uid: response.headers['uid']
-    }
   end
 end

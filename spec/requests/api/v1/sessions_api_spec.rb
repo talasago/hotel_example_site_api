@@ -2,9 +2,9 @@ require 'rails_helper'
 require 'json'
 
 RSpec.describe 'Api::V1::Sessions', type: :request do
-  describe 'login' do
-    let(:user) { FactoryBot.attributes_for(:user) }
+  let(:user) { FactoryBot.attributes_for(:user) }
 
+  describe 'login' do
     context 'exsist a user' do
       before do
         post '/api/v1/auth', params: { user: user }
@@ -25,13 +25,8 @@ RSpec.describe 'Api::V1::Sessions', type: :request do
 
   describe 'logout' do
     context 'as an authenticated user' do
-      let!(:user) { FactoryBot.attributes_for(:user) }
-      let!(:auth_params) {
-        post '/api/v1/auth', params: { user: user }
-        get_auth_params_from_login_response_headers(response)
-      }
-
       it 'success logout and APIs require authentication result in a 401 error' do
+        auth_params = sign_in(user)
         aggregate_failures do
           delete '/api/v1/auth/sign_out', headers: auth_params
           expect(response).to have_http_status(:success)
@@ -41,14 +36,5 @@ RSpec.describe 'Api::V1::Sessions', type: :request do
         end
       end
     end
-  end
-
-  #FIXME:helper methodにする
-  def get_auth_params_from_login_response_headers(response)
-    {
-      'access-token': response.headers['access-token'],
-      client: response.headers['client'],
-      uid: response.headers['uid']
-    }
   end
 end
