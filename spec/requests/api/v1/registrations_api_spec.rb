@@ -22,7 +22,7 @@ RSpec.describe 'Api::V1::Registrations', type: :request do
         expect {
           post '/api/v1/auth', params: { user: user }
         }.to_not change(User, :count)
-        expect(response).to_not be_successful
+        expect(response).to have_http_status(422)
       end
     end
   end
