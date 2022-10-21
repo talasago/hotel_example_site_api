@@ -21,6 +21,16 @@ RSpec.describe 'Api::V1::Sessions', type: :request do
           include('access-token', 'uid', 'client', 'expiry', 'token-type')
       end
     end
+
+    context 'not exist a user' do
+      it 'error login' do
+        post '/api/v1/auth/sign_in', params: {
+          email: 'not_exist_user@example.com',
+          password: 'password'
+        }
+        expect(response).to have_http_status(401)
+      end
+    end
   end
 
   describe 'logout' do
