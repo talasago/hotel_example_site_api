@@ -1,7 +1,10 @@
-# This file should contain all the record creation needed to seed the database with its default values.
-# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
-#
-# Examples:
-#
-#   movies = Movie.create([{ name: "Star Wars" }, { name: "Lord of the Rings" }])
-#   Character.create(name: "Luke", movie: movies.first)
+Plan.create(id: 0, plan_name: 'お得な特典付きプラン', price: '7000', number_of_guests_min: 1, number_of_guests_max:	9, number_of_stays_min: 1, number_of_stays_max: 9, room_type: 'スタンダードツイン', member_rank: nil)
+Plan.create(id: 1, plan_name: 'プレミアムプラン', price: 10000, number_of_guests_min: 2, number_of_guests_max: 9, number_of_stays_min: 1, number_of_stays_max: 9, room_type: 'プレミアムツイン', member_rank: 'premium')
+Plan.create(id: 2, plan_name: 'ディナー付きプラン', price: 8500, number_of_guests_min: 1, number_of_guests_max: 4, number_of_stays_min: 1, number_of_stays_max: 3, room_type: '部屋指定なし', member_rank: 'member')
+Plan.create(id: 3, plan_name: 'お得なプラン', price: 6000, number_of_guests_min: 1, number_of_guests_max: 9, number_of_stays_min: 1, number_of_stays_max: 9, room_type: '部屋指定なし', member_rank: 'member')
+Plan.create(id: 4, plan_name: '素泊まり', price: 5500, number_of_guests_min: 1, number_of_guests_max: 2, number_of_stays_min: 1, number_of_stays_max: 9, room_type: 'シングル', member_rank: nil)
+Plan.create(id: 5, plan_name: '出張ビジネスプラン', price: 7500, number_of_guests_min: 1, number_of_guests_max: 2, number_of_stays_min: 1, number_of_stays_max: 9, room_type: 'シングル', member_rank: nil)
+Plan.create(id: 6, plan_name: 'エステ・マッサージプラン', price: 9000, number_of_guests_min: 1, number_of_guests_max: 6, number_of_stays_min: 1, number_of_stays_max: 9, room_type: '部屋指定なし', member_rank: nil)
+Plan.create(id: 7, plan_name: '貸し切り露天風呂プラン', price: 9000, number_of_guests_min: 1, number_of_guests_max: 6, number_of_stays_min: 1, number_of_stays_max: 3, room_type: '部屋指定なし', member_rank: nil)
+Plan.create(id: 8, plan_name: 'カップル限定プラン', price: 8000, number_of_guests_min: 2, number_of_guests_max: 2, number_of_stays_min: 1, number_of_stays_max: 2, room_type: 'プレミアムツイン', member_rank: nil)
+Plan.create(id: 9, plan_name: 'テーマパーク優待プラン', price: 10000, number_of_guests_min: 1, number_of_guests_max: 9, number_of_stays_min: 1, number_of_stays_max: 5, room_type: '部屋指定なし', member_rank: nil)
