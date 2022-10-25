@@ -1,3 +1,8 @@
+User.create(id: 1, email: 'ichiro@example.com', name: '山田一郎', member_rank: 'premium', address: '東京都豊島区池袋', tel: '01234567891', gender: 1, birth_date: nil, receive_notifications: true, password: 'password')
+User.create(id: 2, email: 'sakura@example.com', name: '松本さくら', member_rank: 'member', address: '神奈川県横浜市鶴見区大黒ふ頭', tel: nil, gender: 2, birth_date: '2000/04/01', receive_notifications: false, password: 'pass1234')
+User.create(id: 3, email: 'jun@example.com', name: '林潤', member_rank: 'premium', address: '大阪府大阪市北区梅田', tel: '01212341234' , gender: 9, birth_date: '1988/12/17', receive_notifications: false, password: 'pa55w0rd!')
+User.create(id: 4, email: 'yoshiki@example.com', name: '木村良樹', member_rank: 'member', address: nil, tel: '01298765432', gender: 0, birth_date: '1992/08/31', receive_notifications: true, password: '	pass-pass')
+
 Plan.create(id: 0, plan_name: 'お得な特典付きプラン', price: '7000', number_of_guests_min: 1, number_of_guests_max:	9, number_of_stays_min: 1, number_of_stays_max: 9, room_type: 'スタンダードツイン', member_rank: nil)
 Plan.create(id: 1, plan_name: 'プレミアムプラン', price: 10000, number_of_guests_min: 2, number_of_guests_max: 9, number_of_stays_min: 1, number_of_stays_max: 9, room_type: 'プレミアムツイン', member_rank: 'premium')
 Plan.create(id: 2, plan_name: 'ディナー付きプラン', price: 8500, number_of_guests_min: 1, number_of_guests_max: 4, number_of_stays_min: 1, number_of_stays_max: 3, room_type: '部屋指定なし', member_rank: 'member')
