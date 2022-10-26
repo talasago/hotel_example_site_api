@@ -8,5 +8,4 @@ class User < ActiveRecord::Base
   include DeviseTokenAuth::Concerns::User
 
   validates :name, presence: true
-  validates :member_rank, presence: true
 end
