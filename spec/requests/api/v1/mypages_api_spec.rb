@@ -16,6 +16,18 @@ RSpec.describe 'Api::V1::Mypages', type: :request do
         end
       end
     end
+
+    context 'as an unautorized user' do
+      it 'not delete a user and result in a 401 error' do
+        sign_in(user)
+        aggregate_failures do
+          expect {
+            delete '/api/v1/mypage'
+          }.to_not change(User, :count)
+          expect(response).to have_http_status(401)
+        end
+      end
+    end
   end
 
   describe 'GET /mypage' do
