@@ -48,5 +48,13 @@ RSpec.describe 'Api::V1::Mypages', type: :request do
         end
       end
     end
+
+    context 'as an unautorized user' do
+      it 'get a user-info' do
+        sign_in(user)
+        get '/api/v1/mypage'
+        expect(response).to have_http_status(401)
+      end
+    end
   end
 end
