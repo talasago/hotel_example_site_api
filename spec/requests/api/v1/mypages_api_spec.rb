@@ -7,7 +7,7 @@ RSpec.describe 'Api::V1::Mypages', type: :request do
   describe 'DELETE /mypage' do
     context 'as an authenticated user' do
       it 'delete a user' do
-        auth_params = sign_in(user)
+        auth_params = sign_up(user)
         aggregate_failures do
           expect {
             delete '/api/v1/mypage', headers: auth_params
@@ -19,7 +19,7 @@ RSpec.describe 'Api::V1::Mypages', type: :request do
 
     context 'as an unautorized user' do
       it 'not delete a user and result in a 401 error' do
-        sign_in(user)
+        sign_up(user)
         aggregate_failures do
           expect {
             delete '/api/v1/mypage'
@@ -33,7 +33,7 @@ RSpec.describe 'Api::V1::Mypages', type: :request do
   describe 'GET /mypage' do
     context 'as an authenticated user' do
       it 'get a user-info' do
-        auth_params = sign_in(user)
+        auth_params = sign_up(user)
         get '/api/v1/mypage', headers: auth_params
         res_body = JSON.parse(response.body)
 
@@ -51,7 +51,7 @@ RSpec.describe 'Api::V1::Mypages', type: :request do
 
     context 'as an unautorized user' do
       it 'get a user-info' do
-        sign_in(user)
+        sign_up(user)
         get '/api/v1/mypage'
         expect(response).to have_http_status(401)
       end

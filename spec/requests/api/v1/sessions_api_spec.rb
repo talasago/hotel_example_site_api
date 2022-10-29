@@ -35,8 +35,9 @@ RSpec.describe 'Api::V1::Sessions', type: :request do
 
   describe 'logout' do
     context 'as an authenticated user' do
+      # FIXME:なんか成功なのに401って不安になる書き方だな。
       it 'success logout and APIs require authentication result in a 401 error' do
-        auth_params = sign_in(user)
+        auth_params = sign_up(user)
         aggregate_failures do
           delete '/api/v1/auth/sign_out', headers: auth_params
           expect(response).to have_http_status(:success)

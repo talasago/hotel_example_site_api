@@ -59,7 +59,6 @@ RSpec.describe 'Api::V1::Plans', type: :request do
     end
   end
 
-
   def get_auth_params_from_login_response_headers(response)
     {
       'access-token': response.headers['access-token'],
