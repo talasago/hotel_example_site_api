@@ -31,12 +31,32 @@ RSpec.describe 'Api::V1::Plans', type: :request do
 
         aggregate_failures do
           expect(response).to have_http_status(:success)
+          # 後でeach文に変える
           expect(member_ranks).to include(nil, 'premium', 'member')
         end
       end
     end
 
-    it 'member_rank = member'
+    describe 'member_rank of user is member' do
+      it 'include only member_rank nil or member in response' do
+        # TODO:FactoryBot使うかなあ？
+        post '/api/v1/auth/sign_in', params: {
+          email: 'sakura@example.com',
+          password: 'pass1234'
+        }
+        auth_params = get_auth_params_from_login_response_headers(response)
+
+        get '/api/v1/plans', headers: auth_params
+        res_body = JSON.parse(response.body)
+        member_ranks = res_body['plans'].map { |plan| plan['member_rank'] }
+
+        aggregate_failures do
+          expect(response).to have_http_status(:success)
+          # 後でeach文に変える
+          expect(member_ranks).to include(nil, 'member')
+        end
+      end
+    end
   end
 
 
