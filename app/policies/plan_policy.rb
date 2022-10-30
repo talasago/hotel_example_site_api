@@ -8,12 +8,12 @@ class PlanPolicy < ApplicationPolicy
     end
 
     def resolve
-      return scope.where(member_rank: nil) unless user
+      return scope.where(only: nil) unless user
 
-      if user.member_rank == 'premium'
+      if user.rank == 'premium'
         scope.all
-      elsif user.member_rank == 'member'
-        scope.where(member_rank: [nil, 'member'])
+      elsif user.rank == 'normal'
+        scope.where(only: [nil, 'normal'])
       end
     end
   end
