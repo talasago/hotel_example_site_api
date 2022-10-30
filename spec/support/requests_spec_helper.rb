@@ -1,5 +1,4 @@
 module RequestSpecHelper
-  # FIXME:これsign_upが正しい
   def sign_up(regist_user)
     post '/api/v1/auth', params: { user: regist_user }
     get_auth_params_from_login_response_headers(response)
