@@ -1,11 +1,11 @@
 FactoryBot.define do
   factory :user do
-    name { 'TestUser' }
+    username { 'TestUser' }
     sequence(:email) { |n| "test#{n}@example.com" }
     password { 'password' }
 
     trait :invalid do
-      name { nil }
+      username { nil }
       email { nil }
       password { nil }
     end
