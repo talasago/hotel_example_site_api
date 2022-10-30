@@ -10,19 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_10_26_113400) do
+ActiveRecord::Schema[7.0].define(version: 2022_10_30_160412) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "plans", force: :cascade do |t|
-    t.string "plan_name"
-    t.integer "price"
-    t.integer "number_of_guests_min"
-    t.integer "number_of_guests_max"
-    t.integer "number_of_stays_min"
-    t.integer "number_of_stays_max"
-    t.string "room_type"
-    t.string "member_rank"
+    t.string "name"
+    t.integer "room_bill"
+    t.integer "min_head_count"
+    t.integer "max_head_count"
+    t.integer "min_term"
+    t.integer "max_term"
+    t.integer "room_type_id"
+    t.string "only"
   end
 
   create_table "users", force: :cascade do |t|
@@ -37,19 +37,19 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_26_113400) do
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
     t.string "unconfirmed_email"
-    t.string "name", null: false
+    t.string "username", null: false
     t.string "nickname"
     t.string "image"
     t.string "email", null: false
     t.json "tokens"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "member_rank", default: "premium"
+    t.string "rank", default: "premium"
     t.string "address"
     t.string "tel"
-    t.integer "gender", default: 0
-    t.date "birth_date"
-    t.boolean "receive_notifications", default: false
+    t.string "gender", default: "unregistered"
+    t.date "birthday"
+    t.boolean "notification", default: false
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
