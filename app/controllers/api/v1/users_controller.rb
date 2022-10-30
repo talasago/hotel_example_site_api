@@ -5,10 +5,11 @@ class Api::V1::UsersController < ApplicationController
   skip_after_action :update_auth_header, only: [:destroy]
 
   def show
+    # 取得する列を指定
     current_user_data = JSON.parse(
       current_api_v1_user.to_json(
-        only: [:email, :name, :member_rank, :address, :tel,
-               :gender, :birth_date, :receive_notifications]
+        only: [:email, :username, :rank, :address, :tel,
+               :gender, :birthday, :notification]
       )
     )
 
