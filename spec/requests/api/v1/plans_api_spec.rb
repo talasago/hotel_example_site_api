@@ -8,7 +8,6 @@ RSpec.describe 'Api::V1::Plans', type: :request do
       res_body = JSON.parse(response.body)
 
       expect(response).to have_http_status(:success)
-      puts res_body
       expect(res_body['plans'][0].key?(:rank))
       res_body['plans'].each do |plan|
         expect(plan['rank']).to be nil
@@ -18,34 +17,28 @@ RSpec.describe 'Api::V1::Plans', type: :request do
 
   describe 'as an authenticated user' do
     describe 'rank of user is premium' do
+      let(:registed_user1) { FactoryBot.attributes_for(:user, :registed_user1) }
+
       it 'include all rank in response' do
-        # TODO:FactoryBot使うかなあ？
-        post '/api/v1/auth/sign_in', params: {
-          email: 'ichiro@example.com',
-          password: 'password'
-        }
-        auth_params = get_auth_params_from_login_response_headers(response)
+        auth_params = sign_in(registed_user1)
 
         get '/api/v1/plans', headers: auth_params
         res_body = JSON.parse(response.body)
-        ranks = res_body['plans'].map { |plan| plan['only'] }
 
         aggregate_failures do
           expect(response).to have_http_status(:success)
-          #TODO: 後でeach文に変える
-          expect(ranks).to include(nil, 'premium', 'normal')
+          res_body['plans'].each do |plan|
+            expect(plan['rank']).to eq(nil) | eq('premium') | eq('normal')
+          end
         end
       end
     end
 
     describe 'rank of user is normal' do
+      let(:registed_user2) { FactoryBot.attributes_for(:user, :registed_user2) }
+
       it 'include only rank nil or normal in response' do
-        # TODO:FactoryBot使うかなあ？
-        post '/api/v1/auth/sign_in', params: {
-          email: 'sakura@example.com',
-          password: 'pass1234'
-        }
-        auth_params = get_auth_params_from_login_response_headers(response)
+        auth_params = sign_in(registed_user2)
 
         get '/api/v1/plans', headers: auth_params
         res_body = JSON.parse(response.body)
@@ -53,19 +46,12 @@ RSpec.describe 'Api::V1::Plans', type: :request do
 
         aggregate_failures do
           expect(response).to have_http_status(:success)
-          #TODO: 後でeach文に変える
-          expect(ranks).to include(nil, 'normal')
-          expect(ranks).to_not include('premium')
+          res_body['plans'].each do |plan|
+            expect(plan['rank']).to eq(nil) | eq('normal')
+            expect(plan['rank']).to_not eq('premium')
+          end
         end
       end
     end
-  end
-
-  def get_auth_params_from_login_response_headers(response)
-    {
-      'access-token': response.headers['access-token'],
-      client: response.headers['client'],
-      uid: response.headers['uid']
-    }
   end
 end
