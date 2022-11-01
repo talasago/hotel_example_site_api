@@ -42,7 +42,6 @@ RSpec.describe 'Api::V1::Plans', type: :request do
 
         get '/api/v1/plans', headers: auth_params
         res_body = JSON.parse(response.body)
-        ranks = res_body['plans'].map { |plan| plan['only'] }
 
         aggregate_failures do
           expect(response).to have_http_status(:success)
