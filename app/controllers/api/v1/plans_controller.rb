@@ -15,7 +15,9 @@ class Api::V1::PlansController < ApplicationController
       max_term'
     ).find(params[:id]).as_json(except: [:id])
 
-    render json: plan
+    user_name = { user_name: api_v1_user_signed_in? ? current_api_v1_user.username : nil }
+
+    render json: plan.merge(user_name)
   end
 
   # TODO:permitみたいなの必要かも

@@ -2,6 +2,8 @@ require 'rails_helper'
 require 'json'
 
 RSpec.describe 'Api::V1::Plans', type: :request do
+  let(:registed_user1) { FactoryBot.attributes_for(:user, :registed_user1) }
+
   describe '/plans GET' do
     describe 'not authenticated' do
       it 'Only the record "only is nil" is included in the response' do
@@ -20,7 +22,6 @@ RSpec.describe 'Api::V1::Plans', type: :request do
 
     describe 'as an authenticated user' do
       describe 'only of user is premium' do
-        let(:registed_user1) { FactoryBot.attributes_for(:user, :registed_user1) }
 
         it 'include all only in response' do
           auth_params = sign_in(registed_user1)
@@ -72,7 +73,7 @@ RSpec.describe 'Api::V1::Plans', type: :request do
               max_head_count: 9,
               min_term: 1,
               max_term: 9,
-            # TODO:usernameとか部屋タイプ情報が必要
+              user_name: nil
             }
           )
         end
@@ -82,9 +83,28 @@ RSpec.describe 'Api::V1::Plans', type: :request do
     end
 
     describe 'as an authenticated user' do
-      describe 'Only Premium Plan can be reserved' do
-        it 'success get "plans.only is null"'
-        it 'success get "plans.only is premium"'
+      describe 'users.rank is premium' do
+        it 'success get "plans.only is premium"' do
+          auth_params = sign_in(registed_user1)
+
+          get '/api/v1/plans/1', headers: auth_params
+          res_body = JSON.parse(response.body, symbolize_names: true)
+
+          aggregate_failures do
+            expect(response).to have_http_status(:success)
+            expect(res_body).to eq(
+              {
+                plan_name: 'プレミアムプラン',
+                room_bill: 10_000,
+                min_head_count: 2,
+                max_head_count: 9,
+                min_term: 1,
+                max_term: 9,
+                user_name: '山田一郎'
+              }
+            )
+          end
+        end
         it 'success get "plans.only is member"'
       end
 
