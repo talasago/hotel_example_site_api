@@ -84,7 +84,11 @@ RSpec.describe 'Api::V1::Plans', type: :request do
 
         expect(response).to have_http_status(401)
       end
-      it 'dissuccess get "plans.only is member"'
+      it 'dissuccess get "plans.only is member"' do
+        get '/api/v1/plans/3'
+
+        expect(response).to have_http_status(401)
+      end
     end
 
     describe 'as an authenticated user' do
