@@ -78,7 +78,11 @@ RSpec.describe 'Api::V1::Plans', type: :request do
           )
         end
       end
-      it 'dissuccess get "plans.only is premium"'
+      it 'dissuccess get "plans.only is premium"' do
+        get '/api/v1/plans/1'
+
+        expect(response).to have_http_status(401)
+      end
       it 'dissuccess get "plans.only is member"'
     end
 
