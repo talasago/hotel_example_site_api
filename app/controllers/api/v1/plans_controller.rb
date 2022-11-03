@@ -7,13 +7,14 @@ class Api::V1::PlansController < ApplicationController
 
   def show
     plan = policy_scope(Plan.where(id: params[:id])).select(
-      'name AS plan_name,
+      'id,
+      name AS plan_name,
       room_bill,
       min_head_count,
       max_head_count,
       min_term,
       max_term'
-    ).first.as_json(except: [:id])
+    ).first.as_json
 
     # TODO:Errorのクラスとか作って返した方が良いかも
     if plan.nil?
