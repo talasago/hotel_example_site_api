@@ -3,7 +3,7 @@ require 'json'
 
 RSpec.describe 'Api::V1::Plans', type: :request do
   describe '/plans GET' do
-    describe 'as a not authenticated user' do
+    describe 'not authenticated' do
       it 'Only the record "only is nil" is included in the response' do
         get '/api/v1/plans'
         res_body = JSON.parse(response.body)
@@ -57,24 +57,41 @@ RSpec.describe 'Api::V1::Plans', type: :request do
   end
 
   describe '/plans/:id' do
-    describe 'Reservation plans available at any rank' do
-      it 'include "only is nil" (eeservation plans available at any rank)' do
+    describe 'not authenticated' do
+      it 'success get "plans.only is null"' do
         get '/api/v1/plans/0'
         res_body = JSON.parse(response.body, symbolize_names: true)
 
         aggregate_failures do
           expect(response).to have_http_status(:success)
-          expect(res_body).to eq({
-            plan: {
-              name: 'お得な特典付きプラン',
+          expect(res_body).to eq(
+            {
+              plan_name: 'お得な特典付きプラン',
               room_bill: 7000,
               min_head_count: 1,
               max_head_count: 9,
               min_term: 1,
               max_term: 9,
+            # TODO:usernameとか部屋タイプ情報が必要
             }
-          })
+          )
         end
+      end
+      it 'dissuccess get "plans.only is premium"'
+      it 'dissuccess get "plans.only is member"'
+    end
+
+    describe 'as an authenticated user' do
+      describe 'Only Premium Plan can be reserved' do
+        it 'success get "plans.only is null"'
+        it 'success get "plans.only is premium"'
+        it 'success get "plans.only is member"'
+      end
+
+      describe 'Only Premium Plan can be reserved' do
+        it 'success get "plans.only is null"'
+        it 'dissuccess get "plans.only is premium"'
+        it 'success get "plans.only is member"'
       end
     end
   end

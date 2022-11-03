@@ -6,14 +6,16 @@ class Api::V1::PlansController < ApplicationController
   end
 
   def show
-    plan = JSON.parse(
-      Plan.find(params[:id]).to_json(
-        # 取得する列を指定
-        # select()だと:idを返してしまうため
-        only: [:name, :room_bill, :min_head_count, :max_head_count, :min_term, :max_term]
-      )
-    )
-    render json: { plan:  }
+    plan = Plan.select(
+      'name AS plan_name,
+      room_bill,
+      min_head_count,
+      max_head_count,
+      min_term,
+      max_term'
+    ).find(params[:id]).as_json(except: [:id])
+
+    render json: plan
   end
 
   # TODO:permitみたいなの必要かも
