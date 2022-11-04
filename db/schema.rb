@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_10_30_160412) do
+ActiveRecord::Schema[7.0].define(version: 2022_11_04_194802) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -23,6 +23,15 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_30_160412) do
     t.integer "max_term"
     t.integer "room_type_id"
     t.string "only"
+  end
+
+  create_table "room_types", force: :cascade do |t|
+    t.string "room_type_name"
+    t.string "room_category_name"
+    t.integer "min_capacity"
+    t.integer "max_capacity"
+    t.integer "room_size"
+    t.string "facilities", array: true
   end
 
   create_table "users", force: :cascade do |t|
