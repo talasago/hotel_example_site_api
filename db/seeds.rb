@@ -13,3 +13,7 @@ Plan.create!(id: 6, name: 'エステ・マッサージプラン', room_bill: 900
 Plan.create!(id: 7, name: '貸し切り露天風呂プラン', room_bill: 9000, min_head_count: 1, max_head_count: 6, min_term: 1, max_term: 3, room_type_id: nil, only: nil)
 Plan.create!(id: 8, name: 'カップル限定プラン', room_bill: 8000, min_head_count: 2, max_head_count: 2, min_term: 1, max_term: 2, room_type_id: 3, only: nil)
 Plan.create!(id: 9, name: 'テーマパーク優待プラン', room_bill: 10_000, min_head_count: 1, max_head_count: 9, min_term: 1, max_term: 5, room_type_id: nil, only: nil)
+
+RoomType.create!(id: 1, room_type_name: 'シングル', room_category_name: nil, min_capacity: 1, max_capacity: 1, room_size: 14, facilities: ['ユニット式バス・トイレ'])
+RoomType.create!(id: 2, room_type_name: 'ツイン', room_category_name: 'スタンダード', min_capacity: 1, max_capacity: 2, room_size: 18, facilities: ['ユニット式バス・トイレ', '独立洗面台'])
+RoomType.create!(id: 3, room_type_name: 'ツイン', room_category_name: 'プレミアム', min_capacity: 1, max_capacity: 3, room_size: 24, facilities: ['ユニット式バス・トイレ', '独立洗面台'])
