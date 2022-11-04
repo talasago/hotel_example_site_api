@@ -3,6 +3,7 @@ require 'json'
 
 RSpec.describe 'Api::V1::Plans', type: :request do
   let(:registed_user1) { FactoryBot.attributes_for(:user, :registed_user1) }
+  let(:registed_user2) { FactoryBot.attributes_for(:user, :registed_user2) }
 
   describe '/plans GET' do
     describe 'not authenticated' do
@@ -22,7 +23,6 @@ RSpec.describe 'Api::V1::Plans', type: :request do
 
     describe 'as an authenticated user' do
       describe 'only of user is premium' do
-
         it 'include all only in response' do
           auth_params = sign_in(registed_user1)
 
@@ -38,8 +38,6 @@ RSpec.describe 'Api::V1::Plans', type: :request do
       end
 
       describe 'only of user is normal' do
-        let(:registed_user2) { FactoryBot.attributes_for(:user, :registed_user2) }
-
         it 'include only only nil or normal in response' do
           auth_params = sign_in(registed_user2)
 
@@ -79,24 +77,26 @@ RSpec.describe 'Api::V1::Plans', type: :request do
           )
         end
       end
+
       it 'dissuccess get "plans.only is premium"' do
         get '/api/v1/plans/1'
-
         expect(response).to have_http_status(401)
       end
+
       it 'dissuccess get "plans.only is member"' do
         get '/api/v1/plans/3'
-
         expect(response).to have_http_status(401)
       end
     end
 
     describe 'as an authenticated user' do
       describe 'users.rank is premium' do
-        it 'success get "plans.only is premium"' do
-          auth_params = sign_in(registed_user1)
+        before do
+          @auth_params = sign_in(registed_user1)
+        end
 
-          get '/api/v1/plans/1', headers: auth_params
+        it 'success get "plans.only is premium"' do
+          get '/api/v1/plans/1', headers: @auth_params
           res_body = JSON.parse(response.body, symbolize_names: true)
 
           aggregate_failures do
@@ -115,13 +115,101 @@ RSpec.describe 'Api::V1::Plans', type: :request do
             )
           end
         end
-        it 'success get "plans.only is member"'
+
+        it 'success get "plans.only is member"' do
+          get '/api/v1/plans/3', headers: @auth_params
+          res_body = JSON.parse(response.body, symbolize_names: true)
+
+          aggregate_failures do
+            expect(response).to have_http_status(:success)
+            expect(res_body).to eq(
+              {
+                id: 3,
+                plan_name: 'お得なプラン',
+                room_bill: 6000,
+                min_head_count: 1,
+                max_head_count: 9,
+                min_term: 1,
+                max_term: 9,
+                user_name: '山田一郎'
+              }
+            )
+          end
+        end
+
+        it 'success get "plans.only is null"' do
+          get '/api/v1/plans/0', headers: @auth_params
+          res_body = JSON.parse(response.body, symbolize_names: true)
+
+          aggregate_failures do
+            expect(response).to have_http_status(:success)
+            expect(res_body).to eq(
+              {
+                id: 0,
+                plan_name: 'お得な特典付きプラン',
+                room_bill: 7000,
+                min_head_count: 1,
+                max_head_count: 9,
+                min_term: 1,
+                max_term: 9,
+                user_name: '山田一郎'
+              }
+            )
+          end
+        end
       end
 
       describe 'Only Premium Plan can be reserved' do
-        it 'success get "plans.only is null"'
-        it 'dissuccess get "plans.only is premium"'
-        it 'success get "plans.only is member"'
+        before do
+          @auth_params = sign_in(registed_user2)
+        end
+
+        it 'success get "plans.only is null"' do
+          get '/api/v1/plans/0', headers: @auth_params
+          res_body = JSON.parse(response.body, symbolize_names: true)
+
+          aggregate_failures do
+            expect(response).to have_http_status(:success)
+            expect(res_body).to eq(
+              {
+                id: 0,
+                plan_name: 'お得な特典付きプラン',
+                room_bill: 7000,
+                min_head_count: 1,
+                max_head_count: 9,
+                min_term: 1,
+                max_term: 9,
+                user_name: '松本さくら'
+              }
+            )
+          end
+        end
+
+        it 'dissuccess get "plans.only is premium"' do
+          get '/api/v1/plans/1', headers: @auth_params
+          expect(response).to have_http_status(401)
+        end
+
+        it 'success get "plans.only is member"' do
+          get '/api/v1/plans/3', headers: @auth_params
+          res_body = JSON.parse(response.body, symbolize_names: true)
+
+          aggregate_failures do
+            expect(response).to have_http_status(:success)
+            expect(res_body).to eq(
+              {
+                id: 3,
+                plan_name: 'お得なプラン',
+                room_bill: 6000,
+                min_head_count: 1,
+                max_head_count: 9,
+                min_term: 1,
+                max_term: 9,
+                user_name: '松本さくら'
+              }
+            )
+          end
+        end
       end
     end
   end
