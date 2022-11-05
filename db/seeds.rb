@@ -16,4 +16,4 @@ Plan.create!(id: 9, name: 'テーマパーク優待プラン', room_bill: 10_000
 
 RoomType.create!(id: 1, room_type_name: 'シングル', room_category_name: nil, min_capacity: 1, max_capacity: 1, room_size: 14, facilities: ['ユニット式バス・トイレ'])
 RoomType.create!(id: 2, room_type_name: 'ツイン', room_category_name: 'スタンダード', min_capacity: 1, max_capacity: 2, room_size: 18, facilities: ['ユニット式バス・トイレ', '独立洗面台'])
-RoomType.create!(id: 3, room_type_name: 'ツイン', room_category_name: 'プレミアム', min_capacity: 1, max_capacity: 3, room_size: 24, facilities: ['ユニット式バス・トイレ', '独立洗面台'])
+RoomType.create!(id: 3, room_type_name: 'ツイン', room_category_name: 'プレミアム', min_capacity: 1, max_capacity: 3, room_size: 24, facilities: ['セパレート式バス・トイレ', '独立洗面台'])
