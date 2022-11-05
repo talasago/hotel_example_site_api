@@ -72,7 +72,13 @@ RSpec.describe 'Api::V1::Plans', type: :request do
               max_head_count: 9,
               min_term: 1,
               max_term: 9,
-              user_name: nil
+              user_name: nil,
+              room_category_type_name: 'スタンダードツイン',
+              room_type_name: 'ツイン',
+              min_capacity: 1,
+              max_capacity: 2,
+              room_size: 18,
+              facilities: ['ユニット式バス・トイレ', '独立洗面台']
             }
           )
         end
@@ -137,7 +143,13 @@ RSpec.describe 'Api::V1::Plans', type: :request do
                 max_head_count: 9,
                 min_term: 1,
                 max_term: 9,
-                user_name: '山田一郎'
+                user_name: '山田一郎',
+                room_category_type_name: nil,
+                room_type_name: nil,
+                min_capacity: nil,
+                max_capacity: nil,
+                room_size: nil,
+                facilities: nil
               }
             )
           end
@@ -158,7 +170,13 @@ RSpec.describe 'Api::V1::Plans', type: :request do
                 max_head_count: 9,
                 min_term: 1,
                 max_term: 9,
-                user_name: '山田一郎'
+                user_name: '山田一郎',
+                room_category_type_name: 'スタンダードツイン',
+                room_type_name: 'ツイン',
+                min_capacity: 1,
+                max_capacity: 2,
+                room_size: 18,
+                facilities: ['ユニット式バス・トイレ', '独立洗面台']
               }
             )
           end
@@ -185,7 +203,13 @@ RSpec.describe 'Api::V1::Plans', type: :request do
                 max_head_count: 9,
                 min_term: 1,
                 max_term: 9,
-                user_name: '松本さくら'
+                user_name: '松本さくら',
+                room_category_type_name: 'スタンダードツイン',
+                room_type_name: 'ツイン',
+                min_capacity: 1,
+                max_capacity: 2,
+                room_size: 18,
+                facilities: ['ユニット式バス・トイレ', '独立洗面台']
               }
             )
           end
@@ -211,7 +235,13 @@ RSpec.describe 'Api::V1::Plans', type: :request do
                 max_head_count: 9,
                 min_term: 1,
                 max_term: 9,
-                user_name: '松本さくら'
+                user_name: '松本さくら',
+                room_category_type_name: nil,
+                room_type_name: nil,
+                min_capacity: nil,
+                max_capacity: nil,
+                room_size: nil,
+                facilities: nil
               }
             )
           end
