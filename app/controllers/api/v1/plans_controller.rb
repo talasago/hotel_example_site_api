@@ -25,11 +25,8 @@ class Api::V1::PlansController < ApplicationController
     end
 
     plan = matched_plan.as_json(except: [:id, :room_type_id])
-
-    room_type = {
-      room_type: matched_plan.room_type.nil? ? nil : matched_plan.room_type.as_json(except: [:id, :room_category_name])
-    }
-    user_name = { user_name: api_v1_user_signed_in? ? current_api_v1_user.username : nil }
+    user_name = { user_name: current_api_v1_user&.username }
+    room_type = { room_type: matched_plan.room_type.as_json(except: [:id, :room_category_name]) }
 
     render json: plan.merge(user_name, room_type)
   end
