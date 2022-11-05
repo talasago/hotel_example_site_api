@@ -65,7 +65,7 @@ RSpec.describe 'Api::V1::Plans', type: :request do
           expect(response).to have_http_status(:success)
           expect(res_body).to eq(
             {
-              id: 0,
+              plan_id: 0,
               plan_name: 'お得な特典付きプラン',
               room_bill: 7000,
               min_head_count: 1,
@@ -103,14 +103,20 @@ RSpec.describe 'Api::V1::Plans', type: :request do
             expect(response).to have_http_status(:success)
             expect(res_body).to eq(
               {
-                id: 1,
+                plan_id: 1,
                 plan_name: 'プレミアムプラン',
                 room_bill: 10_000,
                 min_head_count: 2,
                 max_head_count: 9,
                 min_term: 1,
                 max_term: 9,
-                user_name: '山田一郎'
+                user_name: '山田一郎',
+                room_category_type_name: 'プレミアムツイン',
+                room_type_name: 'ツイン',
+                min_capacity: 1,
+                max_capacity: 3,
+                room_size: 24,
+                facilities: ['セパレート式バス・トイレ', '独立洗面台']
               }
             )
           end
@@ -124,7 +130,7 @@ RSpec.describe 'Api::V1::Plans', type: :request do
             expect(response).to have_http_status(:success)
             expect(res_body).to eq(
               {
-                id: 3,
+                plan_id: 3,
                 plan_name: 'お得なプラン',
                 room_bill: 6000,
                 min_head_count: 1,
@@ -145,7 +151,7 @@ RSpec.describe 'Api::V1::Plans', type: :request do
             expect(response).to have_http_status(:success)
             expect(res_body).to eq(
               {
-                id: 0,
+                plan_id: 0,
                 plan_name: 'お得な特典付きプラン',
                 room_bill: 7000,
                 min_head_count: 1,
@@ -172,7 +178,7 @@ RSpec.describe 'Api::V1::Plans', type: :request do
             expect(response).to have_http_status(:success)
             expect(res_body).to eq(
               {
-                id: 0,
+                plan_id: 0,
                 plan_name: 'お得な特典付きプラン',
                 room_bill: 7000,
                 min_head_count: 1,
@@ -198,7 +204,7 @@ RSpec.describe 'Api::V1::Plans', type: :request do
             expect(response).to have_http_status(:success)
             expect(res_body).to eq(
               {
-                id: 3,
+                plan_id: 3,
                 plan_name: 'お得なプラン',
                 room_bill: 6000,
                 min_head_count: 1,
