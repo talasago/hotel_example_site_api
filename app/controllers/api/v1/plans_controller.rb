@@ -6,7 +6,8 @@ class Api::V1::PlansController < ApplicationController
   end
 
   def show
-    plan = policy_scope(Plan.left_joins(:room_type).where(id: params[:id])).select(
+    #TODO:メソッド化してもいいかも
+    matched_plan = policy_scope(Plan.where(id: params[:id])).select(
       '"plans".id AS plan_id,
       name AS plan_name,
       room_bill,
@@ -14,24 +15,23 @@ class Api::V1::PlansController < ApplicationController
       max_head_count,
       min_term,
       max_term,
-      room_category_name || room_type_name AS room_category_type_name,
-      room_type_name,
-      min_capacity,
-      max_capacity,
-      room_size,
-      facilities
-      '
-    ).first.as_json(except: [:id])
+      room_type_id'
+    ).first
 
     # TODO:Errorのクラスとか作って返した方が良いかも
-    if plan.nil?
+    if matched_plan.nil?
       render status: 401
       return
     end
 
+    plan = matched_plan.as_json(except: [:id, :room_type_id])
+
+    room_type = {
+      room_type: matched_plan.room_type.nil? ? nil : matched_plan.room_type.as_json(except: [:id, :room_category_name])
+    }
     user_name = { user_name: api_v1_user_signed_in? ? current_api_v1_user.username : nil }
 
-    render json: plan.merge(user_name)
+    render json: plan.merge(user_name, room_type)
   end
 
   # TODO:permitみたいなの必要かも

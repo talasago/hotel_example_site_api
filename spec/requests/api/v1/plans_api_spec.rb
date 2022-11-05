@@ -73,12 +73,14 @@ RSpec.describe 'Api::V1::Plans', type: :request do
               min_term: 1,
               max_term: 9,
               user_name: nil,
-              room_category_type_name: 'スタンダードツイン',
-              room_type_name: 'ツイン',
-              min_capacity: 1,
-              max_capacity: 2,
-              room_size: 18,
-              facilities: ['ユニット式バス・トイレ', '独立洗面台']
+              room_type: {
+                room_category_type_name: 'スタンダードツイン',
+                room_type_name: 'ツイン',
+                min_capacity: 1,
+                max_capacity: 2,
+                room_size: 18,
+                facilities: ['ユニット式バス・トイレ', '独立洗面台']
+              }
             }
           )
         end
@@ -117,12 +119,14 @@ RSpec.describe 'Api::V1::Plans', type: :request do
                 min_term: 1,
                 max_term: 9,
                 user_name: '山田一郎',
-                room_category_type_name: 'プレミアムツイン',
-                room_type_name: 'ツイン',
-                min_capacity: 1,
-                max_capacity: 3,
-                room_size: 24,
-                facilities: ['セパレート式バス・トイレ', '独立洗面台']
+                room_type: {
+                  room_category_type_name: 'プレミアムツイン',
+                  room_type_name: 'ツイン',
+                  min_capacity: 1,
+                  max_capacity: 3,
+                  room_size: 24,
+                  facilities: ['セパレート式バス・トイレ', '独立洗面台']
+                }
               }
             )
           end
@@ -144,12 +148,7 @@ RSpec.describe 'Api::V1::Plans', type: :request do
                 min_term: 1,
                 max_term: 9,
                 user_name: '山田一郎',
-                room_category_type_name: nil,
-                room_type_name: nil,
-                min_capacity: nil,
-                max_capacity: nil,
-                room_size: nil,
-                facilities: nil
+                room_type: nil
               }
             )
           end
@@ -171,12 +170,14 @@ RSpec.describe 'Api::V1::Plans', type: :request do
                 min_term: 1,
                 max_term: 9,
                 user_name: '山田一郎',
-                room_category_type_name: 'スタンダードツイン',
-                room_type_name: 'ツイン',
-                min_capacity: 1,
-                max_capacity: 2,
-                room_size: 18,
-                facilities: ['ユニット式バス・トイレ', '独立洗面台']
+                room_type: {
+                  room_category_type_name: 'スタンダードツイン',
+                  room_type_name: 'ツイン',
+                  min_capacity: 1,
+                  max_capacity: 2,
+                  room_size: 18,
+                  facilities: ['ユニット式バス・トイレ', '独立洗面台']
+                }
               }
             )
           end
@@ -204,12 +205,14 @@ RSpec.describe 'Api::V1::Plans', type: :request do
                 min_term: 1,
                 max_term: 9,
                 user_name: '松本さくら',
-                room_category_type_name: 'スタンダードツイン',
-                room_type_name: 'ツイン',
-                min_capacity: 1,
-                max_capacity: 2,
-                room_size: 18,
-                facilities: ['ユニット式バス・トイレ', '独立洗面台']
+                room_type: {
+                  room_category_type_name: 'スタンダードツイン',
+                  room_type_name: 'ツイン',
+                  min_capacity: 1,
+                  max_capacity: 2,
+                  room_size: 18,
+                  facilities: ['ユニット式バス・トイレ', '独立洗面台']
+                }
               }
             )
           end
@@ -236,12 +239,7 @@ RSpec.describe 'Api::V1::Plans', type: :request do
                 min_term: 1,
                 max_term: 9,
                 user_name: '松本さくら',
-                room_category_type_name: nil,
-                room_type_name: nil,
-                min_capacity: nil,
-                max_capacity: nil,
-                room_size: nil,
-                facilities: nil
+                room_type: nil
               }
             )
           end
