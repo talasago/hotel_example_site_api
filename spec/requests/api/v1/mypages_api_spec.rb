@@ -39,12 +39,12 @@ RSpec.describe 'Api::V1::Mypages', type: :request do
 
         aggregate_failures do
           expect(response).to have_http_status(:success)
-          expect(res_body['user'].keys).to \
+          expect(res_body.keys).to \
             include('email', 'username', 'rank', 'address', 'tel',
                     'gender', 'birthday', 'notification')
-          expect(res_body['user'].keys).to_not \
+          expect(res_body.keys).to_not \
             include('password', 'id', 'provider', 'tokens')
-          expect(res_body['user']['emeil']).to eq user['email']
+          expect(res_body['emeil']).to eq user['email']
         end
       end
     end

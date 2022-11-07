@@ -6,6 +6,7 @@ class Api::V1::UsersController < ApplicationController
 
   def show
     # 取得する列を指定
+    # FIXME:
     current_user_data = JSON.parse(
       current_api_v1_user.to_json(
         only: [:email, :username, :rank, :address, :tel,
@@ -13,7 +14,7 @@ class Api::V1::UsersController < ApplicationController
       )
     )
 
-    render json: { user: current_user_data }
+    render json: current_user_data
   end
 
   def destroy
