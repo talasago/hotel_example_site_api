@@ -7,7 +7,7 @@ RSpec.describe 'Api::V1::Registrations', type: :request do
 
       it 'Create a user' do
         expect {
-          post '/api/v1/auth', params: { user: user }
+          post '/api/v1/auth', params: user
         }.to change(User, :count).by(1)
         expect(response).to have_http_status(:success)
         expect(response.content_type).to include('application/json')
@@ -20,7 +20,7 @@ RSpec.describe 'Api::V1::Registrations', type: :request do
       let(:user) { FactoryBot.attributes_for(:user, :invalid) }
       it 'not create a user' do
         expect {
-          post '/api/v1/auth', params: { user: user }
+          post '/api/v1/auth', params: user
         }.to_not change(User, :count)
         expect(response).to have_http_status(422)
       end

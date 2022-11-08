@@ -6,9 +6,9 @@ RSpec.describe 'Api::V1::Sessions', type: :request do
 
   describe 'login' do
     context 'exsist a user' do
-      before do
-        post '/api/v1/auth', params: { user: user }
-      end
+        before do
+          sign_up(user)
+        end
 
       it 'success authenticate' do
         post '/api/v1/auth/sign_in', params: {

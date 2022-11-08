@@ -1,6 +1,6 @@
 module RequestSpecHelper
   def sign_up(regist_user)
-    post '/api/v1/auth', params: { user: regist_user }
+    post '/api/v1/auth', params: regist_user
     get_auth_params(response)
   end
 
