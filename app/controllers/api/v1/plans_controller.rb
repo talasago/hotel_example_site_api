@@ -26,7 +26,9 @@ class Api::V1::PlansController < ApplicationController
     user_name = { user_name: current_api_v1_user&.username }
     room_type = { room_type: matched_plan.room_type.as_json(except: [:id, :room_category_name]) }
 
-    render json: plan.merge(user_name, room_type)
+    res_body = plan.merge(user_name, room_type)
+
+    render json: res_body
   end
 
   # TODO:permitみたいなの必要かも
