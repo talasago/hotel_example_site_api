@@ -65,13 +65,15 @@ RSpec.describe 'Api::V1::Plans', type: :request do
           expect(response).to have_http_status(:success)
           expect(res_body).to eq(
             {
-              plan_id: 0,
-              plan_name: 'お得な特典付きプラン',
-              room_bill: 7000,
-              min_head_count: 1,
-              max_head_count: 9,
-              min_term: 1,
-              max_term: 9,
+              plan: {
+                plan_id: 0,
+                plan_name: 'お得な特典付きプラン',
+                room_bill: 7000,
+                min_head_count: 1,
+                max_head_count: 9,
+                min_term: 1,
+                max_term: 9
+              },
               user_name: nil,
               room_type: {
                 room_category_type_name: 'スタンダードツイン',
@@ -111,13 +113,15 @@ RSpec.describe 'Api::V1::Plans', type: :request do
             expect(response).to have_http_status(:success)
             expect(res_body).to eq(
               {
-                plan_id: 1,
-                plan_name: 'プレミアムプラン',
-                room_bill: 10_000,
-                min_head_count: 2,
-                max_head_count: 9,
-                min_term: 1,
-                max_term: 9,
+                plan: {
+                  plan_id: 1,
+                  plan_name: 'プレミアムプラン',
+                  room_bill: 10_000,
+                  min_head_count: 2,
+                  max_head_count: 9,
+                  min_term: 1,
+                  max_term: 9
+                },
                 user_name: '山田一郎',
                 room_type: {
                   room_category_type_name: 'プレミアムツイン',
@@ -140,13 +144,15 @@ RSpec.describe 'Api::V1::Plans', type: :request do
             expect(response).to have_http_status(:success)
             expect(res_body).to eq(
               {
-                plan_id: 3,
-                plan_name: 'お得なプラン',
-                room_bill: 6000,
-                min_head_count: 1,
-                max_head_count: 9,
-                min_term: 1,
-                max_term: 9,
+                plan: {
+                  plan_id: 3,
+                  plan_name: 'お得なプラン',
+                  room_bill: 6000,
+                  min_head_count: 1,
+                  max_head_count: 9,
+                  min_term: 1,
+                  max_term: 9
+                },
                 user_name: '山田一郎',
                 room_type: nil
               }
@@ -162,13 +168,15 @@ RSpec.describe 'Api::V1::Plans', type: :request do
             expect(response).to have_http_status(:success)
             expect(res_body).to eq(
               {
-                plan_id: 0,
-                plan_name: 'お得な特典付きプラン',
-                room_bill: 7000,
-                min_head_count: 1,
-                max_head_count: 9,
-                min_term: 1,
-                max_term: 9,
+                plan: {
+                  plan_id: 0,
+                  plan_name: 'お得な特典付きプラン',
+                  room_bill: 7000,
+                  min_head_count: 1,
+                  max_head_count: 9,
+                  min_term: 1,
+                  max_term: 9
+                },
                 user_name: '山田一郎',
                 room_type: {
                   room_category_type_name: 'スタンダードツイン',
@@ -197,13 +205,15 @@ RSpec.describe 'Api::V1::Plans', type: :request do
             expect(response).to have_http_status(:success)
             expect(res_body).to eq(
               {
-                plan_id: 0,
-                plan_name: 'お得な特典付きプラン',
-                room_bill: 7000,
-                min_head_count: 1,
-                max_head_count: 9,
-                min_term: 1,
-                max_term: 9,
+                plan: {
+                  plan_id: 0,
+                  plan_name: 'お得な特典付きプラン',
+                  room_bill: 7000,
+                  min_head_count: 1,
+                  max_head_count: 9,
+                  min_term: 1,
+                  max_term: 9
+                },
                 user_name: '松本さくら',
                 room_type: {
                   room_category_type_name: 'スタンダードツイン',
@@ -231,13 +241,15 @@ RSpec.describe 'Api::V1::Plans', type: :request do
             expect(response).to have_http_status(:success)
             expect(res_body).to eq(
               {
-                plan_id: 3,
-                plan_name: 'お得なプラン',
-                room_bill: 6000,
-                min_head_count: 1,
-                max_head_count: 9,
-                min_term: 1,
-                max_term: 9,
+                plan: {
+                  plan_id: 3,
+                  plan_name: 'お得なプラン',
+                  room_bill: 6000,
+                  min_head_count: 1,
+                  max_head_count: 9,
+                  min_term: 1,
+                  max_term: 9
+                },
                 user_name: '松本さくら',
                 room_type: nil
               }
