@@ -45,7 +45,11 @@ RSpec.describe 'Api::V1::Plans', type: :request do
         end
 
         it 'include expected keys' do
-          # expect(res_body['plans']).to include(nil, 'normal')
+          @res_body['plans'].each do |plan|
+            expect(plan.keys).to match_array([
+              'plan_id', 'min_head_count', 'only', 'plan_name', 'room_bill', 'room_category_type_name'
+            ])
+          end
         end
       end
 

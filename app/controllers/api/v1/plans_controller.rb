@@ -1,17 +1,21 @@
 class Api::V1::PlansController < ApplicationController
   def index
-    plans = policy_scope(Plan).select(
+    all_plans = policy_scope(Plan.includes(:room_type)).select(
       '"plans".id AS plan_id,
       name AS plan_name,
       room_bill,
       min_head_count,
-      max_head_count,
-      min_term,
-      max_term,
-      "plans".only'
-    ).order(:plan_id).as_json(except: [:id])
+      "plans".only,
+      room_type_id'
+    ).order(:plan_id)
 
-    render json: { plans: plans }
+    return_plans = all_plans.map do |plan|
+      plan.as_json(except: [:id, :room_type_id]).merge(
+        { room_category_type_name: plan.room_type&.room_category_type_name }
+      )
+    end
+
+    render json: { plans: return_plans }
   end
 
   def show
