@@ -1,6 +1,17 @@
 class Api::V1::PlansController < ApplicationController
   def index
-    render json: { plans: policy_scope(Plan) }
+    plans = policy_scope(Plan).select(
+      '"plans".id AS plan_id,
+      name AS plan_name,
+      room_bill,
+      min_head_count,
+      max_head_count,
+      min_term,
+      max_term,
+      "plans".only'
+    ).order(:plan_id).as_json(except: [:id])
+
+    render json: { plans: plans }
   end
 
   def show

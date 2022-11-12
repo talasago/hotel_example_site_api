@@ -23,17 +23,29 @@ RSpec.describe 'Api::V1::Plans', type: :request do
 
     describe 'as an authenticated user' do
       describe 'only of user is premium' do
-        it 'include all only in response' do
+        #HACK:この書き方で良いのか？
+        before do
           auth_params = sign_in(registed_user1)
 
           get '/api/v1/plans', headers: auth_params
-          res_body = JSON.parse(response.body)
-          onlys = res_body['plans'].map { |plan| plan['only'] }
+          @res_body = JSON.parse(response.body)
+        end
 
+        it 'include all only in response' do
+          onlys = @res_body['plans'].map { |plan| plan['only'] }
           aggregate_failures do
             expect(response).to have_http_status(:success)
             expect(onlys).to include(nil, 'premium', 'normal')
           end
+        end
+
+        it 'sort order be plan.id' do
+          ids = @res_body['plans'].map { |plan| plan['plan_id'] }
+          expect(ids).to eq [*0..9]
+        end
+
+        it 'include expected keys' do
+          # expect(res_body['plans']).to include(nil, 'normal')
         end
       end
 
