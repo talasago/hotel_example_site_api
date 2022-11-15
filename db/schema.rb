@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_11_04_194802) do
+ActiveRecord::Schema[7.0].define(version: 2022_11_15_211602) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -23,6 +23,22 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_04_194802) do
     t.integer "max_term"
     t.integer "room_type_id"
     t.string "only"
+  end
+
+  create_table "reserves", force: :cascade do |t|
+    t.integer "plan_id", null: false
+    t.integer "total_bill", null: false
+    t.date "date", null: false
+    t.integer "term", null: false
+    t.integer "head_count", null: false
+    t.string "username", null: false
+    t.boolean "breakfast"
+    t.boolean "early_check_in"
+    t.boolean "sightseeing"
+    t.string "contact", null: false
+    t.string "email"
+    t.string "tel"
+    t.string "comment"
   end
 
   create_table "room_types", force: :cascade do |t|
