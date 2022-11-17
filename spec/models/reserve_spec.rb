@@ -9,6 +9,13 @@ RSpec.describe Reserve, type: :model do
   it { is_expected.to validate_presence_of :username }
   it { is_expected.to validate_presence_of :contact }
 
-  # コンタクトがメアドの時、メアドは必須
-  # コンタクトが電話番号のときtelは必須
+  context 'contact is email' do
+    subject { Reserve.new(contact: 'email') }
+    it { is_expected.to validate_presence_of :email }
+  end
+
+  context 'contact is tel' do
+    subject { Reserve.new(contact: 'tel') }
+    it { is_expected.to validate_presence_of :tel }
+  end
 end
