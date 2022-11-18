@@ -18,4 +18,9 @@ RSpec.describe Reserve, type: :model do
     subject { Reserve.new(contact: 'tel') }
     it { is_expected.to validate_presence_of :tel }
   end
+
+  it 'term_end is reserves.date + reserves.term' do
+    reserve = Reserve.new(date: Date.parse('2022-02-28'), term: 3)
+    expect(reserve.term_end).to eq Date.parse('2022-03-03')
+  end
 end
