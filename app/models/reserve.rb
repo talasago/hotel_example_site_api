@@ -9,8 +9,6 @@ class Reserve < ApplicationRecord
   validates :email, presence: true, if: -> { contact == 'email' }
   validates :tel, presence: true, if: -> { contact == 'tel' }
 
-  attribute :term_end, :date, default: :term_end
-
   def term_end
     date + term
   end
