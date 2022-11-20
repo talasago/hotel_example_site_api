@@ -1,4 +1,8 @@
 class Reserve < ApplicationRecord
+  ADDITIONAL_PLAN_PRICE = 1_000
+
+  belongs_to :plan
+
   validates :plan_id, presence: true
   validates :total_bill, presence: true
   validates :date, presence: true
@@ -11,5 +15,17 @@ class Reserve < ApplicationRecord
 
   def term_end
     date + term
+  end
+
+  # privateでもいい気がするがテストが大変かも。
+  # calc_total_billはreduce使ってもいい気がしている
+  # 引数でroom_billを取得するようにする
+  def calc_total_bill
+    _total_bill = plan.room_bill * head_count * term
+    _total_bill += ADDITIONAL_PLAN_PRICE * head_count * term if breakfast
+    _total_bill += ADDITIONAL_PLAN_PRICE * head_count if early_check_in
+    _total_bill += ADDITIONAL_PLAN_PRICE * head_count if sightseeing
+
+    _total_bill
   end
 end
