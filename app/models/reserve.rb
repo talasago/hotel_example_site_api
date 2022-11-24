@@ -1,5 +1,6 @@
 class Reserve < ApplicationRecord
   ADDITIONAL_PLAN_PRICE = 1_000
+  ADD_ROOM_BILL_RATE_SAT_AND_SUN = 0.25
 
   belongs_to :plan
 
@@ -21,19 +22,25 @@ class Reserve < ApplicationRecord
   # calc_total_billはreduce使ってもいい気がしている
   # 引数でroom_billを取得するようにする
   def calc_total_bill
-    _total_bill = plan.room_bill * head_count * term
+    basic_bill + additional_plan_bill
+  end
 
-    term.times do |num|
-      rest_date = date
-      rest_date += num
-      if rest_date.wday == 0 || rest_date.wday == 6
-        _total_bill += plan.room_bill * 0.25 * head_count
-      end
-    end
-    _total_bill += ADDITIONAL_PLAN_PRICE * head_count * term if breakfast
-    _total_bill += ADDITIONAL_PLAN_PRICE * head_count if early_check_in
-    _total_bill += ADDITIONAL_PLAN_PRICE * head_count if sightseeing
+  private
 
-    _total_bill
+  def basic_bill
+    [*0..term - 1].map do |add_day|
+      wday = (date + add_day).wday
+      wday == 0 || wday == 6 ?
+        plan.room_bill * head_count * (1 + ADD_ROOM_BILL_RATE_SAT_AND_SUN) :
+        plan.room_bill * head_count
+    end.reduce(:+)
+  end
+
+  def additional_plan_bill
+    add_bill = 0
+    add_bill += ADDITIONAL_PLAN_PRICE * head_count * term if breakfast
+    add_bill += ADDITIONAL_PLAN_PRICE * head_count if early_check_in
+    add_bill += ADDITIONAL_PLAN_PRICE * head_count if sightseeing
+    add_bill
   end
 end
