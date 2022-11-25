@@ -18,21 +18,18 @@ class Reserve < ApplicationRecord
     date + term
   end
 
-  # privateでもいい気がするがテストが大変かも。
-  # calc_total_billはreduce使ってもいい気がしている
-  # 引数でroom_billを取得するようにする
-  def calc_total_bill
-    basic_bill + additional_plan_bill
+  def calc_total_bill(room_bill)
+    basic_bill(room_bill) + additional_plan_bill
   end
 
   private
 
-  def basic_bill
+  def basic_bill(room_bill)
     [*0..term - 1].map do |add_day|
       wday = (date + add_day).wday
       wday == 0 || wday == 6 ?
-        plan.room_bill * head_count * (1 + ADD_ROOM_BILL_RATE_SAT_AND_SUN) :
-        plan.room_bill * head_count
+        room_bill * head_count * (1 + ADD_ROOM_BILL_RATE_SAT_AND_SUN) :
+        room_bill * head_count
     end.reduce(:+)
   end
 

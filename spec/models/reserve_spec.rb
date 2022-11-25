@@ -28,11 +28,10 @@ RSpec.describe Reserve, type: :model do
     shared_examples 'right calcurate total_bill' do |params, expect|
       it {
         reserve = Reserve.new(
-          plan_id: 0,
           date: stay_date,
           **params
         )
-        expect(reserve.calc_total_bill).to eq expect
+        expect(reserve.calc_total_bill(7_000)).to eq expect
       }
     end
 
