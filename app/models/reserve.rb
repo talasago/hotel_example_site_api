@@ -5,7 +5,7 @@ class Reserve < ApplicationRecord
   belongs_to :plan
 
   validates :plan_id, presence: true
-  validates :total_bill, presence: true, numericality: true
+  validates :total_bill, presence: true, numericality: { equal_to: :calc_total_bill }
   validates :date, presence: true
   validates :term, presence: true
   validates :head_count, presence: true
@@ -13,7 +13,6 @@ class Reserve < ApplicationRecord
   validates :contact, presence: true
   validates :email, presence: true, if: -> { contact == 'email' }
   validates :tel, presence: true, if: -> { contact == 'tel' }
-  validate :validate_total_bill
 
   def term_end
     date + term
@@ -21,15 +20,9 @@ class Reserve < ApplicationRecord
 
   private
 
-  def validate_total_bill
+  def calc_total_bill
     return if !plan_id.present? && !term.present? && !date.present?
 
-    if total_bill != calc_total_bill
-      errors.add(:total_bill, 'Invalid amounts have been set.')
-    end
-  end
-
-  def calc_total_bill
     total_bill_ = [*0..term - 1].map do |add_day|
       wday = (date + add_day).wday
       wday == 0 || wday == 6 ?
