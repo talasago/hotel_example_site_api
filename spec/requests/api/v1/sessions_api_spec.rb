@@ -6,9 +6,9 @@ RSpec.describe 'Api::V1::Sessions', type: :request do
 
   describe 'login' do
     context 'exsist a user' do
-        before do
-          sign_up(user)
-        end
+      before do
+        sign_up(user)
+      end
 
       it 'success authenticate' do
         post '/api/v1/auth/sign_in', params: {
@@ -35,7 +35,7 @@ RSpec.describe 'Api::V1::Sessions', type: :request do
 
   describe 'logout' do
     context 'as an authenticated user' do
-      # FIXME:なんか成功なのに401って不安になる書き方だな。
+      # FIXME:なんか成功なのに401って不安になる書き方。aggregate_failures要らなさそう。
       it 'success logout and APIs require authentication result in a 401 error' do
         auth_params = sign_up(user)
         aggregate_failures do
