@@ -13,6 +13,7 @@ Rails.application.routes.draw do
 
       resource :mypage, controller: 'users', only: [:show, :destroy]
       resources :plans, controller: 'plans', only: [:index, :show]
+      resource :reserve, controller: 'reserves', only: [:create]
     end
   end
 end
