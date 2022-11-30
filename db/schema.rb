@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_11_15_211602) do
+ActiveRecord::Schema[7.0].define(version: 2022_11_30_193305) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -32,9 +32,9 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_15_211602) do
     t.integer "term", null: false
     t.integer "head_count", null: false
     t.string "username", null: false
-    t.boolean "breakfast"
-    t.boolean "early_check_in"
-    t.boolean "sightseeing"
+    t.boolean "breakfast", default: false
+    t.boolean "early_check_in", default: false
+    t.boolean "sightseeing", default: false
     t.string "contact", null: false
     t.string "email"
     t.string "tel"
