@@ -12,7 +12,7 @@ class Reserve < ApplicationRecord
   validates :username, presence: true
   validates :contact, presence: true
   validates :email, presence: true, if: -> { contact == 'email' }
-  validates :tel, presence: true, if: -> { contact == 'tel' }
+  validates :tel, presence: true, if: -> { contact == 'tel' }, length: { is: 11 }
 
   def term_end
     date + term

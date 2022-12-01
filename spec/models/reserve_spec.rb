@@ -17,7 +17,10 @@ RSpec.describe Reserve, type: :model do
 
   context 'contact is tel' do
     subject { Reserve.new(contact: 'tel') }
-    it { is_expected.to validate_presence_of :tel }
+    it {
+      is_expected.to validate_presence_of :tel
+      is_expected.to validate_length_of(:tel).is_equal_to(11)
+    }
   end
 
   it 'term_end is reserves.date + reserves.term' do
