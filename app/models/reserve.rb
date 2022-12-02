@@ -21,7 +21,7 @@ class Reserve < ApplicationRecord
   private
 
   def calc_total_bill
-    return if !plan_id.present? && !term.present? && !date.present?
+    return if plan_id.blank? && term.blank? && date.blank?
 
     total_bill_ = [*0..term - 1].map do |add_day|
       wday = (date + add_day).wday
