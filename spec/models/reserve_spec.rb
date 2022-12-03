@@ -13,6 +13,23 @@ RSpec.describe Reserve, type: :model do
   context 'contact is email' do
     subject { Reserve.new(contact: 'email') }
     it { is_expected.to validate_presence_of :email }
+
+    context 'format valid' do
+      #FIXME:FactoryBot使った方が良いかも
+      let(:reserve_email_valid) { Reserve.new(contact: 'email', email: 'example@example.com') }
+      it {
+        reserve_email_valid.valid?
+        expect(reserve_email_valid.errors[:email]).to eq []
+      }
+    end
+
+    context 'format invalid' do
+      let(:reserve_email_valid) { Reserve.new(contact: 'email', email: '@') }
+      it {
+        reserve_email_valid.valid?
+        expect(reserve_email_valid.errors[:email]).to include 'invalid email format'
+      }
+    end
   end
 
   context 'contact is tel' do
