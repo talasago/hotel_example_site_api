@@ -4,7 +4,6 @@ RSpec.describe Reserve, type: :model do
   it { is_expected.to validate_presence_of :plan_id }
   it { is_expected.to validate_presence_of :total_bill }
   it { is_expected.to validate_numericality_of :total_bill }
-  it { is_expected.to validate_presence_of :date }
   it { is_expected.to validate_presence_of :term }
   it { is_expected.to validate_presence_of :head_count }
   it { is_expected.to validate_presence_of :username }
@@ -40,6 +39,27 @@ RSpec.describe Reserve, type: :model do
     }
   end
 
+  describe 'date' do
+    it { is_expected.to validate_presence_of :date }
+
+    context 'date is today' do
+      #FIXME:FactoryBot使った方が良いかも
+      let(:reserve_date_valid) { Reserve.new(date: Date.today) }
+      it 'be valid' do
+        reserve_date_valid.valid?
+        expect(reserve_date_valid.errors[:date]).to eq []
+      end
+    end
+
+    context 'date is 1day ago' do
+      let(:reserve_date_invalid) { Reserve.new(date: Date.today - 1 ) }
+      it 'be invalid' do
+        reserve_date_invalid.valid?
+        expect(reserve_date_invalid.errors[:date]).to include(include('must be greater than or equal to'))
+      end
+    end
+  end
+
   it 'term_end is reserves.date + reserves.term' do
     reserve = Reserve.new(date: Date.parse('2022-02-28'), term: 3)
     expect(reserve.term_end).to eq Date.parse('2022-03-03')
@@ -48,6 +68,7 @@ RSpec.describe Reserve, type: :model do
   describe 'validate total_bill' do
     shared_examples 'Valid when the total_bill is correct' do |params|
       it {
+        #FIXME:letの値をinclude_examplesで呼び出しているが、わかりづらくなくなるので変えた方が良い気が
         reserve = Reserve.new(plan_id: 0, date: stay_date, **params)
         reserve.valid?
         expect(reserve.errors[:total_bill]).to_not include('must be equal to')
