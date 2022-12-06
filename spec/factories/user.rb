@@ -11,14 +11,13 @@ FactoryBot.define do
     end
 
     trait :registed_user1 do
-      email{ 'ichiro@example.com' }
-      password{ 'password' }
+      email { 'ichiro@example.com' }
+      password { 'password' }
     end
 
     trait :registed_user2 do
-      email{ 'sakura@example.com' }
-      password{ 'pass1234' }
+      email { 'sakura@example.com' }
+      password { 'pass1234' }
     end
-
   end
 end
