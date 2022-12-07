@@ -52,10 +52,62 @@ RSpec.describe Reserve, type: :model do
     end
 
     context 'date is 1day ago' do
-      let(:reserve_date_invalid) { Reserve.new(date: Date.today - 1 ) }
+      let(:reserve_date_invalid) { Reserve.new(date: Date.today - 1) }
       it 'be invalid' do
         reserve_date_invalid.valid?
         expect(reserve_date_invalid.errors[:date]).to include(include('must be greater than or equal to'))
+      end
+    end
+
+    context 'date is 3months later' do
+      let(:reserve_3months_later) { Reserve.new(date: Date.new(2023, 2, 4)) }
+      it 'be valid' do
+        travel_to Date.new(2022, 12, 4) # 現在日付を変更
+        reserve_3months_later.valid?
+        expect(reserve_3months_later.errors[:date]).to eq []
+      end
+    end
+
+    context 'date is 3months + 1day later' do
+      let(:reserve_3months_1day_later) { Reserve.new(date: Date.new(2023, 3, 5)) }
+      it 'be invalid' do
+        travel_to Date.new(2022, 12, 4) # 現在日付を変更
+        reserve_3months_1day_later.valid?
+        expect(reserve_3months_1day_later.errors[:date]).to include(include('must be less than or equal to'))
+      end
+    end
+
+    context 'current date is August 31' do
+      it 'be valid if the date is November 30' do
+        travel_to Date.new(2022, 8, 31) # 現在日付を変更
+        reserve = Reserve.new(date: Date.new(2022, 11, 30))
+        reserve.valid?
+        expect(reserve.errors[:date]).to eq []
+      end
+
+      it 'be invalid if the date is December 1' do
+        travel_to Date.new(2022, 8, 31) # 現在日付を変更
+        reserve = Reserve.new(date: Date.new(2022, 12, 1))
+        reserve.valid?
+        expect(reserve.errors[:date]).to include(include('must be less than or equal to'))
+      end
+    end
+
+    describe 'leap year' do
+      context '3months later is the end of February in leap year' do
+        it 'be valid if the date is February 29' do
+          travel_to Date.new(2023, 11, 30) # 現在日付を変更
+          reserve = Reserve.new(date: Date.new(2024, 2, 29))
+          reserve.valid?
+          expect(reserve.errors[:date]).to eq []
+        end
+
+        it 'be invalid if the date is March 1' do
+          travel_to Date.new(2023, 11, 30) # 現在日付を変更
+          reserve = Reserve.new(date: Date.new(2024, 3, 1))
+          reserve.valid?
+          expect(reserve.errors[:date]).to include(include('must be less than or equal to'))
+        end
       end
     end
   end

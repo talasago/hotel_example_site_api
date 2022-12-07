@@ -6,7 +6,11 @@ class Reserve < ApplicationRecord
 
   validates :plan_id, presence: true
   validates :total_bill, presence: true, numericality: { equal_to: :calc_total_bill }
-  validates :date, presence: true, comparison: { greater_than_or_equal_to: Proc.new { Date.today } }
+  validates :date, presence: true,
+                   comparison: {
+                     greater_than_or_equal_to: Proc.new { Date.today },
+                     less_than_or_equal_to: Proc.new { Date.today + 3.months }
+                   }
   validates :term, presence: true
   validates :head_count, presence: true
   validates :username, presence: true
