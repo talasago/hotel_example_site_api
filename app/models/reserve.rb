@@ -12,6 +12,7 @@ class Reserve < ApplicationRecord
                      less_than_or_equal_to: Proc.new { Date.today + 3.months }
                    }
   validates :term, presence: true
+  validate  :validate_term
   validates :head_count, presence: true
   validates :username, presence: true
   validates :contact, presence: true
@@ -29,7 +30,16 @@ class Reserve < ApplicationRecord
 
   private
 
+  def validate_term
+    return if plan_id.blank? || term.blank?
+
+    unless term.between?(plan.min_term, plan.max_term)
+      errors.add(:term, 'term is not in range')
+    end
+  end
+
   def calc_total_bill
+    # FIXME:条件文はorでは
     return if plan_id.blank? && term.blank? && date.blank?
 
     total_bill_ = [*0..term - 1].map do |add_day|

@@ -112,6 +112,24 @@ RSpec.describe Reserve, type: :model do
     end
   end
 
+  describe 'validate term' do
+    context 'between plan.min_term and plan.max_term' do
+      let(:reserve_within_term_range) { Reserve.new(plan_id: 7, term: 3) }
+      it 'be valid' do
+        reserve_within_term_range.valid?
+        expect(reserve_within_term_range.errors[:term]).to eq []
+      end
+    end
+
+    context 'not between plan.min_term and plan.max_term' do
+      let(:reserve_without_term_range) { Reserve.new(plan_id: 7, term: 4) }
+      it 'be invalid' do
+        reserve_without_term_range.valid?
+        expect(reserve_without_term_range.errors[:term]).to include('term is not in range')
+      end
+    end
+  end
+
   it 'term_end is reserves.date + reserves.term' do
     reserve = Reserve.new(date: Date.parse('2022-02-28'), term: 3)
     expect(reserve.term_end).to eq Date.parse('2022-03-03')
