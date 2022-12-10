@@ -130,6 +130,24 @@ RSpec.describe Reserve, type: :model do
     end
   end
 
+  describe 'validate head_count' do
+    context 'between plan.min_head_count and plan.max_head_count' do
+      let(:reserve_within_head_count_range) { Reserve.new(plan_id: 6, head_count: 6) }
+      it 'be valid' do
+        reserve_within_head_count_range.valid?
+        expect(reserve_within_head_count_range.errors[:head_count]).to eq []
+      end
+    end
+
+    context 'not between plan.min_head_count and plan.min_head_count' do
+      let(:reserve_without_head_count_range) { Reserve.new(plan_id: 6, head_count: 7) }
+      it 'be invalid' do
+        reserve_without_head_count_range.valid?
+        expect(reserve_without_head_count_range.errors[:head_count]).to include('head_count is not in range')
+      end
+    end
+  end
+
   it 'term_end is reserves.date + reserves.term' do
     reserve = Reserve.new(date: Date.parse('2022-02-28'), term: 3)
     expect(reserve.term_end).to eq Date.parse('2022-03-03')

@@ -14,6 +14,7 @@ class Reserve < ApplicationRecord
   validates :term, presence: true
   validate  :validate_term
   validates :head_count, presence: true
+  validate  :validate_head_count
   validates :username, presence: true
   validates :contact, presence: true
   # NOTE: メールアドレスのバリデーションは、input type="email">と同じとした。
@@ -35,6 +36,14 @@ class Reserve < ApplicationRecord
 
     unless term.between?(plan.min_term, plan.max_term)
       errors.add(:term, 'term is not in range')
+    end
+  end
+
+  def validate_head_count
+    return if plan_id.blank? || head_count.blank?
+
+    unless head_count.between?(plan.min_head_count, plan.max_head_count)
+      errors.add(:head_count, 'head_count is not in range')
     end
   end
 
