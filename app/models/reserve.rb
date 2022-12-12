@@ -48,8 +48,7 @@ class Reserve < ApplicationRecord
   end
 
   def calc_total_bill
-    # FIXME:条件文はorでは
-    return if plan_id.blank? && term.blank? && date.blank?
+    return if plan_id.blank? || term.blank? || date.blank?
 
     total_bill_ = [*0..term - 1].map do |add_day|
       wday = (date + add_day).wday
