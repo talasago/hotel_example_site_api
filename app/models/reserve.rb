@@ -16,7 +16,7 @@ class Reserve < ApplicationRecord
   validates :head_count, presence: true
   validate  :validate_head_count
   validates :username, presence: true
-  validates :contact, presence: true
+  validates :contact, presence: true, inclusion: { in: ['no', 'email', 'tel'] }
   # NOTE: メールアドレスのバリデーションは、input type="email">と同じとした。
   # https://developer.mozilla.org/ja/docs/Web/HTML/Element/input/email
   # https://html.spec.whatwg.org/multipage/input.html#valid-e-mail-address
