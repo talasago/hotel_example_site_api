@@ -11,6 +11,8 @@ class Api::V1::ReservesController < ApplicationController
       sightseeing: params[:sightseeing],
       username: params[:username],
       contact: params[:contact],
+      tel: params[:tel],
+      email: params[:email],
       comment: params[:comment]
     )
     reserve.valid?

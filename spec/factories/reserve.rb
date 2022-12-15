@@ -11,5 +11,15 @@ FactoryBot.define do
     username { 'テスト太郎' }
     contact { 'no' }
     comment { 'comment_test' }
+
+    trait :with_tel do
+      contact { 'tel' }
+      tel { '09000000000' }
+    end
+
+    trait :with_email do
+      contact { 'email' }
+      email { 'example@example.com' }
+    end
   end
 end
