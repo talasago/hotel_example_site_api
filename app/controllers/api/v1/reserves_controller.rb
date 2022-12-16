@@ -3,7 +3,7 @@ class Api::V1::ReservesController < ApplicationController
     reserve = Reserve.new(
       plan_id: params[:plan_id],
       total_bill: params[:total_bill],
-      date: params[:date],
+      date: params[:date].to_date,
       term: params[:term],
       head_count: params[:head_count],
       breakfast: params[:breakfast],
