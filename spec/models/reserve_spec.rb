@@ -149,9 +149,9 @@ RSpec.describe Reserve, type: :model do
     end
   end
 
-  it 'term_end is reserves.date + reserves.term' do
+  it 'end_date is reserves.date + reserves.term' do
     reserve = Reserve.new(date: Date.parse('2022-02-28'), term: 3)
-    expect(reserve.term_end).to eq Date.parse('2022-03-03')
+    expect(reserve.end_date).to eq Date.parse('2022-03-03')
   end
 
   describe 'validate total_bill' do

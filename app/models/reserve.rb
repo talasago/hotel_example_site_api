@@ -25,7 +25,7 @@ class Reserve < ApplicationRecord
                     format: { with: EMAIL_REGEXP, message: 'invalid email format' }
   validates :tel, presence: true, if: -> { contact == 'tel' }, length: { is: 11 }
 
-  def term_end
+  def end_date
     date + term
   end
 
