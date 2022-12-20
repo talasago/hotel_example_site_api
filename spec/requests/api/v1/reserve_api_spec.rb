@@ -12,7 +12,8 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
         res_body = JSON.parse(response.body)
         expect(res_body.keys)
           .to contain_exactly('reserve_id', 'total_bill', 'plan_name', 'start_date', 'end_date', 'term', 'head_count',
-            'breakfast', 'early_check_in', 'sightseeing', 'username', 'contact', 'tel', 'email', 'comment')
+            'breakfast', 'early_check_in', 'sightseeing', 'username', 'contact', 'tel', 'email', 'comment',
+            'session_token')
         expect(res_body['start_date']).to match /[0-9]{4}(\/[0-9]{2}){2}/
         expect(res_body['end_date']).to match /[0-9]{4}(\/[0-9]{2}){2}/
       end
@@ -28,7 +29,8 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
         res_body = JSON.parse(response.body)
         expect(res_body.keys)
           .to contain_exactly('reserve_id', 'total_bill', 'plan_name', 'start_date', 'end_date', 'term', 'head_count',
-            'breakfast', 'early_check_in', 'sightseeing', 'username', 'contact', 'tel', 'email', 'comment')
+            'breakfast', 'early_check_in', 'sightseeing', 'username', 'contact', 'tel', 'email', 'comment',
+            'session_token')
         expect(res_body['start_date']).to match /[0-9]{4}(\/[0-9]{2}){2}/
         expect(res_body['end_date']).to match /[0-9]{4}(\/[0-9]{2}){2}/
       end
@@ -44,7 +46,8 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
         res_body = JSON.parse(response.body)
         expect(res_body.keys)
           .to contain_exactly('reserve_id', 'total_bill', 'plan_name', 'start_date', 'end_date', 'term', 'head_count',
-            'breakfast', 'early_check_in', 'sightseeing', 'username', 'contact', 'tel', 'email', 'comment')
+            'breakfast', 'early_check_in', 'sightseeing', 'username', 'contact', 'tel', 'email', 'comment',
+            'session_token')
         expect(res_body['start_date']).to match /[0-9]{4}(\/[0-9]{2}){2}/
         expect(res_body['end_date']).to match /[0-9]{4}(\/[0-9]{2}){2}/
       end

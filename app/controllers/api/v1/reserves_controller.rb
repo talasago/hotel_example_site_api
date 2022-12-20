@@ -1,5 +1,6 @@
 class Api::V1::ReservesController < ApplicationController
   def create
+    # TODO:長いので何とかしたい
     reserve = Reserve.new(
       plan_id: params[:plan_id],
       total_bill: params[:total_bill],
@@ -13,7 +14,9 @@ class Api::V1::ReservesController < ApplicationController
       contact: params[:contact],
       tel: params[:tel],
       email: params[:email],
-      comment: params[:comment]
+      comment: params[:comment],
+      session_token: SecureRandom.base64,
+      session_expires_at: DateTime.now + Rational(5, 24 * 60)
     )
     reserve.valid?
     reserve.save
@@ -25,7 +28,7 @@ class Api::V1::ReservesController < ApplicationController
   private
 
   def generate_response_body(reserve)
-    res = reserve.as_json(except: ['plan_id'])
+    res = reserve.as_json(except: ['plan_id', 'session_expires_at'])
     res['plan_name'] = reserve.plan.as_json(only: 'name')
     res['reserve_id'] = res.delete('id')
     res['start_date'] = res.delete('date').gsub(/-/, '/')
