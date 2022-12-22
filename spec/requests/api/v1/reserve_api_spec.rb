@@ -62,4 +62,27 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
       end
     end
   end
+
+  describe 'POST /reserve/:reserve_id' do
+    before do
+      post '/api/v1/reserve', params: { **FactoryBot.attributes_for(:reserve, :with_email) }
+      @res_body_provisional_regist = JSON.parse(response.body)
+    end
+
+    let(:reserve_id) { @res_body_provisional_regist['reserve_id'] }
+
+    it 'provisional regist success' do
+      aggregate_failures do
+        expect {
+          post "/api/v1/reserve/#{reserve_id}"
+        }.to_not change(Reserve, :count)
+        expect(response).to have_http_status(:success)
+
+        reserve = Reserve.find(reserve_id)
+        expect(reserve.is_definitive_regist).to eq true
+        expect(reserve.session_token).to eq nil
+        expect(reserve.session_expires_at).to eq nil
+      end
+    end
+  end
 end

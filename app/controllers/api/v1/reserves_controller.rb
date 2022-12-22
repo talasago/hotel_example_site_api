@@ -26,6 +26,23 @@ class Api::V1::ReservesController < ApplicationController
     # TODO:permitみたいなの必要かも
   end
 
+
+  def definitive_regist
+    # TODO:permitみたいなの必要かも
+    reserve = Reserve.find(params[:reserve_id])
+    # TODO:レコードが見つからない時のエラー
+    # TODO:is_definitive_registがtrueならばエラーとする
+
+    reserve.is_definitive_regist = true
+    reserve.session_token = nil
+    reserve.session_expires_at = nil
+
+    reserve.valid?
+    reserve.save
+
+    render :json
+  end
+
   private
 
   def generate_response_body(reserve)
