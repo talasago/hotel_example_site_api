@@ -16,7 +16,8 @@ class Api::V1::ReservesController < ApplicationController
       email: params[:email],
       comment: params[:comment],
       session_token: SecureRandom.base64,
-      session_expires_at: DateTime.now + Rational(5, 24 * 60)
+      session_expires_at: DateTime.now + Rational(5, 24 * 60),
+      is_definitive_regist: false
     )
     reserve.valid?
     reserve.save
@@ -28,7 +29,7 @@ class Api::V1::ReservesController < ApplicationController
   private
 
   def generate_response_body(reserve)
-    res = reserve.as_json(except: ['plan_id', 'session_expires_at'])
+    res = reserve.as_json(except: ['plan_id', 'session_expires_at', 'is_definitive_regist'])
     res['plan_name'] = reserve.plan.as_json(only: 'name')
     res['reserve_id'] = res.delete('id')
     res['start_date'] = res.delete('date').gsub(/-/, '/')
