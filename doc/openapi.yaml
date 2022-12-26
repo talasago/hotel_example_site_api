@@ -1,0 +1,671 @@
+---
+openapi: 3.0.3
+info:
+  title: myapp
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000
+paths:
+  "/api/v1/mypage":
+    get:
+      summary: show
+      tags:
+      - Api::V1::User
+      responses:
+        '200':
+          description: get a user-info
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  username:
+                    type: string
+                  email:
+                    type: string
+                  rank:
+                    type: string
+                  address:
+                    nullable: true
+                  tel:
+                    nullable: true
+                  gender:
+                    type: string
+                  birthday:
+                    nullable: true
+                  notification:
+                    type: boolean
+              example:
+                address:
+                tel:
+                birthday:
+                username: TestUser
+                email: test3@example.com
+                rank: premium
+                gender: unregistered
+                notification: false
+        '401':
+          description: success logout and APIs require authentication result in a
+            401 error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: string
+              example:
+                errors:
+                - You need to sign in or sign up before continuing.
+    delete:
+      summary: destroy
+      tags:
+      - Api::V1::User
+      responses:
+        '204':
+          description: delete a user
+          content:
+            '':
+              schema:
+                type: string
+              example: ''
+        '401':
+          description: not delete a user and result in a 401 error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: string
+              example:
+                errors:
+                - You need to sign in or sign up before continuing.
+  "/api/v1/auth/sign_in":
+    post:
+      summary: create
+      tags:
+      - Api::V1::Session
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+            example:
+              email: not_exist_user@example.com
+              password: password
+      responses:
+        '200':
+          description: success authenticate
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      email:
+                        type: string
+                      provider:
+                        type: string
+                      uid:
+                        type: string
+                      id:
+                        type: integer
+                      allow_password_change:
+                        type: boolean
+                      username:
+                        type: string
+                      nickname:
+                        nullable: true
+                      image:
+                        nullable: true
+                      rank:
+                        type: string
+                      address:
+                        nullable: true
+                      tel:
+                        nullable: true
+                      gender:
+                        type: string
+                      birthday:
+                        nullable: true
+                      notification:
+                        type: boolean
+              example:
+                data:
+                  email: test6@example.com
+                  provider: email
+                  uid: test6@example.com
+                  id: 298
+                  allow_password_change: false
+                  username: TestUser
+                  nickname:
+                  image:
+                  rank: premium
+                  address:
+                  tel:
+                  gender: unregistered
+                  birthday:
+                  notification: false
+        '401':
+          description: error login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  errors:
+                    type: array
+                    items:
+                      type: string
+              example:
+                success: false
+                errors:
+                - Invalid login credentials. Please try again.
+  "/api/v1/plans":
+    get:
+      summary: index
+      tags:
+      - Api::V1::Plan
+      responses:
+        '200':
+          description: include only only nil or normal in response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  plans:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        plan_id:
+                          type: integer
+                        plan_name:
+                          type: string
+                        room_bill:
+                          type: integer
+                        min_head_count:
+                          type: integer
+                        only:
+                          nullable: true
+                        room_category_type_name:
+                          type: string
+              example:
+                plans:
+                - plan_id: 0
+                  plan_name: お得な特典付きプラン
+                  room_bill: 7000
+                  min_head_count: 1
+                  only:
+                  room_category_type_name: スタンダードツイン
+                - plan_id: 2
+                  plan_name: ディナー付きプラン
+                  room_bill: 8500
+                  min_head_count: 1
+                  only: normal
+                  room_category_type_name:
+                - plan_id: 3
+                  plan_name: お得なプラン
+                  room_bill: 6000
+                  min_head_count: 1
+                  only: normal
+                  room_category_type_name:
+                - plan_id: 4
+                  plan_name: 素泊まり
+                  room_bill: 5500
+                  min_head_count: 1
+                  only:
+                  room_category_type_name: シングル
+                - plan_id: 5
+                  plan_name: 出張ビジネスプラン
+                  room_bill: 7500
+                  min_head_count: 1
+                  only:
+                  room_category_type_name: シングル
+                - plan_id: 6
+                  plan_name: エステ・マッサージプラン
+                  room_bill: 9000
+                  min_head_count: 1
+                  only:
+                  room_category_type_name:
+                - plan_id: 7
+                  plan_name: 貸し切り露天風呂プラン
+                  room_bill: 9000
+                  min_head_count: 1
+                  only:
+                  room_category_type_name:
+                - plan_id: 8
+                  plan_name: カップル限定プラン
+                  room_bill: 8000
+                  min_head_count: 2
+                  only:
+                  room_category_type_name: プレミアムツイン
+                - plan_id: 9
+                  plan_name: テーマパーク優待プラン
+                  room_bill: 10000
+                  min_head_count: 1
+                  only:
+                  room_category_type_name:
+  "/api/v1/plans/{id}":
+    get:
+      summary: show
+      tags:
+      - Api::V1::Plan
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        example: 3
+      responses:
+        '200':
+          description: success get "plans.only is member"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  plan:
+                    type: object
+                    properties:
+                      plan_id:
+                        type: integer
+                      plan_name:
+                        type: string
+                      room_bill:
+                        type: integer
+                      min_head_count:
+                        type: integer
+                      max_head_count:
+                        type: integer
+                      min_term:
+                        type: integer
+                      max_term:
+                        type: integer
+                  user_name:
+                    nullable: true
+                    type: string
+                  room_type:
+                    type: object
+                    properties:
+                      room_type_name:
+                        type: string
+                      min_capacity:
+                        type: integer
+                      max_capacity:
+                        type: integer
+                      room_size:
+                        type: integer
+                      facilities:
+                        type: array
+                        items:
+                          type: string
+                      room_category_type_name:
+                        type: string
+                    nullable: true
+              example:
+                plan:
+                  plan_id: 3
+                  plan_name: お得なプラン
+                  room_bill: 6000
+                  min_head_count: 1
+                  max_head_count: 9
+                  min_term: 1
+                  max_term: 9
+                user_name: 松本さくら
+                room_type:
+        '401':
+          description: dissuccess get "plans.only is premium"
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: " "
+  "/api/v1/auth":
+    post:
+      summary: create
+      tags:
+      - Api::V1::Registration
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  nullable: true
+                email:
+                  type: string
+                  nullable: true
+                password:
+                  type: string
+                  nullable: true
+            example:
+              username:
+              email:
+              password:
+      responses:
+        '200':
+          description: Create a user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      email:
+                        type: string
+                      provider:
+                        type: string
+                      uid:
+                        type: string
+                      id:
+                        type: integer
+                      allow_password_change:
+                        type: boolean
+                      username:
+                        type: string
+                      nickname:
+                        nullable: true
+                      image:
+                        nullable: true
+                      created_at:
+                        type: string
+                      updated_at:
+                        type: string
+                      rank:
+                        type: string
+                      address:
+                        nullable: true
+                      tel:
+                        nullable: true
+                      gender:
+                        type: string
+                      birthday:
+                        nullable: true
+                      notification:
+                        type: boolean
+              example:
+                status: success
+                data:
+                  email: test5@example.com
+                  provider: email
+                  uid: test5@example.com
+                  id: 297
+                  allow_password_change: false
+                  username: TestUser
+                  nickname:
+                  image:
+                  created_at: '2022-12-22T03:39:09.473Z'
+                  updated_at: '2022-12-22T03:39:09.484Z'
+                  rank: premium
+                  address:
+                  tel:
+                  gender: unregistered
+                  birthday:
+                  notification: false
+        '422':
+          description: not create a user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        nullable: true
+                      provider:
+                        type: string
+                      uid:
+                        type: string
+                      allow_password_change:
+                        type: boolean
+                      username:
+                        nullable: true
+                      nickname:
+                        nullable: true
+                      image:
+                        nullable: true
+                      email:
+                        nullable: true
+                      created_at:
+                        nullable: true
+                      updated_at:
+                        nullable: true
+                      rank:
+                        type: string
+                      address:
+                        nullable: true
+                      tel:
+                        nullable: true
+                      gender:
+                        type: string
+                      birthday:
+                        nullable: true
+                      notification:
+                        type: boolean
+                  errors:
+                    type: object
+                    properties:
+                      password:
+                        type: array
+                        items:
+                          type: string
+                      email:
+                        type: array
+                        items:
+                          type: string
+                      username:
+                        type: array
+                        items:
+                          type: string
+                      full_messages:
+                        type: array
+                        items:
+                          type: string
+              example:
+                status: error
+                data:
+                  id:
+                  provider: email
+                  uid: ''
+                  allow_password_change: false
+                  username:
+                  nickname:
+                  image:
+                  email:
+                  created_at:
+                  updated_at:
+                  rank: premium
+                  address:
+                  tel:
+                  gender: unregistered
+                  birthday:
+                  notification: false
+                errors:
+                  password:
+                  - can't be blank
+                  email:
+                  - can't be blank
+                  username:
+                  - can't be blank
+                  full_messages:
+                  - Password can't be blank
+                  - Email can't be blank
+                  - Username can't be blank
+  "/api/v1/reserve":
+    post:
+      summary: create
+      tags:
+      - Api::V1::Reserf
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                plan_id:
+                  type: string
+                total_bill:
+                  type: string
+                date:
+                  type: string
+                term:
+                  type: string
+                head_count:
+                  type: string
+                breakfast:
+                  type: string
+                early_check_in:
+                  type: string
+                sightseeing:
+                  type: string
+                username:
+                  type: string
+                contact:
+                  type: string
+                comment:
+                  type: string
+                tel:
+                  type: string
+                email:
+                  type: string
+            example:
+              plan_id: '2'
+              total_bill: '13625'
+              date: 2022/12/25
+              term: '1'
+              head_count: '1'
+              breakfast: 'true'
+              early_check_in: 'true'
+              sightseeing: 'true'
+              username: テスト太郎
+              contact: email
+              comment: comment_test
+              tel: '09000000000'
+              email: example@example.com
+      responses:
+        '200':
+          description: regist success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total_bill:
+                    type: integer
+                  term:
+                    type: integer
+                  head_count:
+                    type: integer
+                  username:
+                    type: string
+                  breakfast:
+                    type: boolean
+                  early_check_in:
+                    type: boolean
+                  sightseeing:
+                    type: boolean
+                  contact:
+                    type: string
+                  email:
+                    nullable: true
+                    type: string
+                  tel:
+                    nullable: true
+                    type: string
+                  comment:
+                    type: string
+                  session_token:
+                    type: string
+                  plan_name:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                  reserve_id:
+                    type: integer
+                  start_date:
+                    type: string
+                  end_date:
+                    type: string
+              example:
+                total_bill: 13625
+                term: 1
+                head_count: 1
+                username: テスト太郎
+                breakfast: true
+                early_check_in: true
+                sightseeing: true
+                contact: email
+                email: example@example.com
+                tel:
+                comment: comment_test
+                session_token: OqGOCv74tYE62ReHIy9y+w==
+                plan_name:
+                  name: ディナー付きプラン
+                reserve_id: 194
+                start_date: 2022/12/25
+                end_date: 2022/12/26
+  "/api/v1/reserve/{reserve_id}":
+    post:
+      summary: definitive_regist
+      tags:
+      - Api::V1::Reserf
+      parameters:
+      - name: reserve_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        example: 196
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                session_token:
+                  type: string
+            example:
+              session_token: hogehogehoge
+      responses:
+        '200':
+          description: provisional regist success
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: " "
+        '400':
+          description: provisional regist failure
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: " "
