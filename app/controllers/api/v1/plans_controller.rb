@@ -33,8 +33,7 @@ class Api::V1::PlansController < ApplicationController
 
     # TODO:Errorのクラスとか作って返した方が良いかも
     if matched_plan.nil?
-      render status: 401
-      return
+      render status: 401 and return
     end
 
     render json: {
