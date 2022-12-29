@@ -7,16 +7,13 @@ RSpec.describe 'Api::V1::Plans', type: :request do
 
   describe '/plans GET' do
     describe 'not authenticated' do
-      it 'Only the record "only is nil" is included in the response' do
+      it 'return successed response' do
         get '/api/v1/plans'
         res_body = JSON.parse(response.body)
-        onlys = res_body['plans'].map { |plan| plan['only'] }
 
         aggregate_failures do
           expect(response).to have_http_status(:success)
           expect(res_body['plans'][0].key?(:only))
-          expect(onlys).to include(nil)
-          expect(onlys).to_not include('member', 'premium')
         end
       end
     end
@@ -26,16 +23,13 @@ RSpec.describe 'Api::V1::Plans', type: :request do
         #HACK:この書き方で良いのか？
         before do
           auth_params = sign_in(registed_user1)
-
           get '/api/v1/plans', headers: auth_params
           @res_body = JSON.parse(response.body)
         end
 
         it 'include all only in response' do
-          onlys = @res_body['plans'].map { |plan| plan['only'] }
           aggregate_failures do
             expect(response).to have_http_status(:success)
-            expect(onlys).to include(nil, 'premium', 'normal')
           end
         end
 
@@ -56,15 +50,10 @@ RSpec.describe 'Api::V1::Plans', type: :request do
       describe 'only of user is normal' do
         it 'include only only nil or normal in response' do
           auth_params = sign_in(registed_user2)
-
           get '/api/v1/plans', headers: auth_params
-          res_body = JSON.parse(response.body)
-          onlys = res_body['plans'].map { |plan| plan['only'] }
 
           aggregate_failures do
             expect(response).to have_http_status(:success)
-            expect(onlys).to include(nil, 'normal')
-            expect(onlys).to_not include('premium')
           end
         end
       end
