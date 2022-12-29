@@ -6,56 +6,45 @@ RSpec.describe 'Api::V1::Plans', type: :request do
   let(:registed_user2) { FactoryBot.attributes_for(:user, :registed_user2) }
 
   describe '/plans GET' do
-    describe 'not authenticated' do
-      it 'return successed response' do
-        get '/api/v1/plans'
-        res_body = JSON.parse(response.body)
-
+    shared_examples 'http status is success and sort plan_id and include specified keys' do
+      it do
         aggregate_failures do
+          res_body = JSON.parse(response.body)
+          ids = res_body['plans'].map { |plan| plan['plan_id'] }
+
           expect(response).to have_http_status(:success)
-          expect(res_body['plans'][0].key?(:only))
-        end
-      end
-    end
-
-    describe 'as an authenticated user' do
-      describe 'only of user is premium' do
-        #HACK:この書き方で良いのか？
-        before do
-          auth_params = sign_in(registed_user1)
-          get '/api/v1/plans', headers: auth_params
-          @res_body = JSON.parse(response.body)
-        end
-
-        it 'include all only in response' do
-          aggregate_failures do
-            expect(response).to have_http_status(:success)
-          end
-        end
-
-        it 'sort order be plan.id' do
-          ids = @res_body['plans'].map { |plan| plan['plan_id'] }
-          expect(ids).to eq [*0..9]
-        end
-
-        it 'include expected keys' do
-          @res_body['plans'].each do |plan|
+          expect(ids).to eq ids.sort
+          res_body['plans'].each do |plan|
             expect(plan.keys).to match_array([
               'plan_id', 'min_head_count', 'only', 'plan_name', 'room_bill', 'room_category_type_name'
             ])
           end
         end
       end
+    end
 
-      describe 'only of user is normal' do
-        it 'include only only nil or normal in response' do
+    context 'not authenticated' do
+      before do
+        get '/api/v1/plans'
+      end
+      include_examples 'http status is success and sort plan_id and include specified keys'
+    end
+
+    context 'as an authenticated user' do
+      context 'only of user is premium' do
+        before do
+          auth_params = sign_in(registed_user1)
+          get '/api/v1/plans', headers: auth_params
+        end
+      include_examples 'http status is success and sort plan_id and include specified keys'
+      end
+
+      context 'only of user is normal' do
+        before do
           auth_params = sign_in(registed_user2)
           get '/api/v1/plans', headers: auth_params
-
-          aggregate_failures do
-            expect(response).to have_http_status(:success)
-          end
         end
+      include_examples 'http status is success and sort plan_id and include specified keys'
       end
     end
   end
