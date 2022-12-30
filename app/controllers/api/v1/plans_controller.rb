@@ -32,14 +32,15 @@ class Api::V1::PlansController < ApplicationController
     ).first
 
     # TODO:Errorのクラスとか作って返した方が良いかも
-    if matched_plan.nil?
-      render status: 401 and return
-    end
+    # 403が正しいかも？
+    render status: 401 and return if matched_plan.nil?
 
     render json: {
       plan: matched_plan.as_json(except: [:id, :room_type_id]),
       user_name: current_api_v1_user&.username,
-      room_type: matched_plan.room_type.as_json(except: [:id, :room_category_name])
+      room_type: matched_plan.room_type.as_json(except: [:id, :room_category_name])&.merge(
+        { room_category_type_name: matched_plan.room_type&.room_category_type_name }
+      )
     }
   end
 
