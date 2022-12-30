@@ -11,6 +11,8 @@ RSpec.describe 'Api::V1::Plans', type: :request do
         get '/api/v1/plans', headers: auth_params
         res_body = JSON.parse(response.body)
         ids = res_body['plans'].map { |plan| plan['plan_id'] }
+        plan_id0 = res_body['plans'].find { |plan| plan['plan_id'] == 0 }
+        plan_id6 = res_body['plans'].find { |plan| plan['plan_id'] == 6 }
 
         aggregate_failures do
           expect(response).to have_http_status(:success)
@@ -20,6 +22,8 @@ RSpec.describe 'Api::V1::Plans', type: :request do
               'plan_id', 'min_head_count', 'only', 'plan_name', 'room_bill', 'room_category_type_name'
             ])
           end
+          expect(plan_id0['room_category_type_name']).to eq 'スタンダードツイン'
+          expect(plan_id6['room_category_type_name']).to eq nil
         end
       end
     end
