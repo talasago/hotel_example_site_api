@@ -165,7 +165,7 @@ RSpec.describe 'Api::V1::Plans', type: :request do
             get '/api/v1/plans/3', headers: auth_params
             res_body = JSON.parse(response.body, symbolize_names: true)
 
-            aggregate_failedures do
+            aggregate_failures do
               expect(response).to have_http_status(:success)
               expect(res_body).to eq(
                 {
