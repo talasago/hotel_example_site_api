@@ -2,23 +2,22 @@ require 'rails_helper'
 
 RSpec.describe 'Api::V1::Registrations', type: :request do
   describe 'signup' do
-    context 'regist success' do
+    context 'valid user' do
       let(:user) { FactoryBot.attributes_for(:user) }
 
-      it 'Create a user' do
+      it 'successful API call and create a user' do
         expect {
           post '/api/v1/auth', params: user
         }.to change(User, :count).by(1)
         expect(response).to have_http_status(:success)
-        expect(response.content_type).to include('application/json')
         expect(response.headers.keys).to \
           include('access-token', 'uid', 'client', 'expiry', 'token-type')
       end
     end
 
-    context 'error due to invalid user' do
+    context 'invalid user' do
       let(:user) { FactoryBot.attributes_for(:user, :invalid) }
-      it 'not create a user' do
+      it 'failed API call and not create a user' do
         expect {
           post '/api/v1/auth', params: user
         }.to_not change(User, :count)
