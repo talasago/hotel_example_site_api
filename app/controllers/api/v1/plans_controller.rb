@@ -50,7 +50,7 @@ class Api::V1::PlansController < ApplicationController
 
   def generate_user_hash
     {
-      user_name: current_api_v1_user.username,
+      username: current_api_v1_user.username,
       tel: current_api_v1_user.tel,
       email: current_api_v1_user.email
     }

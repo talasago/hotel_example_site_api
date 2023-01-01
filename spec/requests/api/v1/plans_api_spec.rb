@@ -122,7 +122,7 @@ RSpec.describe 'Api::V1::Plans', type: :request do
                     max_term: 9
                   },
                   user: {
-                    user_name: '山田一郎',
+                    username: '山田一郎',
                     tel: '01234567891',
                     email: 'ichiro@example.com'
                   },
@@ -180,7 +180,7 @@ RSpec.describe 'Api::V1::Plans', type: :request do
                     max_term: 9
                   },
                   user: {
-                    user_name: '松本さくら',
+                    username: '松本さくら',
                     tel: nil,
                     email: 'sakura@example.com',
                   },
