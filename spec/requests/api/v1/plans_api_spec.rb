@@ -5,8 +5,9 @@ RSpec.describe 'Api::V1::Plans', type: :request do
   let(:registed_user1) { FactoryBot.attributes_for(:user, :registed_user1) }
   let(:registed_user2) { FactoryBot.attributes_for(:user, :registed_user2) }
 
-  describe '/plans GET' do
-    shared_examples 'expectation /plans GET' do
+  # TODO:メソッドとパスは逆
+  describe 'GET /plans' do
+    shared_examples 'expectation GET /plans' do
       it 'successful API call and sort by plan_id asc and include specified keys' do
         get '/api/v1/plans', headers: auth_params
         res_body = JSON.parse(response.body)
@@ -30,23 +31,23 @@ RSpec.describe 'Api::V1::Plans', type: :request do
 
     context 'not authenticated' do
       let(:auth_params) { nil }
-      include_examples 'expectation /plans GET'
+      include_examples 'expectation GET /plans'
     end
 
     context 'as an authenticated user' do
       context 'only of user is premium' do
         let(:auth_params) { sign_in(registed_user1) }
-        include_examples 'expectation /plans GET'
+        include_examples 'expectation GET /plans'
       end
 
       context 'only of user is normal' do
         let(:auth_params) { sign_in(registed_user2) }
-        include_examples 'expectation /plans GET'
+        include_examples 'expectation GET /plans'
       end
     end
   end
 
-  describe '/plans/:id' do
+  describe 'GET /plans/:id' do
     context 'not authenticated' do
       context "room_type isn't null" do
         it 'successful API call a plan where plans.only is null and include specified response body' do
