@@ -47,9 +47,10 @@ RSpec.describe 'Api::V1::Plans', type: :request do
   end
 
   describe '/plans/:id' do
-    shared_examples 'response for plan_id 0 (only is nil)' do |user_name|
+    # TODO:contextにroom_typeを書く
+    context 'not authenticated' do
       it 'success get "plans.only is null"' do
-        get '/api/v1/plans/0', headers: auth_params
+        get '/api/v1/plans/0'
         res_body = JSON.parse(response.body, symbolize_names: true)
 
         aggregate_failures do
@@ -65,7 +66,7 @@ RSpec.describe 'Api::V1::Plans', type: :request do
                 min_term: 1,
                 max_term: 9
               },
-              user_name: user_name,
+              user: nil,
               room_type: {
                 room_category_type_name: 'スタンダードツイン',
                 room_type_name: 'ツイン',
@@ -78,38 +79,6 @@ RSpec.describe 'Api::V1::Plans', type: :request do
           )
         end
       end
-    end
-
-    shared_examples 'response for plan_id 3 (only is normal)' do |user_name|
-      it 'success get "plans.only is normal' do
-        get '/api/v1/plans/3', headers: auth_params
-        res_body = JSON.parse(response.body, symbolize_names: true)
-
-        aggregate_failures do
-          expect(response).to have_http_status(:success)
-          expect(res_body).to eq(
-            {
-              plan: {
-                plan_id: 3,
-                plan_name: 'お得なプラン',
-                room_bill: 6000,
-                min_head_count: 1,
-                max_head_count: 9,
-                min_term: 1,
-                max_term: 9
-              },
-              user_name: user_name,
-              room_type: nil
-            }
-          )
-        end
-      end
-    end
-
-    context 'not authenticated' do
-      let(:auth_params) { nil }
-
-      include_examples 'response for plan_id 0 (only is nil)', nil
 
       it 'dissuccess get "plans.only is premium"' do
         get '/api/v1/plans/1'
@@ -126,7 +95,11 @@ RSpec.describe 'Api::V1::Plans', type: :request do
       context 'users.rank is premium' do
         let(:auth_params) { sign_in(registed_user1) }
 
-        include_examples 'response for plan_id 0 (only is nil)', '山田一郎'
+        it 'success get "plans.only is null"' do
+          get '/api/v1/plans/0', headers: auth_params
+          # 認可周りはplan_policy_specでテスト済みなので、詳細なエクスペクテーションは割愛
+          expect(response).to have_http_status(:success)
+        end
 
         it 'success get "plans.only is premium"' do
           get '/api/v1/plans/1', headers: auth_params
@@ -145,7 +118,11 @@ RSpec.describe 'Api::V1::Plans', type: :request do
                   min_term: 1,
                   max_term: 9
                 },
-                user_name: '山田一郎',
+                user: {
+                  user_name: '山田一郎',
+                  tel: '01234567891',
+                  email: 'ichiro@example.com'
+                },
                 room_type: {
                   room_category_type_name: 'プレミアムツイン',
                   room_type_name: 'ツイン',
@@ -159,20 +136,54 @@ RSpec.describe 'Api::V1::Plans', type: :request do
           end
         end
 
-        include_examples 'response for plan_id 3 (only is normal)', '山田一郎'
+        it 'success get "plans.normal is null"' do
+          get '/api/v1/plans/3', headers: auth_params
+          # 認可周りはplan_policy_specでテスト済みなので、詳細なエクスペクテーションは割愛
+          expect(response).to have_http_status(:success)
+        end
       end
 
-      context 'Only Premium Plan can be reserved' do
+      context 'users.rank is normal' do
         let(:auth_params) { sign_in(registed_user2) }
 
-        include_examples 'response for plan_id 0 (only is nil)', '松本さくら'
+        it 'success get "plans.only is null"' do
+          get '/api/v1/plans/0', headers: auth_params
+          # 認可周りはplan_policy_specでテスト済みなので、詳細なエクスペクテーションは割愛
+          expect(response).to have_http_status(:success)
+        end
 
         it 'dissuccess get "plans.only is premium"' do
           get '/api/v1/plans/1', headers: auth_params
           expect(response).to have_http_status(401)
         end
 
-        include_examples 'response for plan_id 3 (only is normal)', '松本さくら'
+        it 'success get "plans.only is normal' do
+          get '/api/v1/plans/3', headers: auth_params
+          res_body = JSON.parse(response.body, symbolize_names: true)
+
+          aggregate_failures do
+            expect(response).to have_http_status(:success)
+            expect(res_body).to eq(
+              {
+                plan: {
+                  plan_id: 3,
+                  plan_name: 'お得なプラン',
+                  room_bill: 6000,
+                  min_head_count: 1,
+                  max_head_count: 9,
+                  min_term: 1,
+                  max_term: 9
+                },
+                user: {
+                  user_name: '松本さくら',
+                  tel: nil,
+                  email: 'sakura@example.com',
+                },
+                room_type: nil
+              }
+            )
+          end
+        end
       end
     end
   end

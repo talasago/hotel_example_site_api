@@ -37,7 +37,7 @@ class Api::V1::PlansController < ApplicationController
 
     render json: {
       plan: matched_plan.as_json(except: [:id, :room_type_id]),
-      user_name: current_api_v1_user&.username,
+      user: api_v1_user_signed_in? ? generate_user_hash : nil,
       room_type: matched_plan.room_type.as_json(except: [:id, :room_category_name])&.merge(
         { room_category_type_name: matched_plan.room_type&.room_category_type_name }
       )
@@ -45,4 +45,14 @@ class Api::V1::PlansController < ApplicationController
   end
 
   # TODO:permitみたいなの必要かも
+
+  private
+
+  def generate_user_hash
+    {
+      user_name: current_api_v1_user.username,
+      tel: current_api_v1_user.tel,
+      email: current_api_v1_user.email
+    }
+  end
 end
