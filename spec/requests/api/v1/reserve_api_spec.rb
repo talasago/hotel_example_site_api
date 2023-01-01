@@ -2,8 +2,8 @@ require 'rails_helper'
 
 RSpec.describe 'Api::V1::Reserves', type: :request do
   describe 'POST /reserve' do
-    context 'contact is no' do
-      it 'regist success' do
+    context 'contact is "no"' do
+      it 'successful API call and create a "reserve" and include specified key' do
         aggregate_failures do
           expect {
             post '/api/v1/reserve', params: { **FactoryBot.attributes_for(:reserve) }
@@ -23,7 +23,7 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
     end
 
     context 'concact is tel' do
-      it 'regist success' do
+      it 'successful API call and create a "reserve" and include specified key' do
         aggregate_failures do
           expect {
             post '/api/v1/reserve', params: { **FactoryBot.attributes_for(:reserve, :with_tel) }
@@ -43,7 +43,7 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
     end
 
     context 'contact is email' do
-      it 'regist success' do
+      it 'successful API call and create a "reserve" and include specified key' do
         aggregate_failures do
           expect {
             post '/api/v1/reserve', params: { **FactoryBot.attributes_for(:reserve, :with_email) }
@@ -72,7 +72,7 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
 
     context 'token does match' do
       let(:session_token) { @res_body_provisional_regist['session_token'] }
-      it 'provisional regist success' do
+      it 'successful API call and complete definitive registation' do
         aggregate_failures do
           expect {
             post "/api/v1/reserve/#{reserve_id}", params: { session_token: session_token }
@@ -89,7 +89,7 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
 
     context "token doesn't match" do
       let(:invalid_session_token) { 'hogehogehoge' }
-      it 'provisional regist failure' do
+      it 'failed API call and remain provisional registration' do
         aggregate_failures do
           expect {
             post "/api/v1/reserve/#{reserve_id}", params: { session_token: invalid_session_token }
