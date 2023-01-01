@@ -4,13 +4,16 @@ require 'json'
 RSpec.describe 'Api::V1::Mypages', type: :request do
   let(:user) { FactoryBot.attributes_for(:user) }
 
+  before do
+    @auth_params = sign_up(user)
+  end
+
   describe 'DELETE /mypage' do
     context 'as an authenticated user' do
-      it 'delete a user' do
-        auth_params = sign_up(user)
+      it 'successful API call and delete a user' do
         aggregate_failures do
           expect {
-            delete '/api/v1/mypage', headers: auth_params
+            delete '/api/v1/mypage', headers: @auth_params
           }.to change(User, :count).by(-1)
           expect(response).to have_http_status(:success)
         end
@@ -18,8 +21,7 @@ RSpec.describe 'Api::V1::Mypages', type: :request do
     end
 
     context 'as an unautorized user' do
-      it 'not delete a user and result in a 401 error' do
-        sign_up(user)
+      it 'failed API call and not delete a user' do
         aggregate_failures do
           expect {
             delete '/api/v1/mypage'
@@ -32,9 +34,8 @@ RSpec.describe 'Api::V1::Mypages', type: :request do
 
   describe 'GET /mypage' do
     context 'as an authenticated user' do
-      it 'get a user-info' do
-        auth_params = sign_up(user)
-        get '/api/v1/mypage', headers: auth_params
+      it 'successful API call and include user info and include specified key' do
+        get '/api/v1/mypage', headers: @auth_params
         res_body = JSON.parse(response.body)
 
         aggregate_failures do
@@ -50,8 +51,7 @@ RSpec.describe 'Api::V1::Mypages', type: :request do
     end
 
     context 'as an unautorized user' do
-      it 'get a user-info' do
-        sign_up(user)
+      it 'failed API call' do
         get '/api/v1/mypage'
         expect(response).to have_http_status(401)
       end
