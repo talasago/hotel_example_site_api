@@ -47,11 +47,11 @@ RSpec.describe 'Api::V1::Plans', type: :request do
     end
   end
 
-  describe 'GET /plans/:id' do
+  describe 'GET /plan/:id' do
     context 'not authenticated' do
       context "room_type isn't null" do
         it 'successful API call a plan where plans.only is null and include specified response body' do
-          get '/api/v1/plans/0'
+          get '/api/v1/plan/0'
           res_body = JSON.parse(response.body, symbolize_names: true)
 
           aggregate_failures do
@@ -83,12 +83,12 @@ RSpec.describe 'Api::V1::Plans', type: :request do
       end
 
       it 'failed API call a plan where plans.only is premium' do
-        get '/api/v1/plans/1'
+        get '/api/v1/plan/1'
         expect(response).to have_http_status(401)
       end
 
       it 'failed API call a plan where plans.only is normal' do
-        get '/api/v1/plans/3'
+        get '/api/v1/plan/3'
         expect(response).to have_http_status(401)
       end
     end
@@ -98,14 +98,14 @@ RSpec.describe 'Api::V1::Plans', type: :request do
         let(:auth_params) { sign_in(registed_user1) }
 
         it 'successful API call a plan where plans.only is null' do
-          get '/api/v1/plans/0', headers: auth_params
+          get '/api/v1/plan/0', headers: auth_params
           # 認可周りはplan_policy_specでテスト済みなので、詳細なエクスペクテーションは割愛
           expect(response).to have_http_status(:success)
         end
 
         context "room_type isn't null" do
           it 'successful API call a plan where plans.only is premium and include specified response body' do
-            get '/api/v1/plans/1', headers: auth_params
+            get '/api/v1/plan/1', headers: auth_params
             res_body = JSON.parse(response.body, symbolize_names: true)
 
             aggregate_failures do
@@ -141,7 +141,7 @@ RSpec.describe 'Api::V1::Plans', type: :request do
         end
 
         it 'successful API call a plan where plans.only is normal' do
-          get '/api/v1/plans/3', headers: auth_params
+          get '/api/v1/plan/3', headers: auth_params
           # 認可周りはplan_policy_specでテスト済みなので、詳細なエクスペクテーションは割愛
           expect(response).to have_http_status(:success)
         end
@@ -151,19 +151,19 @@ RSpec.describe 'Api::V1::Plans', type: :request do
         let(:auth_params) { sign_in(registed_user2) }
 
         it 'successful API call a plan where plans.only is null' do
-          get '/api/v1/plans/0', headers: auth_params
+          get '/api/v1/plan/0', headers: auth_params
           # 認可周りはplan_policy_specでテスト済みなので、詳細なエクスペクテーションは割愛
           expect(response).to have_http_status(:success)
         end
 
         it 'failed API call a plan where plans.only is premium' do
-          get '/api/v1/plans/1', headers: auth_params
+          get '/api/v1/plan/1', headers: auth_params
           expect(response).to have_http_status(401)
         end
 
         context 'room_type is null' do
           it 'successful API call a plan where plans.only is normal and include specified response body' do
-            get '/api/v1/plans/3', headers: auth_params
+            get '/api/v1/plan/3', headers: auth_params
             res_body = JSON.parse(response.body, symbolize_names: true)
 
             aggregate_failures do

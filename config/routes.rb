@@ -12,7 +12,8 @@ Rails.application.routes.draw do
       )
 
       resource :mypage, controller: 'users', only: [:show, :destroy]
-      resources :plans, controller: 'plans', only: [:index, :show]
+      resources :plans, controller: 'plans', only: [:index]
+      resources :plan, controller: 'plans', only: [:show]
       # TODO:仮登録のメソッド名変更
       resource :reserve, controller: 'reserves', only: [:create]
       post 'reserve/:reserve_id', action: :definitive_regist, controller: 'reserves'
