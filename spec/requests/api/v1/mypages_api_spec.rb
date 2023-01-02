@@ -10,13 +10,15 @@ RSpec.describe 'Api::V1::Mypages', type: :request do
 
   describe 'DELETE /mypage' do
     context 'as an authenticated user' do
-      it 'successful API call and delete a user' do
+      it 'successful API call and delete a user and error when calling API that require authentication' do
         aggregate_failures do
           expect {
             delete '/api/v1/mypage', headers: @auth_params
           }.to change(User, :count).by(-1)
           expect(response).to have_http_status(:success)
-          # TODO:削除後にログインができていないこと(tokenが無効化されていること)
+
+          get '/api/v1/mypage', headers: @auth_params
+          expect(response).to have_http_status(401)
         end
       end
     end
