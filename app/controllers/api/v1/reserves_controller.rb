@@ -52,7 +52,7 @@ class Api::V1::ReservesController < ApplicationController
 
   def generate_response_body(reserve)
     res = reserve.as_json(except: ['plan_id', 'session_expires_at', 'is_definitive_regist'])
-    res['plan_name'] = reserve.plan.as_json(only: 'name')
+    res['plan_name'] = reserve.plan.as_json(only: 'name')['name']
     res['reserve_id'] = res.delete('id')
     res['start_date'] = res.delete('date').gsub(/-/, '/')
     res['end_date'] = reserve.end_date.strftime('%Y/%m/%d')
