@@ -676,10 +676,7 @@ paths:
                   session_token:
                     type: string
                   plan_name:
-                    type: object
-                    properties:
-                      name:
-                        type: string
+                    type: string
                   reserve_id:
                     type: integer
                   start_date:
@@ -700,8 +697,7 @@ paths:
                 tel:
                 comment: comment_test
                 session_token: 8677lh607OzRID1UjFIiNg==
-                plan_name:
-                  name: ディナー付きプラン
+                plan_name: ディナー付きプラン
                 start_date: 2023/01/08
                 end_date: 2023/01/09
   /reserve/{reserve_id}:
