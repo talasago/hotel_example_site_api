@@ -308,7 +308,7 @@ paths:
                   min_head_count: 1
                   only:
                   room_category_type_name:
-  /plans/{plan_id}:
+  /plan/{plan_id}:
     get:
       summary: 宿泊予約用に、宿泊プランの詳細を返します。未ログイン(リクエストヘッダ未設定)の場合、誰でも予約可能なプランのIDを指定すると成功します。ログイン済み(リクエストヘッダ設定済)の場合、ログインユーザーのランクに応じた予約可能プランのIDを指定すると成功します。
       tags:
