@@ -1,19 +1,49 @@
 ---
 openapi: 3.0.3
 info:
-  title: myapp
-  version: 1.0.0
+  title: APIテスト自動化学習用API
+  # description: TODO: 認証に関する説明。ログイン状態を作る時にaurorizeしてね。そうでない時はログイン状態ではないとみなします。
+  # license: TODO:
+  version: 0.1.0
 servers:
-  - url: http://localhost:3000
+  - url: http://localhost:3000/api/v1
+tags:
+  - name: Auth
+    description: ログインやログアウト操作するAPI
+  - name: User
+    description: ユーザーを操作するAPI
+  - name: Plan
+    description: 宿泊プランを操作するAPI
+  - name: Reserve
+    description: 宿泊予約を操作するAPI
+
+components:
+  securitySchemes:
+    access-token:
+      type: apiKey
+      name: access-token
+      in: header
+    client:
+      type: apiKey
+      name: client
+      in: header
+    uid:
+      type: apiKey
+      name: uid
+      in: header
 paths:
-  "/api/v1/mypage":
+  /mypage:
     get:
-      summary: show
+      summary: ログイン中のユーザーの情報を返します
       tags:
-      - Api::V1::User
+      - User
+      security:
+      - client: []
+        access-token: []
+        uid: []
       responses:
         '200':
-          description: get a user-info
+          description: 成功
           content:
             application/json:
               schema:
@@ -29,24 +59,25 @@ paths:
                     nullable: true
                   tel:
                     nullable: true
+                    type: string
                   gender:
                     type: string
                   birthday:
                     nullable: true
+                    type: string
                   notification:
                     type: boolean
               example:
-                address:
-                tel:
-                birthday:
+                address: hoge県fuga市piyo1-3-4
+                tel: "08000000000"
+                birthday: 1989/01/01
                 username: TestUser
                 email: test3@example.com
                 rank: premium
                 gender: unregistered
                 notification: false
         '401':
-          description: success logout and APIs require authentication result in a
-            401 error
+          description: 認証エラー
           content:
             application/json:
               schema:
@@ -60,19 +91,18 @@ paths:
                 errors:
                 - You need to sign in or sign up before continuing.
     delete:
-      summary: destroy
+      summary: ユーザーを削除します
       tags:
-      - Api::V1::User
+      - User
+      security:
+      - client: []
+        access-token: []
+        uid: []
       responses:
         '204':
-          description: delete a user
-          content:
-            '':
-              schema:
-                type: string
-              example: ''
+          description: 成功
         '401':
-          description: not delete a user and result in a 401 error
+          description: 認証エラー
           content:
             application/json:
               schema:
@@ -85,14 +115,14 @@ paths:
               example:
                 errors:
                 - You need to sign in or sign up before continuing.
-  "/api/v1/auth/sign_in":
+  /auth/sign_in:
     post:
-      summary: create
+      summary: ログイン(サインイン)し、ログイン状態に必要なaccess-tokenとclientとuidを返します
       tags:
-      - Api::V1::Session
+      - Auth
       requestBody:
         content:
-          application/x-www-form-urlencoded:
+          application/json:
             schema:
               type: object
               properties:
@@ -101,15 +131,26 @@ paths:
                 password:
                   type: string
             example:
-              email: not_exist_user@example.com
+              email: ichiro@example.com
               password: password
       responses:
         '200':
-          description: success authenticate
+          description: 成功
+          headers:
+            access-token:
+              schema:
+                type: string
+            client:
+              schema:
+                type: string
+            uid:
+              schema:
+                type: string
           content:
             application/json:
               schema:
                 type: object
+                # TODO:レスポンスボディに余計なものが入ってる
                 properties:
                   data:
                     type: object
@@ -147,7 +188,7 @@ paths:
                   email: test6@example.com
                   provider: email
                   uid: test6@example.com
-                  id: 298
+                  id: 1030
                   allow_password_change: false
                   username: TestUser
                   nickname:
@@ -159,7 +200,7 @@ paths:
                   birthday:
                   notification: false
         '401':
-          description: error login
+          description: 認証エラー
           content:
             application/json:
               schema:
@@ -175,14 +216,18 @@ paths:
                 success: false
                 errors:
                 - Invalid login credentials. Please try again.
-  "/api/v1/plans":
+  /plans:
     get:
-      summary: index
+      summary: 宿泊プランの一覧を返します。未ログイン(リクエストヘッダ未設定)の場合、誰でも予約可能なプランを返します。ログイン済み(リクエストヘッダ設定済)の場合、ログインユーザーのランクに応じた予約可能プランを返します。
       tags:
-      - Api::V1::Plan
+      - Plan
+      security:
+      - client: []
+        access-token: []
+        uid: []
       responses:
         '200':
-          description: include only only nil or normal in response
+          description: 成功
           content:
             application/json:
               schema:
@@ -202,9 +247,11 @@ paths:
                         min_head_count:
                           type: integer
                         only:
+                          type: string
                           nullable: true
                         room_category_type_name:
                           type: string
+                          nullable: true
               example:
                 plans:
                 - plan_id: 0
@@ -261,21 +308,25 @@ paths:
                   min_head_count: 1
                   only:
                   room_category_type_name:
-  "/api/v1/plans/{id}":
+  /plans/{plan_id}:
     get:
-      summary: show
+      summary: 宿泊予約用に、宿泊プランの詳細を返します。未ログイン(リクエストヘッダ未設定)の場合、誰でも予約可能なプランのIDを指定すると成功します。ログイン済み(リクエストヘッダ設定済)の場合、ログインユーザーのランクに応じた予約可能プランのIDを指定すると成功します。
       tags:
-      - Api::V1::Plan
+      - Plan
       parameters:
-      - name: id
+      - name: plan_id
         in: path
         required: true
         schema:
           type: integer
-        example: 3
+        example: 0
+      security:
+      - client: []
+        access-token: []
+        uid: []
       responses:
         '200':
-          description: success get "plans.only is member"
+          description: 成功
           content:
             application/json:
               schema:
@@ -298,10 +349,8 @@ paths:
                         type: integer
                       max_term:
                         type: integer
-                  user_name:
-                    nullable: true
-                    type: string
                   room_type:
+                    nullable: true
                     type: object
                     properties:
                       room_type_name:
@@ -318,7 +367,19 @@ paths:
                           type: string
                       room_category_type_name:
                         type: string
+                  user:
                     nullable: true
+                    type: object
+                    properties:
+                      user_name:
+                        type: string
+                      tel:
+                        type: string
+                        nullable: true
+                      email:
+                        type: string
+                      username:
+                        type: string
               example:
                 plan:
                   plan_id: 3
@@ -328,43 +389,51 @@ paths:
                   max_head_count: 9
                   min_term: 1
                   max_term: 9
-                user_name: 松本さくら
                 room_type:
+                  room_type_name: スタンダードツイン
+                  min_capacity: ツイン
+                  max_capacity: 1
+                  room_size: 2
+                  facilities: 18
+                  room_category_type_name: ['ユニット式バス・トイレ', '独立洗面台']
+                user:
+                  username: 松本さくら
+                  tel:
+                  email: sakura@example.com
         '401':
-          description: dissuccess get "plans.only is premium"
+          description: failed API call a plan where plans.only is premium
           content:
             text/plain:
               schema:
                 type: string
               example: " "
-  "/api/v1/auth":
+  /auth:
     post:
-      summary: create
+      summary: ユーザーを作成し、ログイン状態に必要なaccess-tokenとclientとuidを返します
       tags:
-      - Api::V1::Registration
+      - Auth
+      - User
       requestBody:
         content:
-          application/x-www-form-urlencoded:
+          application/json:
             schema:
               type: object
               properties:
                 username:
                   type: string
-                  nullable: true
                 email:
                   type: string
-                  nullable: true
                 password:
                   type: string
-                  nullable: true
             example:
-              username:
-              email:
-              password:
+              username: 'testuser55'
+              email: 'hoge@example.com'
+              password: password
       responses:
         '200':
-          description: Create a user
+          description: 成功
           content:
+            #TODO:不要なものが入ってる
             application/json:
               schema:
                 type: object
@@ -412,13 +481,13 @@ paths:
                   email: test5@example.com
                   provider: email
                   uid: test5@example.com
-                  id: 297
+                  id: 1029
                   allow_password_change: false
                   username: TestUser
                   nickname:
                   image:
-                  created_at: '2022-12-22T03:39:09.473Z'
-                  updated_at: '2022-12-22T03:39:09.484Z'
+                  created_at: '2023-01-01T07:31:40.386Z'
+                  updated_at: '2023-01-01T07:31:40.397Z'
                   rank: premium
                   address:
                   tel:
@@ -426,7 +495,7 @@ paths:
                   birthday:
                   notification: false
         '422':
-          description: not create a user
+          description: failed API call and not create a user
           content:
             application/json:
               schema:
@@ -518,21 +587,21 @@ paths:
                   - Password can't be blank
                   - Email can't be blank
                   - Username can't be blank
-  "/api/v1/reserve":
+  /reserve:
     post:
-      summary: create
+      summary: 宿泊予約を仮登録します
       tags:
-      - Api::V1::Reserf
+      - Reserve
       requestBody:
         content:
-          application/x-www-form-urlencoded:
+          application/json:
             schema:
               type: object
               properties:
                 plan_id:
-                  type: string
+                  type: integer
                 total_bill:
-                  type: string
+                  type: integer
                 date:
                   type: string
                 term:
@@ -540,25 +609,28 @@ paths:
                 head_count:
                   type: string
                 breakfast:
-                  type: string
+                  type: boolean
                 early_check_in:
-                  type: string
+                  type: boolean
                 sightseeing:
-                  type: string
+                  type: boolean
                 username:
                   type: string
                 contact:
                   type: string
                 comment:
+                  nullable: true
                   type: string
                 tel:
+                  nullable: true
                   type: string
                 email:
+                  nullable: true
                   type: string
             example:
-              plan_id: '2'
-              total_bill: '13625'
-              date: 2022/12/25
+              plan_id: 2
+              total_bill: 13625
+              date: 2023/01/08
               term: '1'
               head_count: '1'
               breakfast: 'true'
@@ -571,7 +643,7 @@ paths:
               email: example@example.com
       responses:
         '200':
-          description: regist success
+          description: 成功
           content:
             application/json:
               schema:
@@ -615,6 +687,7 @@ paths:
                   end_date:
                     type: string
               example:
+                reserve_id: 692
                 total_bill: 13625
                 term: 1
                 head_count: 1
@@ -626,27 +699,26 @@ paths:
                 email: example@example.com
                 tel:
                 comment: comment_test
-                session_token: OqGOCv74tYE62ReHIy9y+w==
+                session_token: 8677lh607OzRID1UjFIiNg==
                 plan_name:
                   name: ディナー付きプラン
-                reserve_id: 194
-                start_date: 2022/12/25
-                end_date: 2022/12/26
-  "/api/v1/reserve/{reserve_id}":
+                start_date: 2023/01/08
+                end_date: 2023/01/09
+  /reserve/{reserve_id}:
     post:
-      summary: definitive_regist
+      summary: 宿泊予約を本登録します
       tags:
-      - Api::V1::Reserf
+      - Reserve
       parameters:
       - name: reserve_id
         in: path
         required: true
         schema:
           type: integer
-        example: 196
+        example: 694
       requestBody:
         content:
-          application/x-www-form-urlencoded:
+          application/json:
             schema:
               type: object
               properties:
@@ -656,16 +728,23 @@ paths:
               session_token: hogehogehoge
       responses:
         '200':
-          description: provisional regist success
-          content:
-            text/plain:
-              schema:
-                type: string
-              example: " "
+          description: 成功
         '400':
-          description: provisional regist failure
+          description: failed API call and remain provisional registration
           content:
             text/plain:
               schema:
                 type: string
               example: " "
+  /auth/sign_out:
+    delete:
+      summary: ログアウトし、ログイン情報(access-tokenとclientとuid)を無効化します
+      tags:
+      - Auth
+      security:
+      - client: []
+        access-token: []
+        uid: []
+      responses:
+        '200':
+          description: 成功
