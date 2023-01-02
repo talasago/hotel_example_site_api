@@ -501,43 +501,6 @@ paths:
               schema:
                 type: object
                 properties:
-                  status:
-                    type: string
-                  data:
-                    type: object
-                    properties:
-                      id:
-                        nullable: true
-                      provider:
-                        type: string
-                      uid:
-                        type: string
-                      allow_password_change:
-                        type: boolean
-                      username:
-                        nullable: true
-                      nickname:
-                        nullable: true
-                      image:
-                        nullable: true
-                      email:
-                        nullable: true
-                      created_at:
-                        nullable: true
-                      updated_at:
-                        nullable: true
-                      rank:
-                        type: string
-                      address:
-                        nullable: true
-                      tel:
-                        nullable: true
-                      gender:
-                        type: string
-                      birthday:
-                        nullable: true
-                      notification:
-                        type: boolean
                   errors:
                     type: object
                     properties:
@@ -558,24 +521,6 @@ paths:
                         items:
                           type: string
               example:
-                status: error
-                data:
-                  id:
-                  provider: email
-                  uid: ''
-                  allow_password_change: false
-                  username:
-                  nickname:
-                  image:
-                  email:
-                  created_at:
-                  updated_at:
-                  rank: premium
-                  address:
-                  tel:
-                  gender: unregistered
-                  birthday:
-                  notification: false
                 errors:
                   password:
                   - can't be blank
