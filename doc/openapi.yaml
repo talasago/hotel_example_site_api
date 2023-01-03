@@ -146,59 +146,6 @@ paths:
             uid:
               schema:
                 type: string
-          content:
-            application/json:
-              schema:
-                type: object
-                # TODO:レスポンスボディに余計なものが入ってる
-                properties:
-                  data:
-                    type: object
-                    properties:
-                      email:
-                        type: string
-                      provider:
-                        type: string
-                      uid:
-                        type: string
-                      id:
-                        type: integer
-                      allow_password_change:
-                        type: boolean
-                      username:
-                        type: string
-                      nickname:
-                        nullable: true
-                      image:
-                        nullable: true
-                      rank:
-                        type: string
-                      address:
-                        nullable: true
-                      tel:
-                        nullable: true
-                      gender:
-                        type: string
-                      birthday:
-                        nullable: true
-                      notification:
-                        type: boolean
-              example:
-                data:
-                  email: test6@example.com
-                  provider: email
-                  uid: test6@example.com
-                  id: 1030
-                  allow_password_change: false
-                  username: TestUser
-                  nickname:
-                  image:
-                  rank: premium
-                  address:
-                  tel:
-                  gender: unregistered
-                  birthday:
-                  notification: false
         '401':
           description: 認証エラー
           content:
@@ -432,68 +379,6 @@ paths:
       responses:
         '200':
           description: 成功
-          content:
-            #TODO:不要なものが入ってる
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                  data:
-                    type: object
-                    properties:
-                      email:
-                        type: string
-                      provider:
-                        type: string
-                      uid:
-                        type: string
-                      id:
-                        type: integer
-                      allow_password_change:
-                        type: boolean
-                      username:
-                        type: string
-                      nickname:
-                        nullable: true
-                      image:
-                        nullable: true
-                      created_at:
-                        type: string
-                      updated_at:
-                        type: string
-                      rank:
-                        type: string
-                      address:
-                        nullable: true
-                      tel:
-                        nullable: true
-                      gender:
-                        type: string
-                      birthday:
-                        nullable: true
-                      notification:
-                        type: boolean
-              example:
-                status: success
-                data:
-                  email: test5@example.com
-                  provider: email
-                  uid: test5@example.com
-                  id: 1029
-                  allow_password_change: false
-                  username: TestUser
-                  nickname:
-                  image:
-                  created_at: '2023-01-01T07:31:40.386Z'
-                  updated_at: '2023-01-01T07:31:40.397Z'
-                  rank: premium
-                  address:
-                  tel:
-                  gender: unregistered
-                  birthday:
-                  notification: false
         '422':
           description: failed API call and not create a user
           content:
