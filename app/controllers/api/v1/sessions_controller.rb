@@ -5,4 +5,11 @@ class Api::V1::SessionsController < DeviseTokenAuth::SessionsController
     super
     session["warden.user.user.key"] = nil
   end
+
+  # @override
+  def render_create_success
+    render :json
+  end
+
+  # TODO:permitみたいなの必要かも。
 end

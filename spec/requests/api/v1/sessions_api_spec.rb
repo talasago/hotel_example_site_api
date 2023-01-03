@@ -17,6 +17,7 @@ RSpec.describe 'Api::V1::Sessions', type: :request do
         expect(response).to have_http_status(:success)
         expect(response.headers.keys).to \
           include('access-token', 'uid', 'client', 'expiry', 'token-type')
+        expect(response.body.strip).to eq ''
       end
     end
 
