@@ -5,7 +5,6 @@ RSpec.describe 'Api::V1::Plans', type: :request do
   let(:registed_user1) { FactoryBot.attributes_for(:user, :registed_user1) }
   let(:registed_user2) { FactoryBot.attributes_for(:user, :registed_user2) }
 
-  # TODO:メソッドとパスは逆
   describe 'GET /plans' do
     shared_examples 'expectation GET /plans' do
       it 'successful API call and sort by plan_id asc and include specified keys' do

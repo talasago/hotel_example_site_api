@@ -17,6 +17,7 @@ RSpec.describe RoomType, type: :model do
         expect(room_type.room_category_type_name).to eq 'category'
       end
     end
+
     context "room_type_name isn't nil and room_category_name is nil" do
       let(:room_type) { RoomType.new(room_type_name: 'type') }
 
