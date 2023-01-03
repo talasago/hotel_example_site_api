@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_12_19_190834) do
+ActiveRecord::Schema[7.0].define(version: 2023_01_03_113430) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -75,7 +75,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_19_190834) do
     t.string "rank", default: "premium"
     t.string "address"
     t.string "tel"
-    t.string "gender", default: "unregistered"
+    t.integer "gender"
     t.date "birthday"
     t.boolean "notification", default: false
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
