@@ -50,17 +50,23 @@ class Reserve < ApplicationRecord
   def calc_total_bill
     return if plan_id.blank? || term.blank? || date.blank?
 
-    total_bill_ = [*0..term - 1].map do |add_day|
+    calc_basic_bill + calc_additional_bill
+  end
+
+  def calc_basic_bill
+    [*0..term - 1].map do |add_day|
       wday = (date + add_day).wday
       wday == 0 || wday == 6 ?
         plan.room_bill * head_count * (1 + ADD_ROOM_BILL_RATE_SAT_AND_SUN) :
         plan.room_bill * head_count
     end.reduce(:+)
+  end
 
-    total_bill_ += ADDITIONAL_PLAN_PRICE * head_count * term if breakfast
-    total_bill_ += ADDITIONAL_PLAN_PRICE * head_count if early_check_in
-    total_bill_ += ADDITIONAL_PLAN_PRICE * head_count if sightseeing
-
-    total_bill_
+  def calc_additional_bill
+    additional_bill = 0
+    additional_bill += ADDITIONAL_PLAN_PRICE * head_count * term if breakfast
+    additional_bill += ADDITIONAL_PLAN_PRICE * head_count if early_check_in
+    additional_bill += ADDITIONAL_PLAN_PRICE * head_count if sightseeing
+    additional_bill
   end
 end
