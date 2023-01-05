@@ -29,13 +29,17 @@ class Api::V1::ReservesController < ApplicationController
 
   def definitive_regist
     # TODO:permitみたいなの必要かも
-    reserve = Reserve.find(params[:reserve_id])
+
+    begin
+      reserve = Reserve.find_by!(id: params[:reserve_id])
+    rescue ActiveRecord::RecordNotFound
+      render status: 404 and return
+    end
 
     unless reserve.session_token == params[:session_token]
       render status: 400 and return
     end
 
-    # TODO:レコードが見つからない時は404エラー
     # TODO:is_definitive_registがtrueならばエラーとする
 
     reserve.is_definitive_regist = true

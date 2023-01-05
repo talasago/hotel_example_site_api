@@ -78,6 +78,37 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
         end
       end
     end
+
+    context 'token is nil' do
+      it 'failed API call and remain provisional registration' do
+        aggregate_failures do
+          expect {
+            post "/api/v1/reserve/#{reserve_id}"
+          }.to_not change(Reserve, :count)
+          expect(response).to have_http_status(400)
+
+          reserve = Reserve.find(reserve_id)
+          expect(reserve.is_definitive_regist).to eq false
+          expect(reserve.session_token).to_not eq nil
+          expect(reserve.session_expires_at).to_not eq nil
+        end
+      end
+    end
+
+    context 'not exist reserve_id' do
+      before do
+        Reserve.find(reserve_id).delete
+      end
+      let(:session_token) { @res_body_provisional_regist['session_token'] }
+
+      it 'failed API call and remain provisional registration' do
+        aggregate_failures do
+          expect {
+            post "/api/v1/reserve/#{reserve_id}", params: { session_token: session_token }
+          }.to_not change(Reserve, :count)
+          expect(response).to have_http_status(404)
+        end
+      end
+    end
   end
-  #TODO: session_tokenがnilの場合のテスト
 end
