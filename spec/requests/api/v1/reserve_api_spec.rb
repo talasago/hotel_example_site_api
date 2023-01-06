@@ -101,12 +101,32 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
       end
       let(:session_token) { @res_body_provisional_regist['session_token'] }
 
-      it 'failed API call and remain provisional registration' do
+      it 'failed API call' do
         aggregate_failures do
           expect {
             post "/api/v1/reserve/#{reserve_id}", params: { session_token: session_token }
           }.to_not change(Reserve, :count)
           expect(response).to have_http_status(404)
+        end
+      end
+    end
+
+    context 'already provisional registered(is_definitive_regist is true)' do
+      let(:session_token) { @res_body_provisional_regist['session_token'] }
+      before do
+        post "/api/v1/reserve/#{reserve_id}", params: { session_token: session_token }
+      end
+      let(:reserve_before_post) { Reserve.find(reserve_id).attributes }
+
+      it 'failed API call and remain provisional registration' do
+        aggregate_failures do
+          expect {
+            post "/api/v1/reserve/#{reserve_id}"
+          }.to_not change(Reserve, :count)
+          expect(response).to have_http_status(409)
+
+          reserve_after_request = Reserve.find(reserve_id).attributes
+          expect(reserve_after_request).to eq reserve_before_post
         end
       end
     end

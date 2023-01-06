@@ -40,8 +40,12 @@ class Api::V1::ReservesController < ApplicationController
       render status: 400 and return
     end
 
-    # TODO:is_definitive_registがtrueならばエラーとする
+    # すでに本登録済みならばエラーとする
+    if reserve.is_definitive_regist
+      render status: 409 and return
+    end
 
+    # TODO:下をメソッド化
     reserve.is_definitive_regist = true
     reserve.session_token = nil
     reserve.session_expires_at = nil
