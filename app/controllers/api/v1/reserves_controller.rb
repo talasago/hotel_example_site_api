@@ -1,5 +1,7 @@
 class Api::V1::ReservesController < ApplicationController
   def create
+    render status: 401 and return if policy_scope(Plan.where(id: params[:plan_id])).empty?
+
     # TODO:長いので何とかしたい
     reserve = Reserve.new(
       plan_id: params[:plan_id],

@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :reserve do
-    plan_id { 2 }
-    total_bill { 13_625 }
+    plan_id { 0 }
+    total_bill { 11_750 }
     date { Date.today.next_occurring(:sunday).strftime('%Y/%m/%d') }
     term { 1 }
     head_count { 1 }
@@ -20,6 +20,10 @@ FactoryBot.define do
     trait :with_email do
       contact { 'email' }
       email { 'example@example.com' }
+    end
+
+    trait :with_only_plemium do
+      plan_id { 1 }
     end
   end
 end
