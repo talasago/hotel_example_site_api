@@ -45,9 +45,9 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
     end
     let(:reserve_id) { @res_body_provisional_regist['reserve_id'] }
     let(:reserve_before_post) { Reserve.find(reserve_id).attributes }
+    let(:session_token) { @res_body_provisional_regist['session_token'] }
 
     context 'token does match' do
-      let(:session_token) { @res_body_provisional_regist['session_token'] }
       it 'successful API call and complete definitive registation' do
         aggregate_failures do
           expect {
@@ -63,7 +63,6 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
 
     context "token doesn't match" do
       let(:invalid_session_token) { 'hogehogehoge' }
-      let(:reserve_before_post) { Reserve.find(reserve_id).attributes }
 
       it 'failed API call and remain provisional registration' do
         aggregate_failures do
@@ -79,8 +78,6 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
     end
 
     context 'token is nil' do
-      let(:reserve_before_post) { Reserve.find(reserve_id).attributes }
-
       it 'failed API call and remain provisional registration' do
         aggregate_failures do
           expect {
@@ -98,12 +95,12 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
       before do
         Reserve.find(reserve_id).delete
       end
-      let(:session_token) { @res_body_provisional_regist['session_token'] }
+      let(:session_token_after_request) { @res_body_provisional_regist['session_token'] }
 
       it 'failed API call' do
         aggregate_failures do
           expect {
-            post "/api/v1/reserve/#{reserve_id}", params: { session_token: session_token }
+            post "/api/v1/reserve/#{reserve_id}", params: { session_token: session_token_after_request }
           }.to_not change(Reserve, :count)
           expect(response).to have_http_status(404)
         end
@@ -111,11 +108,9 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
     end
 
     context 'already provisional registered(is_definitive_regist is true)' do
-      let(:session_token) { @res_body_provisional_regist['session_token'] }
       before do
         post "/api/v1/reserve/#{reserve_id}", params: { session_token: session_token }
       end
-      let(:reserve_before_post) { Reserve.find(reserve_id).attributes }
 
       it 'failed API call and remain provisional registration' do
         aggregate_failures do
