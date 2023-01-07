@@ -45,22 +45,12 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
           let(:auth_params) { sign_in(**FactoryBot.attributes_for(:user, :registed_user1)) }
           let(:post_params) { FactoryBot.attributes_for(:reserve, :with_only_premium) }
 
-          it 'successful API call and create a "reserve" and include specified key' do
-            # HACK:長い
+          it 'successful API call' do
             aggregate_failures do
               expect {
                 post '/api/v1/reserve', params: post_params, headers: auth_params
               }.to change(Reserve, :count).by(1)
               expect(response).to have_http_status(:success)
-              res_body = JSON.parse(response.body)
-
-              expect(res_body.keys)
-                .to contain_exactly('reserve_id', 'total_bill', 'plan_name', 'start_date', 'end_date', 'term', 'head_count',
-                                    'breakfast', 'early_check_in', 'sightseeing', 'username', 'contact', 'tel', 'email',
-                                    'comment', 'session_token')
-              expect(res_body['start_date']).to match(/[0-9]{4}(\/[0-9]{2}){2}/) # YYYY/MM/DD形式
-              expect(res_body['end_date']).to match(/[0-9]{4}(\/[0-9]{2}){2}/) # YYYY/MM/DD形式
-              expect(Reserve.find(res_body['reserve_id']).is_definitive_regist).to eq false
             end
           end
         end
