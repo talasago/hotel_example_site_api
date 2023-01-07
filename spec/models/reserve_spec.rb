@@ -27,7 +27,7 @@ RSpec.describe Reserve, type: :model do
       let(:reserve_email_valid) { Reserve.new(contact: 'email', email: '@') }
       it {
         reserve_email_valid.valid?
-        expect(reserve_email_valid.errors[:email]).to include 'invalid email format'
+        expect(reserve_email_valid.errors[:email]).to include 'is not an email'
       }
     end
   end

@@ -22,7 +22,7 @@ class Reserve < ApplicationRecord
   # https://html.spec.whatwg.org/multipage/input.html#valid-e-mail-address
   EMAIL_REGEXP = /\A[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*\z/
   validates :email, presence: true, if: -> { contact == 'email' },
-                    format: { with: EMAIL_REGEXP, message: 'invalid email format' }
+                    format: { with: EMAIL_REGEXP, message: 'is not an email' }
   validates :tel, presence: true, if: -> { contact == 'tel' }, length: { is: 11 }
 
   def end_date
