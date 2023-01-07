@@ -2,8 +2,8 @@ require 'rails_helper'
 
 RSpec.describe 'Api::V1::Reserves', type: :request do
   describe 'POST /reserve' do
-    context 'normal case' do
-      shared_examples 'expectation POST /reserve' do
+    context 'not authenticated' do
+      shared_examples 'expectation when non-authenticated  and response successed' do
         it 'successful API call and create a "reserve" and include specified key' do
           aggregate_failures do
             expect {
@@ -23,43 +23,28 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
         end
       end
 
-      context 'not authenticated' do
+      context 'plan.only is null' do
+        # NOTE: 各連絡情報のありなしでレスポンスボディの内容が変わることは無いので、
+        # ここ以外で"contact is XXX"の分岐でテストは実施しない
         context 'contact is "no"' do
           let(:post_params) { FactoryBot.attributes_for(:reserve) }
-          include_examples 'expectation POST /reserve'
+          include_examples 'expectation when non-authenticated  and response successed'
         end
 
         context 'concact is tel' do
           let(:post_params) { FactoryBot.attributes_for(:reserve, :with_tel) }
-          include_examples 'expectation POST /reserve'
+          include_examples 'expectation when non-authenticated  and response successed'
         end
 
         context 'contact is email' do
           let(:post_params) { FactoryBot.attributes_for(:reserve, :with_email) }
-          include_examples 'expectation POST /reserve'
+          include_examples 'expectation when non-authenticated  and response successed'
         end
       end
 
-      context 'as an authenticated user' do
-        context 'user.rank is premium' do
-          let(:auth_params) { sign_in(**FactoryBot.attributes_for(:user, :registed_user1)) }
-          let(:post_params) { FactoryBot.attributes_for(:reserve, :with_only_premium) }
-
-          it 'successful API call' do
-            aggregate_failures do
-              expect {
-                post '/api/v1/reserve', params: post_params, headers: auth_params
-              }.to change(Reserve, :count).by(1)
-              expect(response).to have_http_status(:success)
-            end
-          end
-        end
-      end
-    end
-
-    # TODO:この条件のくぎりでよいのか
-    context 'abnormal case' do
-      context 'book members-only plans with non-authenticated status' do
+      # NOTE: プランごとのuser.rank判定は、policy_specでテスト済みなので、
+      # 'plan.only is normal'のテストは実施しない
+      context 'plan.only is premium' do
         let(:post_params) { FactoryBot.attributes_for(:reserve, :with_only_premium) }
 
         it "failed API call and doesn't add provisional registration" do
@@ -71,16 +56,41 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
           end
         end
       end
+    end
 
-      context 'as an authenticated user and user.rank is normal' do
-        let(:post_params) { FactoryBot.attributes_for(:reserve, :with_only_normal) }
+    context 'as an authenticated user' do
+      # NOTE: プランごとのuser.rank判定は、policy_specでテスト済みなので、
+      # 最低限のuser.rankとplan.onlyの組み合わせしかテストを実施しない
+      context 'user.rank is premium' do
+        context 'plan.only is premium' do
+          let(:auth_params) { sign_in(**FactoryBot.attributes_for(:user, :registed_user1)) }
+          let(:post_params) { FactoryBot.attributes_for(:reserve, :with_only_premium) }
 
-        it "failed API call and doesn't add provisional registration" do
-          aggregate_failures do
-            expect {
-              post '/api/v1/reserve', params: post_params
-            }.to_not change(Reserve, :count)
-            expect(response).to have_http_status(401)
+          it 'successful API call' do
+            # NOTE: ユーザーのランクに応じてレスポンスボディの内容が変わるわけではないので、
+            # レスポンスボディのキーや日付形式などのexpectは割愛
+            aggregate_failures do
+              expect {
+                post '/api/v1/reserve', params: post_params, headers: auth_params
+              }.to change(Reserve, :count).by(1)
+              expect(response).to have_http_status(:success)
+            end
+          end
+        end
+      end
+
+      context 'user.rank is normal' do
+        context 'plan.only is premium' do
+          let(:auth_params) { sign_in(**FactoryBot.attributes_for(:user, :registed_user2)) }
+          let(:post_params) { FactoryBot.attributes_for(:reserve, :with_only_premium) }
+
+          it "failed API call and doesn't add provisional registration" do
+            aggregate_failures do
+              expect {
+                post '/api/v1/reserve', params: post_params, headers: auth_params
+              }.to_not change(Reserve, :count)
+              expect(response).to have_http_status(401)
+            end
           end
         end
       end
