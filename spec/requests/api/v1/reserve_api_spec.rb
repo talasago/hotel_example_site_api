@@ -44,6 +44,7 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
       @res_body_provisional_regist = JSON.parse(response.body)
     end
     let(:reserve_id) { @res_body_provisional_regist['reserve_id'] }
+    let(:reserve_before_post) { Reserve.find(reserve_id).attributes }
 
     context 'token does match' do
       let(:session_token) { @res_body_provisional_regist['session_token'] }
@@ -54,16 +55,16 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
           }.to_not change(Reserve, :count)
           expect(response).to have_http_status(:success)
 
-          reserve = Reserve.find(reserve_id)
-          expect(reserve.is_definitive_regist).to eq true
-          expect(reserve.session_token).to eq nil
-          expect(reserve.session_expires_at).to eq nil
+          reserve_after_request = Reserve.find(reserve_id).attributes
+          expect(reserve_after_request).to eq reserve_before_post
         end
       end
     end
 
     context "token doesn't match" do
       let(:invalid_session_token) { 'hogehogehoge' }
+      let(:reserve_before_post) { Reserve.find(reserve_id).attributes }
+
       it 'failed API call and remain provisional registration' do
         aggregate_failures do
           expect {
@@ -71,15 +72,15 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
           }.to_not change(Reserve, :count)
           expect(response).to have_http_status(400)
 
-          reserve = Reserve.find(reserve_id)
-          expect(reserve.is_definitive_regist).to eq false
-          expect(reserve.session_token).to_not eq nil
-          expect(reserve.session_expires_at).to_not eq nil
+          reserve_after_request = Reserve.find(reserve_id).attributes
+          expect(reserve_after_request).to eq reserve_before_post
         end
       end
     end
 
     context 'token is nil' do
+      let(:reserve_before_post) { Reserve.find(reserve_id).attributes }
+
       it 'failed API call and remain provisional registration' do
         aggregate_failures do
           expect {
@@ -87,10 +88,8 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
           }.to_not change(Reserve, :count)
           expect(response).to have_http_status(400)
 
-          reserve = Reserve.find(reserve_id)
-          expect(reserve.is_definitive_regist).to eq false
-          expect(reserve.session_token).to_not eq nil
-          expect(reserve.session_expires_at).to_not eq nil
+          reserve_after_request = Reserve.find(reserve_id).attributes
+          expect(reserve_after_request).to eq reserve_before_post
         end
       end
     end
