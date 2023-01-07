@@ -23,10 +23,15 @@ FactoryBot.define do
       email { 'example@example.com' }
     end
 
-    trait :with_only_plemium do
+    trait :with_only_premium do
       plan_id { 1 }
       total_bill { 31_000 }
       head_count { 2 }
+    end
+
+    trait :with_only_normal do
+      plan_id { 2 }
+      total_bill { 13_625 }
     end
   end
 end

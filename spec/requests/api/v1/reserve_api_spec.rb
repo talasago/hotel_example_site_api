@@ -43,9 +43,10 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
       context 'as an authenticated user' do
         context 'user.rank is premium' do
           let(:auth_params) { sign_in(**FactoryBot.attributes_for(:user, :registed_user1)) }
-          let(:post_params) { FactoryBot.attributes_for(:reserve, :with_only_plemium) }
+          let(:post_params) { FactoryBot.attributes_for(:reserve, :with_only_premium) }
 
           it 'successful API call and create a "reserve" and include specified key' do
+            # HACK:長い
             aggregate_failures do
               expect {
                 post '/api/v1/reserve', params: post_params, headers: auth_params
@@ -66,9 +67,23 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
       end
     end
 
+    # TODO:この条件のくぎりでよいのか
     context 'abnormal case' do
       context 'book members-only plans with non-authenticated status' do
-        let(:post_params) { FactoryBot.attributes_for(:reserve, :with_only_plemium) }
+        let(:post_params) { FactoryBot.attributes_for(:reserve, :with_only_premium) }
+
+        it "failed API call and doesn't add provisional registration" do
+          aggregate_failures do
+            expect {
+              post '/api/v1/reserve', params: post_params
+            }.to_not change(Reserve, :count)
+            expect(response).to have_http_status(401)
+          end
+        end
+      end
+
+      context 'as an authenticated user and user.rank is normal' do
+        let(:post_params) { FactoryBot.attributes_for(:reserve, :with_only_normal) }
 
         it "failed API call and doesn't add provisional registration" do
           aggregate_failures do
