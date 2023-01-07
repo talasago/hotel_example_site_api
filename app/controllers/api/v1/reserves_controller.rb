@@ -19,13 +19,13 @@ class Api::V1::ReservesController < ApplicationController
       session_expires_at: DateTime.now + Rational(5, 24 * 60),
       is_definitive_regist: false
     )
+
     reserve.valid?
     reserve.save
 
     render json: generate_response_body(reserve)
     # TODO:permitみたいなの必要かも
   end
-
 
   def definitive_regist
     # TODO:permitみたいなの必要かも
@@ -36,23 +36,10 @@ class Api::V1::ReservesController < ApplicationController
       render status: 404 and return
     end
 
-    unless reserve.session_token == params[:session_token]
-      render status: 400 and return
-    end
+    render status: 400 and return unless reserve.session_token == params[:session_token]
+    render status: 409 and return if reserve.is_definitive_regist # すでに本登録済みならばエラーとする
 
-    # すでに本登録済みならばエラーとする
-    if reserve.is_definitive_regist
-      render status: 409 and return
-    end
-
-    # TODO:下をメソッド化
-    reserve.is_definitive_regist = true
-    reserve.session_token = nil
-    reserve.session_expires_at = nil
-
-    reserve.valid?
-    reserve.save
-
+    update_reserve(reserve)
     render :json
   end
 
@@ -65,5 +52,13 @@ class Api::V1::ReservesController < ApplicationController
     res['start_date'] = res.delete('date').gsub(/-/, '/')
     res['end_date'] = reserve.end_date.strftime('%Y/%m/%d')
     res
+  end
+
+  def update_reserve(reserve)
+    reserve.is_definitive_regist = true
+    reserve.session_token = nil
+    reserve.session_expires_at = nil
+
+    reserve.save
   end
 end
