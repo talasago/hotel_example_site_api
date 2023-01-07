@@ -1,5 +1,6 @@
 FactoryBot.define do
   factory :reserve do
+    # TODO:プラン毎と、additionalプラン毎、土日で金額変えた方が良い。
     plan_id { 0 }
     total_bill { 11_750 }
     date { Date.today.next_occurring(:sunday).strftime('%Y/%m/%d') }
@@ -24,6 +25,8 @@ FactoryBot.define do
 
     trait :with_only_plemium do
       plan_id { 1 }
+      total_bill { 31_000 }
+      head_count { 2 }
     end
   end
 end
