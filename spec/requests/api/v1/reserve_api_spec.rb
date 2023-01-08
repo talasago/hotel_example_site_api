@@ -95,6 +95,19 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
         end
       end
     end
+
+    context 'validation error' do
+      let(:params) { { plan_id: 0 } }
+
+      it "failed API call and doesn't add provisional registration" do
+        aggregate_failures do
+          expect {
+            post '/api/v1/reserve', params: params
+          }.to_not change(Reserve, :count)
+          expect(response).to have_http_status(400)
+        end
+      end
+    end
   end
 
   describe 'POST /reserve/:reserve_id' do

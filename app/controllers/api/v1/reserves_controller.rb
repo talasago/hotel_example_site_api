@@ -4,8 +4,9 @@ class Api::V1::ReservesController < ApplicationController
 
     reserve = Reserve.new(provisional_reserve_params)
 
-    reserve.valid?
-    reserve.save
+    unless reserve.save
+      render status: 400 and return
+    end
 
     render json: generate_response_body(reserve)
   end
@@ -40,6 +41,7 @@ class Api::V1::ReservesController < ApplicationController
     reserve.session_token = nil
     reserve.session_expires_at = nil
 
+    # TODO:save!にする。エラー発生時は500番台エラーとする
     reserve.save
   end
 
@@ -47,9 +49,9 @@ class Api::V1::ReservesController < ApplicationController
     params
       .permit(:plan_id, :total_bill, :term, :head_count, :breakfast, :early_check_in,
               :sightseeing, :username, :contact, :tel, :email, :comment)
-      .merge(date: params[:date].to_date,
+      .merge(date: params[:date]&.to_date,
              session_token: SecureRandom.base64,
-             session_expires_at: DateTime.now + Rational(5, 24 * 60), # FIXME:これいつまで許可？
+             session_expires_at: DateTime.now + Rational(5, 24 * 60), # 5分後
              is_definitive_regist: false)
   end
 
