@@ -2,31 +2,12 @@ class Api::V1::ReservesController < ApplicationController
   def create
     render status: 401 and return if policy_scope(Plan.where(id: params[:plan_id])).empty?
 
-    # TODO:長いので何とかしたい
-    reserve = Reserve.new(
-      plan_id: params[:plan_id],
-      total_bill: params[:total_bill],
-      date: params[:date].to_date,
-      term: params[:term],
-      head_count: params[:head_count],
-      breakfast: params[:breakfast],
-      early_check_in: params[:early_check_in],
-      sightseeing: params[:sightseeing],
-      username: params[:username],
-      contact: params[:contact],
-      tel: params[:tel],
-      email: params[:email],
-      comment: params[:comment],
-      session_token: SecureRandom.base64,
-      session_expires_at: DateTime.now + Rational(5, 24 * 60),
-      is_definitive_regist: false
-    )
+    reserve = Reserve.new(reserve_provisional_params)
 
     reserve.valid?
     reserve.save
 
     render json: generate_response_body(reserve)
-    # TODO:permitみたいなの必要かも
   end
 
   def definitive_regist
@@ -62,5 +43,17 @@ class Api::V1::ReservesController < ApplicationController
     reserve.session_expires_at = nil
 
     reserve.save
+  end
+
+  private
+
+  def reserve_provisional_params
+    params
+      .permit(:plan_id, :total_bill, :term, :head_count, :breakfast, :early_check_in,
+              :sightseeing, :username, :contact, :tel, :email, :comment)
+      .merge(date: params[:date].to_date,
+             session_token: SecureRandom.base64,
+             session_expires_at: DateTime.now + Rational(5, 24 * 60), # FIXME:これいつまで許可？
+             is_definitive_regist: false)
   end
 end
