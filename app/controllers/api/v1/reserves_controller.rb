@@ -1,5 +1,5 @@
 class Api::V1::ReservesController < ApplicationController
-  def create
+  def provisional_regist
     render status: 401 and return if policy_scope(Plan.where(id: params[:plan_id])).empty?
 
     reserve = Reserve.new(reserve_provisional_params)
