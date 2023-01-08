@@ -2,7 +2,7 @@ class Api::V1::ReservesController < ApplicationController
   def provisional_regist
     render status: 401 and return if policy_scope(Plan.where(id: params[:plan_id])).empty?
 
-    reserve = Reserve.new(reserve_provisional_params)
+    reserve = Reserve.new(provisional_reserve_params)
 
     reserve.valid?
     reserve.save
@@ -11,15 +11,13 @@ class Api::V1::ReservesController < ApplicationController
   end
 
   def definitive_regist
-    # TODO:permitみたいなの必要かも
-
     begin
-      reserve = Reserve.find_by!(id: params[:reserve_id])
+      reserve = Reserve.find_by!(id: definitive_reserve_params[:reserve_id])
     rescue ActiveRecord::RecordNotFound
       render status: 404 and return
     end
 
-    render status: 400 and return unless reserve.session_token == params[:session_token]
+    render status: 400 and return unless reserve.session_token == definitive_reserve_params[:session_token]
     render status: 409 and return if reserve.is_definitive_regist # すでに本登録済みならばエラーとする
 
     update_reserve(reserve)
@@ -45,9 +43,7 @@ class Api::V1::ReservesController < ApplicationController
     reserve.save
   end
 
-  private
-
-  def reserve_provisional_params
+  def provisional_reserve_params
     params
       .permit(:plan_id, :total_bill, :term, :head_count, :breakfast, :early_check_in,
               :sightseeing, :username, :contact, :tel, :email, :comment)
@@ -55,5 +51,9 @@ class Api::V1::ReservesController < ApplicationController
              session_token: SecureRandom.base64,
              session_expires_at: DateTime.now + Rational(5, 24 * 60), # FIXME:これいつまで許可？
              is_definitive_regist: false)
+  end
+
+  def definitive_reserve_params
+    params.permit(:reserve_id, :session_token)
   end
 end
