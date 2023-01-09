@@ -24,6 +24,7 @@ class Reserve < ApplicationRecord
   validates :email, presence: true, if: -> { contact == 'email' },
                     format: { with: EMAIL_REGEXP, message: 'is not an email' }
   validates :tel, presence: true, if: -> { contact == 'tel' }, length: { is: 11 }
+  validates :comment, length: { maximum: 140 }
 
   def end_date
     date + term

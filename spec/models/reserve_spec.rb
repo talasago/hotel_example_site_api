@@ -8,6 +8,7 @@ RSpec.describe Reserve, type: :model do
   it { is_expected.to validate_presence_of :head_count }
   it { is_expected.to validate_presence_of :username }
   it { is_expected.to validate_presence_of :contact }
+  it { is_expected.to validate_length_of(:comment).is_at_most(140) }
   it { is_expected.to validate_inclusion_of(:contact).in_array(['no', 'email', 'tel'])}
 
   context 'contact is email' do
