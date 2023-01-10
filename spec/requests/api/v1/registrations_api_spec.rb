@@ -27,5 +27,20 @@ RSpec.describe 'Api::V1::Registrations', type: :request do
         expect(response).to have_http_status(422)
       end
     end
+
+    context 'already registered user' do
+      let(:user) { FactoryBot.attributes_for(:user) }
+      before do
+        post '/api/v1/auth', params: user
+      end
+
+      it 'failed API call and not create a user' do
+        expect {
+          post '/api/v1/auth', params: user
+        }.to_not change(User, :count)
+        # emailのバリデーションに引っかかるので422
+        expect(response).to have_http_status(422)
+      end
+    end
   end
 end
