@@ -42,5 +42,18 @@ RSpec.describe 'Api::V1::Registrations', type: :request do
         expect(response).to have_http_status(422)
       end
     end
+
+    context 'auth_params in request header' do
+      let(:registed_user2) { FactoryBot.attributes_for(:user, :registed_user2) }
+      let(:auth_params) { sign_in(registed_user2) }
+      let(:creating_user) { FactoryBot.attributes_for(:user) }
+
+      it 'failed API call and not create a user' do
+        expect {
+          post '/api/v1/auth', params: creating_user, headers: auth_params
+        }.to_not change(User, :count)
+        expect(response).to have_http_status(403)
+      end
+    end
   end
 end
