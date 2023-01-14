@@ -20,7 +20,7 @@ class Api::V1::PlansController < ApplicationController
 
   def show
     #TODO:メソッド化してもいいかも
-    matched_plan = policy_scope(Plan.where(id: params[:id])).select(
+    matched_plan = policy_scope(Plan.where(plan_params)).select(
       '"plans".id AS plan_id,
       name AS plan_name,
       room_bill,
@@ -31,8 +31,6 @@ class Api::V1::PlansController < ApplicationController
       room_type_id'
     ).first
 
-    # TODO:Errorのクラスとか作って返した方が良いかも
-    # 403が正しいかも？
     render status: 401 and return if matched_plan.nil?
 
     render json: {
@@ -44,8 +42,6 @@ class Api::V1::PlansController < ApplicationController
     }
   end
 
-  # TODO:permitみたいなの必要かも
-
   private
 
   def generate_user_hash
@@ -54,5 +50,9 @@ class Api::V1::PlansController < ApplicationController
       tel: current_api_v1_user.tel,
       email: current_api_v1_user.email
     }
+  end
+
+  def plan_params
+    params.permit(:id)
   end
 end
