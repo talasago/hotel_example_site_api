@@ -10,7 +10,7 @@ class Api::V1::SessionsController < DeviseTokenAuth::SessionsController
 
   def destroy
     super
-    session["warden.user.user.key"] = nil
+    session['warden.user.user.key'] = nil
   end
 
   # @override
