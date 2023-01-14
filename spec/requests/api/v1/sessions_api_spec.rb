@@ -72,5 +72,12 @@ RSpec.describe 'Api::V1::Sessions', type: :request do
         expect(response).to have_http_status(401)
       end
     end
+
+    context 'header is null' do
+      it 'failed API call' do
+        delete '/api/v1/auth/sign_out'
+        expect(response).to have_http_status(404)
+      end
+    end
   end
 end
