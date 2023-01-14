@@ -23,7 +23,7 @@ RSpec.describe 'Api::V1::Mypages', type: :request do
       end
     end
 
-    context 'as an unautorized user' do
+    context 'not authenticated' do
       it 'failed API call and not delete a user' do
         aggregate_failures do
           expect {
@@ -54,7 +54,7 @@ RSpec.describe 'Api::V1::Mypages', type: :request do
       end
     end
 
-    context 'as an unautorized user' do
+    context 'not authenticatedr' do
       it 'failed API call' do
         get '/api/v1/mypage'
         expect(response).to have_http_status(401)
