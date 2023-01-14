@@ -34,12 +34,26 @@ RSpec.describe 'Api::V1::Sessions', type: :request do
     end
 
     context 'as an authenticated user' do
-      it 'failed API call and authentication' do
-        post '/api/v1/auth/sign_in', params: {
-          email: user[:email],
-          password: user[:password]
-        }, headers: @auth_params
-        expect(response).to have_http_status(401) 
+      context 'authenticated user and user trying to sign in are same' do
+        it 'failed API call and authentication' do
+          post '/api/v1/auth/sign_in', params: {
+            email: user[:email],
+            password: user[:password]
+          }, headers: @auth_params
+          expect(response).to have_http_status(401)
+        end
+      end
+
+      context 'authenticated user and user trying to sign in are different' do
+        let(:auth_params) { sign_in(FactoryBot.attributes_for(:user, :registed_user1)) }
+
+        it 'failed API call and authentication' do
+          post '/api/v1/auth/sign_in', params: {
+            email: user[:email],
+            password: user[:password]
+          }, headers: auth_params
+          expect(response).to have_http_status(401)
+        end
       end
     end
   end
