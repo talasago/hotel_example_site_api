@@ -9,6 +9,20 @@ module RequestSpecHelper
     get_auth_params(response)
   end
 
+  def generate_unnecessary_params
+    {
+      hoge: 'hoge',
+      fuga: 0,
+      piyo: false,
+      foo: ['foo1', 33, true],
+      bar: {
+        bar1: 'bar1',
+        bar2: 22,
+        bar3: false
+      }
+    }
+  end
+
   private
 
   def get_auth_params(response)

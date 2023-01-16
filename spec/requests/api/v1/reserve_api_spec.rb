@@ -196,5 +196,35 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
         end
       end
     end
+
+    context 'request body include unnecessary params' do
+      let(:params) { { session_token: session_token }.merge(generate_unnecessary_params) }
+
+      it 'successful API call and complete definitive registation' do
+        aggregate_failures do
+          expect {
+            post "/api/v1/reserve/#{reserve_id}", params: params
+          }.to_not change(Reserve, :count)
+          expect(response).to have_http_status(:success)
+
+          reserve_after_request = Reserve.find(reserve_id).attributes
+          expect(reserve_after_request).to eq reserve_before_post
+        end
+      end
+    end
+
+    context 'only unnecessary params exist in request body' do
+      it 'failed API call and remain provisional registration' do
+        aggregate_failures do
+          expect {
+            post "/api/v1/reserve/#{reserve_id}", params: generate_unnecessary_params
+          }.to_not change(Reserve, :count)
+          expect(response).to have_http_status(400)
+
+          reserve_after_request = Reserve.find(reserve_id).attributes
+          expect(reserve_after_request).to eq reserve_before_post
+        end
+      end
+    end
   end
 end
