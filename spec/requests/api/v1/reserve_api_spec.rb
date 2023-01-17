@@ -56,6 +56,43 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
           end
         end
       end
+
+      # NOTE:認証されているされていないで期待値が変わることはない想定なので、
+      # 認証されている場合のテストは実施せず、非認証の場合のみテストする
+      context 'request body include unnecessary params' do
+        let(:post_params) {
+          FactoryBot.attributes_for(:reserve, :with_email).merge(generate_unnecessary_params)
+        }
+        include_examples 'expectation when non-authenticated  and response successed'
+      end
+
+      # NOTE:認証されているされていないで期待値が変わることはない想定なので、
+      # 認証されている場合のテストは実施せず、非認証の場合のみテストする
+      context 'only unnecessary params exist in request body' do
+        let(:post_params) { generate_unnecessary_params }
+        it "failed API call and doesn't add provisional registration" do
+          aggregate_failures do
+            expect {
+              post '/api/v1/reserve', params: post_params
+            }.to_not change(Reserve, :count)
+            expect(response).to have_http_status(400)
+          end
+        end
+      end
+
+      # NOTE:認証されているされていないで期待値が変わることはない想定なので、
+      # 認証されている場合のテストは実施せず、非認証の場合のみテストする
+      context 'post_params is nil' do
+        let(:post_params) { generate_unnecessary_params }
+        it "failed API call and doesn't add provisional registration" do
+          aggregate_failures do
+            expect {
+              post '/api/v1/reserve'
+            }.to_not change(Reserve, :count)
+            expect(response).to have_http_status(400)
+          end
+        end
+      end
     end
 
     context 'as an authenticated user' do

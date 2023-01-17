@@ -1,12 +1,13 @@
 class Api::V1::ReservesController < ApplicationController
   def provisional_regist
+    reserve = Reserve.new(provisional_reserve_params)
+    render status: 400 and return unless reserve.valid?
+
+    # HACK: params[:plan_id]の取得方法
     render status: 401 and return if policy_scope(Plan.where(id: params[:plan_id])).empty?
 
-    reserve = Reserve.new(provisional_reserve_params)
-
-    unless reserve.save
-      render status: 400 and return
-    end
+    # TODO:save!にする。エラー発生時は500番台エラーとする
+    reserve.save
 
     render json: generate_response_body(reserve)
   end
