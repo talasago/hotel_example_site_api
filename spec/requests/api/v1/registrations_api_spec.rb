@@ -55,5 +55,36 @@ RSpec.describe 'Api::V1::Registrations', type: :request do
         expect(response).to have_http_status(403)
       end
     end
+
+    context 'request body include unnecessary params' do
+      let(:params) { FactoryBot.attributes_for(:user).merge(generate_unnecessary_params) }
+      it 'successful API call and create a user' do
+        aggregate_failures do
+          expect {
+            post '/api/v1/auth', params: params
+          }.to change(User, :count).by(1)
+          expect(response).to have_http_status(:success)
+        end
+      end
+    end
+
+    context 'only unnecessary params exist in request body' do
+      let(:params) { generate_unnecessary_params }
+      it "failed API call and doesn't create a user" do
+        aggregate_failures do
+          expect { post '/api/v1/auth', params: params }.to_not change(User, :count)
+          expect(response).to have_http_status(422)
+        end
+      end
+    end
+
+    context 'post_params is nil' do
+      it "failed API call and doesn't create a user" do
+        aggregate_failures do
+          expect { post '/api/v1/auth' }.to_not change(User, :count)
+          expect(response).to have_http_status(422)
+        end
+      end
+    end
   end
 end
