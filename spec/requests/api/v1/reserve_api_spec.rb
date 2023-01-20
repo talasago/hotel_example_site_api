@@ -83,7 +83,6 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
       # NOTE:認証されているされていないで期待値が変わることはない想定なので、
       # 認証されている場合のテストは実施せず、非認証の場合のみテストする
       context 'post_params is nil' do
-        let(:post_params) { generate_unnecessary_params }
         it "failed API call and doesn't add provisional registration" do
           aggregate_failures do
             expect {
