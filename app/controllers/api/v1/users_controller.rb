@@ -7,6 +7,8 @@ class Api::V1::UsersController < ApplicationController
   end
 
   def destroy
+    render status: 403 and return if current_api_v1_user.id.between?(1, 4)
+
     current_api_v1_user.destroy
   end
 

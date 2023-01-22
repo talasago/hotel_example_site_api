@@ -4,6 +4,7 @@ require 'json'
 RSpec.describe 'Api::V1::Mypages', type: :request do
   let!(:user) { FactoryBot.attributes_for(:user) }
 
+  # FIXME:毎回呼び出す必要ない。ならばletでいい。
   before do
     @auth_params = sign_up(user)
   end
@@ -42,6 +43,20 @@ RSpec.describe 'Api::V1::Mypages', type: :request do
             delete '/api/v1/mypage', headers: @auth_params, params: params
           }.to change(User, :count).by(-1)
           expect(response).to have_http_status(:success)
+        end
+      end
+    end
+
+    context 'users.id between 1 and 4' do
+      context 'users.id = 1' do
+        let(:auth_params) { sign_in(FactoryBot.attributes_for(:user, :registed_user1)) }
+        it "failed API call and doesn't delete a user" do
+          aggregate_failures do
+            expect {
+              delete '/api/v1/mypage', headers: auth_params
+            }.to_not change(User, :count)
+            expect(response).to have_http_status(403)
+          end
         end
       end
     end
