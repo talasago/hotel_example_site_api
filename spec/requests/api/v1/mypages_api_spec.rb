@@ -33,6 +33,18 @@ RSpec.describe 'Api::V1::Mypages', type: :request do
         end
       end
     end
+
+    context 'only unnecessary params exist in request body' do
+      let(:params) { generate_unnecessary_params }
+      it "failed API call and doesn't create a user" do
+        aggregate_failures do
+          expect {
+            delete '/api/v1/mypage', headers: @auth_params, params: params
+          }.to change(User, :count).by(-1)
+          expect(response).to have_http_status(:success)
+        end
+      end
+    end
   end
 
   describe 'GET /mypage' do
@@ -58,6 +70,16 @@ RSpec.describe 'Api::V1::Mypages', type: :request do
       it 'failed API call' do
         get '/api/v1/mypage'
         expect(response).to have_http_status(401)
+      end
+    end
+
+    context 'only unnecessary params exist in request body' do
+      let(:params) { generate_unnecessary_params }
+      it "failed API call and doesn't create a user" do
+        aggregate_failures do
+          get '/api/v1/mypage', headers: @auth_params, params: params
+          expect(response).to have_http_status(:success)
+        end
       end
     end
   end
