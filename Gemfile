@@ -48,6 +48,7 @@ group :development, :test do
   gem 'debug', platforms: %i[ mri mingw x64_mingw ]
 
   # RSpec
+  gem 'database_cleaner'
   gem 'factory_bot_rails'
   gem 'rspec-openapi'
   gem 'rspec-rails'
