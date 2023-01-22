@@ -31,7 +31,17 @@ rescue ActiveRecord::PendingMigrationError => e
   puts e.to_s.strip
   exit 1
 end
+
 RSpec.configure do |config|
+  config.before(:suite) do
+    # RSpec実行のDBのレコードが全削除され、seedデータが無くなる時がある。その際RSpecのテストが落ちてしまうためその対策。
+    DatabaseCleaner.strategy = :transaction
+    DatabaseCleaner.clean_with(:truncation)
+    load Rails.root.join('db', 'seeds.rb')
+    # seedでuserをすでに追加済み。users.idの開始番号を変更することで、RSpecが落ちないようにする。
+    ActiveRecord::Base.connection.execute("SELECT setval('users_id_seq', coalesce((SELECT MAX(id)+1 FROM users), 1), true)")
+  end
+
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
 
