@@ -1,7 +1,7 @@
 User.create!(id: 1, email: 'ichiro@example.com', username:'山田一郎', rank: 'premium', address: '東京都豊島区池袋', tel: '01234567891', gender: 1, birthday: nil, notification: true, password: 'password')
 User.create!(id: 2, email: 'sakura@example.com', username:'松本さくら', rank: 'normal', address: '神奈川県横浜市鶴見区大黒ふ頭', tel: nil, gender: 2, birthday: '2000/04/01', notification: false, password: 'pass1234')
 User.create!(id: 3, email: 'jun@example.com', username:'林潤', rank: 'premium', address: '大阪府大阪市北区梅田', tel: '01212341234', gender: 9, birthday: '1988/12/17', notification: false, password: 'pa55w0rd!')
-User.create!(id: 4, email: 'yoshiki@example.com', username:'木村良樹', rank: 'normal', address: nil, tel: '01298765432', gender: 0, birthday: '1992/08/31', notification: true, password: '	pass-pass')
+User.create!(id: 4, email: 'yoshiki@example.com', username:'木村良樹', rank: 'normal', address: nil, tel: '01298765432', gender: 0, birthday: '1992/08/31', notification: true, password: 'pass-pass')
 
 Plan.create!(id: 0, name: 'お得な特典付きプラン', room_bill: 7000, min_head_count: 1, max_head_count:	9, min_term: 1, max_term: 9, room_type_id: 2, only: nil)
 Plan.create!(id: 1, name: 'プレミアムプラン', room_bill: 10_000, min_head_count: 2, max_head_count: 9, min_term: 1, max_term: 9, room_type_id: 3, only: 'premium')
