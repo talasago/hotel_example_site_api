@@ -25,5 +25,10 @@ FactoryBot.define do
       email { 'sakura@example.com' }
       password { 'pass1234' }
     end
+
+    trait :registed_user4 do
+      email { 'yoshiki@example.com' }
+      password { 'pass-pass' }
+    end
   end
 end

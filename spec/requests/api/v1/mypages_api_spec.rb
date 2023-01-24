@@ -59,6 +59,18 @@ RSpec.describe 'Api::V1::Mypages', type: :request do
           end
         end
       end
+
+      context 'users.id = 4' do
+        let(:auth_params) { sign_in(FactoryBot.attributes_for(:user, :registed_user4)) }
+        it "failed API call and doesn't delete a user" do
+          aggregate_failures do
+            expect {
+              delete '/api/v1/mypage', headers: auth_params
+            }.to_not change(User, :count)
+            expect(response).to have_http_status(403)
+          end
+        end
+      end
     end
   end
 
