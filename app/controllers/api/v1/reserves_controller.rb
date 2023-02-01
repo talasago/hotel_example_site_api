@@ -7,7 +7,6 @@ class Api::V1::ReservesController < ApplicationController
       render status: 401 and return
     end
 
-    # TODO:save!にする。エラー発生時は500番台エラーとする
     reserve.save
 
     render json: generate_response_body(reserve)
