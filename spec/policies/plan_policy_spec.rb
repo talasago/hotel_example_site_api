@@ -1,5 +1,3 @@
-require "rails_helper"
-
 RSpec.describe PlanPolicy, type: :policy do
   describe 'scope' do
     let(:scope) { Pundit.policy_scope!(user, Plan) }

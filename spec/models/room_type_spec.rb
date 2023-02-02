@@ -1,5 +1,3 @@
-require 'rails_helper'
-
 RSpec.describe RoomType, type: :model do
   describe 'room_category_type_name' do
     context "room_type_name isn't nil and room_category_name isn't nil" do

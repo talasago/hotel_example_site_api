@@ -1,5 +1,3 @@
-require 'rails_helper'
-
 RSpec.describe Reserve, type: :model do
   it { is_expected.to validate_presence_of :plan_id }
   it { is_expected.to validate_presence_of :total_bill }

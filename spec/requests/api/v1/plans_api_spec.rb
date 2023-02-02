@@ -1,4 +1,3 @@
-require 'rails_helper'
 require 'json'
 
 RSpec.describe 'Api::V1::Plans', type: :request do

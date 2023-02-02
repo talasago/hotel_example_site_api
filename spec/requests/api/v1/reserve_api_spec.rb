@@ -1,5 +1,3 @@
-require 'rails_helper'
-
 RSpec.describe 'Api::V1::Reserves', type: :request do
   describe 'POST /reserve' do
     context 'not authenticated' do

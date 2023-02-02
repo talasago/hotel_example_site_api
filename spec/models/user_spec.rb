@@ -1,5 +1,3 @@
-require 'rails_helper'
-
 RSpec.describe User, type: :model do
   it { is_expected.to validate_presence_of :username }
   it { is_expected.to validate_length_of(:tel).is_equal_to(11).allow_nil }
