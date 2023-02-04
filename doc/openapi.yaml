@@ -2,7 +2,9 @@
 openapi: 3.0.3
 info:
   title: APIテスト自動化学習用API
-  # description: TODO: 認証に関する説明。ログイン状態を作る時にaurorizeしてね。そうでない時はログイン状態ではないとみなします。
+  description: |-
+    /auth または /auth/sign_inを呼び出し、Response headersの値をAuthorizeボタン入力後の画面に入力すると、
+    各API呼び出し時、ログイン中の状態とみなして処理します。
   # license: TODO:
   version: 0.1.0
 servers:
