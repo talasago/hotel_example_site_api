@@ -116,6 +116,8 @@ paths:
               example:
                 errors:
                 - You need to sign in or sign up before continuing.
+        '403':
+          description: 削除不可(ユーザーID=1~4は削除不可)
   /auth/sign_in:
     post:
       summary: ログイン(サインイン)し、ログイン状態に必要なaccess-tokenとclientとuidを返します
@@ -341,12 +343,7 @@ paths:
                   tel:
                   email: sakura@example.com
         '401':
-          description: failed API call a plan where plans.only is premium
-          content:
-            text/plain:
-              schema:
-                type: string
-              example: " "
+          description: 認証エラー
   /auth:
     post:
       summary: ユーザーを作成し、ログイン状態に必要なaccess-tokenとclientとuidを返します
@@ -373,14 +370,53 @@ paths:
         '200':
           description: 成功
         '422':
-          description: failed API call and not create a user
+          description: 登録失敗
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  errors:
+                  status:
+                    type: string
+                  data:
                     type: object
+                    properties:
+                      id:
+                        nullable: true
+                      provider:
+                        type: string
+                      uid:
+                        type: string
+                      allow_password_change:
+                        type: boolean
+                      username:
+                        nullable: true
+                        type: string
+                      nickname:
+                        nullable: true
+                      image:
+                        nullable: true
+                      email:
+                        nullable: true
+                        type: string
+                      created_at:
+                        nullable: true
+                      updated_at:
+                        nullable: true
+                      rank:
+                        type: string
+                      address:
+                        type: string
+                      tel:
+                        type: string
+                      gender:
+                        type: integer
+                      birthday:
+                        type: string
+                      notification:
+                        type: boolean
+                  errors:
+                    type: array
                     properties:
                       password:
                         type: array
@@ -398,18 +434,32 @@ paths:
                         type: array
                         items:
                           type: string
+                    items:
+                      type: string
+                  success:
+                    type: boolean
               example:
+                status: error
+                data:
+                  id:
+                  provider: email
+                  uid: ''
+                  allow_password_change: false
+                  username: TestUser
+                  nickname:
+                  image:
+                  email: test10@example.com
+                  created_at:
+                  updated_at:
+                  rank: normal
+                  address: HOGE県
+                  tel: '00000000000'
+                  gender: 9
+                  birthday: '1989-12-30'
+                  notification: true
                 errors:
-                  password:
-                  - can't be blank
-                  email:
-                  - can't be blank
-                  username:
-                  - can't be blank
-                  full_messages:
-                  - Password can't be blank
-                  - Email can't be blank
-                  - Username can't be blank
+                - Please submit proper sign up data in request body.
+                success: false
   /reserve:
     post:
       summary: 宿泊予約を仮登録します
@@ -453,7 +503,7 @@ paths:
             example:
               plan_id: 2
               total_bill: 13625
-              date: 2023/01/08
+              date: '2023/01/08'
               term: '1'
               head_count: '1'
               breakfast: 'true'
@@ -523,6 +573,10 @@ paths:
                 plan_name: ディナー付きプラン
                 start_date: 2023/01/08
                 end_date: 2023/01/09
+        '400':
+          description: リクエストのパラメータが不正
+        '401':
+          description: 認証エラー
   /reserve/{reserve_id}:
     post:
       summary: 宿泊予約を本登録します
@@ -549,12 +603,11 @@ paths:
         '200':
           description: 成功
         '400':
-          description: failed API call and remain provisional registration
-          content:
-            text/plain:
-              schema:
-                type: string
-              example: " "
+          description: リクエストのパラメータが不正
+        '404':
+          description: 指定されたデータが非存在
+        '409':
+          description: リクエストのデータが現在の状態と競合
   /auth/sign_out:
     delete:
       summary: ログアウトし、ログイン情報(access-tokenとclientとuid)を無効化します
@@ -567,3 +620,20 @@ paths:
       responses:
         '200':
           description: 成功
+        '404':
+          description: 指定されたデータが非存在
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  errors:
+                    type: array
+                    items:
+                      type: string
+              example:
+                success: false
+                errors:
+                - User was not found or was not logged in.
