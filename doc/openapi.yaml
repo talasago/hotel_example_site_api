@@ -5,7 +5,6 @@ info:
   description: |-
     /auth または /auth/sign_inを呼び出し、Response headersの値をAuthorizeボタン入力後の画面に入力すると、
     各API呼び出し時、ログイン中の状態とみなして処理します。
-  # license: TODO:
   version: 0.1.0
 servers:
   - url: http://localhost:3000/api/v1
@@ -170,10 +169,6 @@ paths:
       summary: 宿泊プランの一覧を返します。未ログイン(リクエストヘッダ未設定)の場合、誰でも予約可能なプランを返します。ログイン済み(リクエストヘッダ設定済)の場合、ログインユーザーのランクに応じた予約可能プランを返します。
       tags:
       - Plan
-      security:
-      - client: []
-        access-token: []
-        uid: []
       responses:
         '200':
           description: 成功
@@ -269,10 +264,6 @@ paths:
         schema:
           type: integer
         example: 0
-      security:
-      - client: []
-        access-token: []
-        uid: []
       responses:
         '200':
           description: 成功
