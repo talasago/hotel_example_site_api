@@ -356,16 +356,34 @@ paths:
             schema:
               type: object
               properties:
-                username:
-                  type: string
                 email:
                   type: string
                 password:
                   type: string
+                username:
+                  type: string
+                rank:
+                  type: string
+                address:
+                  type: string
+                tel:
+                  type: string
+                gender:
+                  type: integer
+                birthday:
+                  type: string
+                notification:
+                  type: boolean 
             example:
-              username: 'testuser55'
-              email: 'hoge@example.com'
+              email: test9@example.com
               password: password
+              username: TestUser
+              rank: normal
+              address: HOGE県
+              tel: '00000000000'
+              gender: 9
+              birthday: '1989/12/30'
+              notification: true
       responses:
         '200':
           description: 成功
