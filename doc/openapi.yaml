@@ -171,6 +171,10 @@ paths:
       summary: 宿泊プランの一覧を返します。未ログイン(リクエストヘッダ未設定)の場合、誰でも予約可能なプランを返します。ログイン済み(リクエストヘッダ設定済)の場合、ログインユーザーのランクに応じた予約可能プランを返します。
       tags:
       - Plan
+      security:
+      - client: []
+        access-token: []
+        uid: []
       responses:
         '200':
           description: 成功
@@ -259,6 +263,10 @@ paths:
       summary: 宿泊予約用に、宿泊プランの詳細を返します。未ログイン(リクエストヘッダ未設定)の場合、誰でも予約可能なプランのIDを指定すると成功します。ログイン済み(リクエストヘッダ設定済)の場合、ログインユーザーのランクに応じた予約可能プランのIDを指定すると成功します。
       tags:
       - Plan
+      security:
+      - client: []
+        access-token: []
+        uid: []
       parameters:
       - name: plan_id
         in: path
@@ -373,7 +381,7 @@ paths:
                 birthday:
                   type: string
                 notification:
-                  type: boolean 
+                  type: boolean
             example:
               email: test9@example.com
               password: password
