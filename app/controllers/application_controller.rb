@@ -8,7 +8,6 @@ class ApplicationController < ActionController::API
 
   before_action :configure_permitted_parameters, if: :devise_controller?
 
-
   def pundit_user
     current_api_v1_user
   end
@@ -25,6 +24,7 @@ class ApplicationController < ActionController::API
   private
 
   def render_500_error(error)
+    logger.unknown error
     render json: { errors: [{ message: 'Internal server error.' }] },
            status: :internal_server_error
   end
