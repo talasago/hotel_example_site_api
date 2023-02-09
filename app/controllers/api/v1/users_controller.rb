@@ -19,7 +19,7 @@ class Api::V1::UsersController < ApplicationController
       only: [:email, :username, :rank, :address, :tel,
              :gender, :birthday, :notification]
     )
-    res['birthday'] = res['birthday'].gsub(/-/, '/')
+    res['birthday'] = res['birthday']&.gsub(/-/, '/')
     res
   end
 end
