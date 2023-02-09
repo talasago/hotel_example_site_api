@@ -221,7 +221,7 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
       it 'failed API call and remain provisional registration' do
         aggregate_failures do
           expect {
-            post "/api/v1/reserve/#{reserve_id}"
+            post "/api/v1/reserve/#{reserve_id}", params: { session_token: session_token }
           }.to_not change(Reserve, :count)
           expect(response).to have_http_status(409)
 

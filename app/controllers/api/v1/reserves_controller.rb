@@ -19,8 +19,8 @@ class Api::V1::ReservesController < ApplicationController
       render status: 404 and return
     end
 
-    render status: 400 and return unless reserve.session_token == definitive_reserve_params[:session_token]
     render status: 409 and return if reserve.is_definitive_regist # すでに本登録済みならばエラーとする
+    render status: 400 and return unless reserve.session_token == definitive_reserve_params[:session_token]
 
     update_reserve(reserve)
     render :json
