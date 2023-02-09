@@ -5,11 +5,8 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
   include DeviseTokenAuth::Concerns::User
 
-  # FIXME:Reserveと共通化
-  # NOTE: メールアドレスのバリデーションは、input type="email">と同じとした。
-  # https://developer.mozilla.org/ja/docs/Web/HTML/Element/input/email
-  # https://html.spec.whatwg.org/multipage/input.html#valid-e-mail-address
-  DeviseTokenAuthEmailValidator::EMAIL_REGEXP = /\A[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*\z/
+  # NOTE:DeviseTokenAuthでemail形式変える方法が他に無さそうだったため、やむなく定数に再代入
+  DeviseTokenAuthEmailValidator::EMAIL_REGEXP = Constants::EMAIL_REGEXP
 
   validates :username, presence: true
   validates :tel, allow_nil: true, length: { is: 11 }
