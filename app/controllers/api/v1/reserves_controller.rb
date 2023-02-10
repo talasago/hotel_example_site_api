@@ -42,7 +42,6 @@ class Api::V1::ReservesController < ApplicationController
     reserve.session_token = nil
     reserve.session_expires_at = nil
 
-    # TODO:save!にする。エラー発生時は500番台エラーとする
     reserve.save
   end
 
