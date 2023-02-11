@@ -3,13 +3,12 @@ require 'json'
 RSpec.describe 'Api::V1::Mypages', type: :request do
   let!(:user) { FactoryBot.attributes_for(:user) }
 
-  # FIXME:毎回呼び出す必要ない。ならばletでいい。
-  before do
-    @auth_params = sign_up(user)
-  end
-
   describe 'DELETE /mypage' do
     context 'as an authenticated user' do
+      before do
+        @auth_params = sign_up(user)
+      end
+
       it 'successful API call and delete a user and error when calling API that require authentication' do
         aggregate_failures do
           expect {
@@ -36,6 +35,10 @@ RSpec.describe 'Api::V1::Mypages', type: :request do
 
     context 'only unnecessary params exist in request body' do
       let(:params) { generate_unnecessary_params }
+      before do
+        @auth_params = sign_up(user)
+      end
+
       it "failed API call and doesn't create a user" do
         aggregate_failures do
           expect {
@@ -81,6 +84,10 @@ RSpec.describe 'Api::V1::Mypages', type: :request do
         u
       end
 
+      before do
+        @auth_params = sign_up(user)
+      end
+
       it 'successful API call and include user info and include specified key' do
         get '/api/v1/mypage', headers: @auth_params
         res_body = JSON.parse(response.body, symbolize_names: true)
@@ -101,6 +108,10 @@ RSpec.describe 'Api::V1::Mypages', type: :request do
 
     context 'only unnecessary params exist in request body' do
       let(:params) { generate_unnecessary_params }
+      before do
+        @auth_params = sign_up(user)
+      end
+
       it "failed API call and doesn't create a user" do
         aggregate_failures do
           get '/api/v1/mypage', headers: @auth_params, params: params
