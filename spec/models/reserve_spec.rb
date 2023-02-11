@@ -14,7 +14,6 @@ RSpec.describe Reserve, type: :model do
     it { is_expected.to validate_presence_of :email }
 
     context 'when email format valid' do
-      #FIXME:FactoryBot使った方が良いかも
       let(:reserve_email_valid) { Reserve.new(contact: 'email', email: 'example@example.com') }
       it 'error message not contained' do
         reserve_email_valid.valid?
@@ -43,7 +42,6 @@ RSpec.describe Reserve, type: :model do
     it { is_expected.to validate_presence_of :date }
 
     context 'when date is today' do
-      #FIXME:FactoryBot使った方が良いかも
       let(:reserve_date_valid) { Reserve.new(date: Date.today) }
       it 'be valid' do
         reserve_date_valid.valid?
