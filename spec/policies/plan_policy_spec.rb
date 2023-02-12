@@ -2,7 +2,7 @@ RSpec.describe PlanPolicy, type: :policy do
   describe 'scope' do
     let(:scope) { Pundit.policy_scope!(user, Plan) }
 
-    context 'user.rank is premium' do
+    context 'when user.rank is premium' do
       let(:user) { User.new(rank: 'premium') }
 
       it 'plan.only include nil/premium/normal' do
@@ -11,7 +11,7 @@ RSpec.describe PlanPolicy, type: :policy do
       end
     end
 
-    context 'user.rank is normal' do
+    context 'when user.rank is normal' do
       let(:user) { User.new(rank: 'normal') }
 
       it 'plan.only include nil/normal' do
@@ -21,7 +21,7 @@ RSpec.describe PlanPolicy, type: :policy do
       end
     end
 
-    context 'user is nil' do
+    context 'when user is nil' do
       let(:user) { nil }
 
       it 'plan.only include nil' do
