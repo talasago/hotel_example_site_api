@@ -1,8 +1,8 @@
 RSpec.describe 'Api::V1::Reserves', type: :request do
   describe 'POST /reserve' do
-    context 'not authenticated' do
-      shared_examples 'expectation when non-authenticated  and response successed' do
-        it 'successful API call and create a "reserve" and include specified key' do
+    context 'when non-authenticated' do
+      shared_examples 'expectation when non-authenticated and response successed' do
+        it 'API call successful and add provisional registration and include specified key' do
           aggregate_failures do
             expect {
               post '/api/v1/reserve', params: post_params
@@ -21,31 +21,31 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
         end
       end
 
-      context 'plan.only is null' do
+      context 'when plan.only is null' do
         # NOTE: 各連絡情報のありなしでレスポンスボディの内容が変わることは無いので、
         # ここ以外で"contact is XXX"の分岐でテストは実施しない
         context 'contact is "no"' do
           let(:post_params) { FactoryBot.attributes_for(:reserve) }
-          include_examples 'expectation when non-authenticated  and response successed'
+          include_examples 'expectation when non-authenticated and response successed'
         end
 
-        context 'concact is tel' do
+        context 'when concact is tel' do
           let(:post_params) { FactoryBot.attributes_for(:reserve, :with_tel) }
-          include_examples 'expectation when non-authenticated  and response successed'
+          include_examples 'expectation when non-authenticated and response successed'
         end
 
-        context 'contact is email' do
+        context 'when contact is email' do
           let(:post_params) { FactoryBot.attributes_for(:reserve, :with_email) }
-          include_examples 'expectation when non-authenticated  and response successed'
+          include_examples 'expectation when non-authenticated and response successed'
         end
       end
 
       # NOTE: プランごとのuser.rank判定は、policy_specでテスト済みなので、
       # 'plan.only is normal'のテストは実施しない
-      context 'plan.only is premium' do
+      context 'when plan.only is premium' do
         let(:post_params) { FactoryBot.attributes_for(:reserve, :with_only_premium) }
 
-        it "failed API call and doesn't add provisional registration" do
+        it "API call failed and doesn't add provisional registration" do
           aggregate_failures do
             expect {
               post '/api/v1/reserve', params: post_params
@@ -57,18 +57,19 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
 
       # NOTE:認証されているされていないで期待値が変わることはない想定なので、
       # 認証されている場合のテストは実施せず、非認証の場合のみテストする
-      context 'request body include unnecessary params' do
+      context 'when request body include unnecessary params' do
         let(:post_params) {
           FactoryBot.attributes_for(:reserve, :with_email).merge(generate_unnecessary_params)
         }
-        include_examples 'expectation when non-authenticated  and response successed'
+        include_examples 'expectation when non-authenticated and response successed'
       end
 
       # NOTE:認証されているされていないで期待値が変わることはない想定なので、
       # 認証されている場合のテストは実施せず、非認証の場合のみテストする
-      context 'only unnecessary params exist in request body' do
+      context 'when only unnecessary params exist in request body' do
         let(:post_params) { generate_unnecessary_params }
-        it "failed API call and doesn't add provisional registration" do
+
+        it "API call failed and doesn't add provisional registration" do
           aggregate_failures do
             expect {
               post '/api/v1/reserve', params: post_params
@@ -80,8 +81,8 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
 
       # NOTE:認証されているされていないで期待値が変わることはない想定なので、
       # 認証されている場合のテストは実施せず、非認証の場合のみテストする
-      context 'post_params is nil' do
-        it "failed API call and doesn't add provisional registration" do
+      context 'when post_params is nil' do
+        it "API call failed and doesn't add provisional registration" do
           aggregate_failures do
             expect {
               post '/api/v1/reserve'
@@ -92,15 +93,15 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
       end
     end
 
-    context 'as an authenticated user' do
+    context 'when user is authenticated' do
       # NOTE: プランごとのuser.rank判定は、policy_specでテスト済みなので、
       # 最低限のuser.rankとplan.onlyの組み合わせしかテストを実施しない
-      context 'user.rank is premium' do
-        context 'plan.only is premium' do
+      context 'when user.rank is premium' do
+        context 'when plan.only is premium' do
           let(:auth_params) { sign_in(**FactoryBot.attributes_for(:user, :registed_user1)) }
           let(:post_params) { FactoryBot.attributes_for(:reserve, :with_only_premium) }
 
-          it 'successful API call' do
+          it 'API call successful' do
             # NOTE: ユーザーのランクに応じてレスポンスボディの内容が変わるわけではないので、
             # レスポンスボディのキーや日付形式などのexpectは割愛
             aggregate_failures do
@@ -113,12 +114,12 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
         end
       end
 
-      context 'user.rank is normal' do
-        context 'plan.only is premium' do
+      context 'when user.rank is normal' do
+        context 'when plan.only is premium' do
           let(:auth_params) { sign_in(**FactoryBot.attributes_for(:user, :registed_user2)) }
           let(:post_params) { FactoryBot.attributes_for(:reserve, :with_only_premium) }
 
-          it "failed API call and doesn't add provisional registration" do
+          it "API call failed and doesn't add provisional registration" do
             aggregate_failures do
               expect {
                 post '/api/v1/reserve', params: post_params, headers: auth_params
@@ -130,10 +131,10 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
       end
     end
 
-    context 'validation error' do
+    context 'when validation error' do
       let(:params) { { plan_id: 0 } }
 
-      it "failed API call and doesn't add provisional registration" do
+      it "API call failed and doesn't add provisional registration" do
         aggregate_failures do
           expect {
             post '/api/v1/reserve', params: params
@@ -153,8 +154,8 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
     let(:reserve_before_post) { Reserve.find(reserve_id).attributes }
     let(:session_token) { @res_body_provisional_regist['session_token'] }
 
-    context 'token does match' do
-      it 'successful API call and complete definitive registation' do
+    context 'when token does match' do
+      it 'API call successful and complete definitive registation' do
         aggregate_failures do
           expect {
             post "/api/v1/reserve/#{reserve_id}", params: { session_token: session_token }
@@ -167,10 +168,10 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
       end
     end
 
-    context "token doesn't match" do
+    context "when token doesn't match" do
       let(:invalid_session_token) { 'hogehogehoge' }
 
-      it 'failed API call and remain provisional registration' do
+      it 'API call failed and remain provisional registration' do
         aggregate_failures do
           expect {
             post "/api/v1/reserve/#{reserve_id}", params: { session_token: invalid_session_token }
@@ -183,8 +184,8 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
       end
     end
 
-    context 'token is nil' do
-      it 'failed API call and remain provisional registration' do
+    context 'when token is nil' do
+      it 'API call failed and remain provisional registration' do
         aggregate_failures do
           expect {
             post "/api/v1/reserve/#{reserve_id}"
@@ -197,13 +198,13 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
       end
     end
 
-    context 'not exist reserve_id' do
+    context 'when not exist reserve_id' do
       before do
         Reserve.find(reserve_id).delete
       end
       let(:session_token_after_request) { @res_body_provisional_regist['session_token'] }
 
-      it 'failed API call' do
+      it 'API call failed' do
         aggregate_failures do
           expect {
             post "/api/v1/reserve/#{reserve_id}", params: { session_token: session_token_after_request }
@@ -213,12 +214,12 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
       end
     end
 
-    context 'already provisional registered(is_definitive_regist is true)' do
+    context 'when already provisional registered(is_definitive_regist is true)' do
       before do
         post "/api/v1/reserve/#{reserve_id}", params: { session_token: session_token }
       end
 
-      it 'failed API call and remain provisional registration' do
+      it 'API call failed and remain provisional registration' do
         aggregate_failures do
           expect {
             post "/api/v1/reserve/#{reserve_id}", params: { session_token: session_token }
@@ -231,10 +232,10 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
       end
     end
 
-    context 'request body include unnecessary params' do
+    context 'when request body include unnecessary params' do
       let(:params) { { session_token: session_token }.merge(generate_unnecessary_params) }
 
-      it 'successful API call and complete definitive registation' do
+      it 'API call successful and complete definitive registation' do
         aggregate_failures do
           expect {
             post "/api/v1/reserve/#{reserve_id}", params: params
@@ -247,8 +248,8 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
       end
     end
 
-    context 'only unnecessary params exist in request body' do
-      it 'failed API call and remain provisional registration' do
+    context 'when only unnecessary params exist in request body' do
+      it 'API call failed and remain provisional registration' do
         aggregate_failures do
           expect {
             post "/api/v1/reserve/#{reserve_id}", params: generate_unnecessary_params
