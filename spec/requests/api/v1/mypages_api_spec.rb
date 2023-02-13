@@ -4,12 +4,12 @@ RSpec.describe 'Api::V1::Mypages', type: :request do
   let!(:user) { FactoryBot.attributes_for(:user) }
 
   describe 'DELETE /mypage' do
-    context 'as an authenticated user' do
+    context 'when user is authenticated' do
       before do
         @auth_params = sign_up(user)
       end
 
-      it 'successful API call and delete a user and error when calling API that require authentication' do
+      it 'API call successful and delete a user. Then, an error when calling API that require authentication' do
         aggregate_failures do
           expect {
             delete '/api/v1/mypage', headers: @auth_params
@@ -22,8 +22,8 @@ RSpec.describe 'Api::V1::Mypages', type: :request do
       end
     end
 
-    context 'not authenticated' do
-      it 'failed API call and not delete a user' do
+    context 'when non-authenticated' do
+      it 'API call failed and not delete a user' do
         aggregate_failures do
           expect {
             delete '/api/v1/mypage'
@@ -33,13 +33,13 @@ RSpec.describe 'Api::V1::Mypages', type: :request do
       end
     end
 
-    context 'only unnecessary params exist in request body' do
+    context 'when only unnecessary params exist in request body' do
       let(:params) { generate_unnecessary_params }
       before do
         @auth_params = sign_up(user)
       end
 
-      it "failed API call and doesn't create a user" do
+      it "API call failed and doesn't create a user" do
         aggregate_failures do
           expect {
             delete '/api/v1/mypage', headers: @auth_params, params: params
@@ -52,7 +52,8 @@ RSpec.describe 'Api::V1::Mypages', type: :request do
     context 'users.id between 1 and 4' do
       context 'users.id = 1' do
         let(:auth_params) { sign_in(FactoryBot.attributes_for(:user, :registed_user1)) }
-        it "failed API call and doesn't delete a user" do
+
+        it 'API call failed and user is not deleted' do
           aggregate_failures do
             expect {
               delete '/api/v1/mypage', headers: auth_params
@@ -64,7 +65,8 @@ RSpec.describe 'Api::V1::Mypages', type: :request do
 
       context 'users.id = 4' do
         let(:auth_params) { sign_in(FactoryBot.attributes_for(:user, :registed_user4)) }
-        it "failed API call and doesn't delete a user" do
+
+        it 'API call failed and user is not deleted' do
           aggregate_failures do
             expect {
               delete '/api/v1/mypage', headers: auth_params
@@ -77,7 +79,7 @@ RSpec.describe 'Api::V1::Mypages', type: :request do
   end
 
   describe 'GET /mypage' do
-    context 'as an authenticated user' do
+    context 'when user is authenticated' do
       let!(:expect_user) do
         u = user.deep_dup
         u.delete(:password)
@@ -88,7 +90,7 @@ RSpec.describe 'Api::V1::Mypages', type: :request do
         @auth_params = sign_up(user)
       end
 
-      it 'successful API call and include user info and include specified key' do
+      it 'API call successful and include user info and include specified key' do
         get '/api/v1/mypage', headers: @auth_params
         res_body = JSON.parse(response.body, symbolize_names: true)
 
@@ -99,20 +101,20 @@ RSpec.describe 'Api::V1::Mypages', type: :request do
       end
     end
 
-    context 'not authenticatedr' do
-      it 'failed API call' do
+    context 'when non-authenticated' do
+      it 'API call failed' do
         get '/api/v1/mypage'
         expect(response).to have_http_status(401)
       end
     end
 
-    context 'only unnecessary params exist in request body' do
+    context 'when only unnecessary params exist in request body' do
       let(:params) { generate_unnecessary_params }
       before do
         @auth_params = sign_up(user)
       end
 
-      it "failed API call and doesn't create a user" do
+      it "API call failed and doesn't create a user" do
         aggregate_failures do
           get '/api/v1/mypage', headers: @auth_params, params: params
           expect(response).to have_http_status(:success)
