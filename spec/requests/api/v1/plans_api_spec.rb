@@ -6,7 +6,7 @@ RSpec.describe 'Api::V1::Plans', type: :request do
 
   describe 'GET /plans' do
     shared_examples 'expectation GET /plans' do
-      it 'successful API call and sort by plan_id asc and include specified keys' do
+      it 'API call successful and sort by plan_id asc and include specified keys' do
         get '/api/v1/plans', headers: auth_params
         res_body = JSON.parse(response.body)
         ids = res_body['plans'].map { |plan| plan['plan_id'] }
@@ -27,18 +27,18 @@ RSpec.describe 'Api::V1::Plans', type: :request do
       end
     end
 
-    context 'not authenticated' do
+    context 'when non-authenticated' do
       let(:auth_params) { nil }
       include_examples 'expectation GET /plans'
     end
 
-    context 'as an authenticated user' do
-      context 'only of user is premium' do
+    context 'when user is authenticated' do
+      context 'when user.only is premium' do
         let(:auth_params) { sign_in(registed_user1) }
         include_examples 'expectation GET /plans'
       end
 
-      context 'only of user is normal' do
+      context 'when user.only is normal' do
         let(:auth_params) { sign_in(registed_user2) }
         include_examples 'expectation GET /plans'
       end
@@ -46,10 +46,10 @@ RSpec.describe 'Api::V1::Plans', type: :request do
   end
 
   describe 'GET /plan/:id' do
-    context 'not authenticated' do
-      context "room_type isn't null" do
-        it 'successful API call a plan where plans.only is null and include specified response body' do
-          get '/api/v1/plan/0'
+    context 'when non-authenticated' do
+      context "when room_type isn't null" do
+        it 'API call to acquire data for "plans.only is null" succeeds and include specified response body' do
+          get '/api/v1/plan/0' #
           res_body = JSON.parse(response.body, symbolize_names: true)
 
           aggregate_failures do
@@ -80,29 +80,29 @@ RSpec.describe 'Api::V1::Plans', type: :request do
         end
       end
 
-      it 'failed API call a plan where plans.only is premium' do
-        get '/api/v1/plan/1'
+      it 'API call to acquire data for "plans.only is premium" failed' do
+        get '/api/v1/plan/1' # plans.only is premium
         expect(response).to have_http_status(401)
       end
 
-      it 'failed API call a plan where plans.only is normal' do
+      it 'API call to acquire data for "plans.only is normal" failed' do
         get '/api/v1/plan/3'
         expect(response).to have_http_status(401)
       end
     end
 
-    context 'as an authenticated user' do
-      context 'users.rank is premium' do
+    context 'when user is authenticated' do
+      context 'when users.rank is premium' do
         let(:auth_params) { sign_in(registed_user1) }
 
-        it 'successful API call a plan where plans.only is null' do
+        it 'API call to acquire data for "plans.only is null" succeeds and include specified response body' do
           get '/api/v1/plan/0', headers: auth_params
           # 認可周りはplan_policy_specでテスト済みなので、詳細なエクスペクテーションは割愛
           expect(response).to have_http_status(:success)
         end
 
-        context "room_type isn't null" do
-          it 'successful API call a plan where plans.only is premium and include specified response body' do
+        context "when room_type isn't null" do
+          it 'API call to acquire data for "plans.only is premium" succeeds and include specified response body' do
             get '/api/v1/plan/1', headers: auth_params
             res_body = JSON.parse(response.body, symbolize_names: true)
 
@@ -138,29 +138,29 @@ RSpec.describe 'Api::V1::Plans', type: :request do
           end
         end
 
-        it 'successful API call a plan where plans.only is normal' do
+        it 'API call to acquire data for "plans.only is normal" succeeds and include specified response body' do
           get '/api/v1/plan/3', headers: auth_params
           # 認可周りはplan_policy_specでテスト済みなので、詳細なエクスペクテーションは割愛
           expect(response).to have_http_status(:success)
         end
       end
 
-      context 'users.rank is normal' do
+      context 'when users.rank is normal' do
         let(:auth_params) { sign_in(registed_user2) }
 
-        it 'successful API call a plan where plans.only is null' do
+        it 'API call to acquire data for "plans.only is null" succeeds and include specified response body' do
           get '/api/v1/plan/0', headers: auth_params
           # 認可周りはplan_policy_specでテスト済みなので、詳細なエクスペクテーションは割愛
           expect(response).to have_http_status(:success)
         end
 
-        it 'failed API call a plan where plans.only is premium' do
+        it 'API call to acquire data for "plans.only is premium" failed' do
           get '/api/v1/plan/1', headers: auth_params
           expect(response).to have_http_status(401)
         end
 
-        context 'room_type is null' do
-          it 'successful API call a plan where plans.only is normal and include specified response body' do
+        context 'when room_type is null' do
+          it 'API call to acquire data for "plans.only is normal" succeeds and include specified response body' do
             get '/api/v1/plan/3', headers: auth_params
             res_body = JSON.parse(response.body, symbolize_names: true)
 
@@ -180,7 +180,7 @@ RSpec.describe 'Api::V1::Plans', type: :request do
                   user: {
                     username: '松本さくら',
                     tel: nil,
-                    email: 'sakura@example.com',
+                    email: 'sakura@example.com'
                   },
                   room_type: nil
                 }
