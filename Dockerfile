@@ -3,9 +3,9 @@ FROM ruby:3.1.2
 ENV TZ Asia/Tokyo
 
 RUN apt-get update -qq && apt-get install -y nodejs postgresql-client
-WORKDIR /myapp
-COPY Gemfile /myapp/Gemfile
-COPY Gemfile.lock /myapp/Gemfile.lock
+WORKDIR /hotel_example_site_restapi
+COPY Gemfile /hotel_example_site_restapi/Gemfile
+COPY Gemfile.lock /hotel_example_site_restapi/Gemfile.lock
 RUN bundle update --bundler && \
     bundle install
 

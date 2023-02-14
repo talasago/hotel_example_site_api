@@ -8,8 +8,8 @@ default: &default
 
 development:
   <<: *default
-  database: myapp_development
+  database: hotel_example_site_restapi_development
 
 test:
   <<: *default
-  database: myapp_test
+  database: hotel_example_site_restapi_test
