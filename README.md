@@ -12,6 +12,7 @@
 ```bash
 git clone git@github.com:talasago/hotel-example-site-restapi.git  
 cd [repository_root] 
+```
 
 2.dockerで起動
 ```bash
@@ -25,7 +26,6 @@ docker compose up -d
 
 4.RSpecを実行する場合
 ```bash
-docker compose run web rails db:create RAILS_ENV=test
 docker compose run web rails db:migrate RAILS_ENV=test
 docker compose run web rails db:seed RAILS_ENV=test
 
