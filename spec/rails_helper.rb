@@ -26,6 +26,7 @@ require Rails.root.join('spec/support/requests_spec_helper.rb').to_s
 # Checks for pending migrations and applies them before tests are run.
 # If you are not using ActiveRecord, you can remove these lines.
 begin
+  # RSpec実行時にmigrationが発生することで、DBのレコードが全削除され、seedデータが無くなる時がある。
   ActiveRecord::Migration.maintain_test_schema!
 rescue ActiveRecord::PendingMigrationError => e
   puts e.to_s.strip
@@ -34,7 +35,8 @@ end
 
 RSpec.configure do |config|
   config.before(:suite) do
-    # RSpec実行のDBのレコードが全削除され、seedデータが無くなる時がある。その際RSpecのテストが落ちてしまうためその対策。
+    # RSpec実行時にmigrationが発生することで、DBのレコードが全削除され、seedデータが無くなる時がある。その時テストが落ちてしまう。
+    # 以下はその対策。
     DatabaseCleaner.strategy = :transaction
     DatabaseCleaner.clean_with(:truncation)
     load Rails.root.join('db', 'seeds.rb')
