@@ -1,16 +1,24 @@
 # このリポジトリの概要
-[テスト自動化練習サイト](https://hotel.testplanisphere.dev/ja/index.html)
-をイメージして、REST API(内部的API)verとして作成した
+[テスト自動化の学習用の練習サイト](https://hotel.testplanisphere.dev/ja/index.html)をイメージして、ローカル(Docker上)でWebAPI(システムの内部向けAPI)を叩ける環境を作成した。  
+
+# WebAPIの仕様
+- [コチラ](# 使い方)を参考にAPIの仕様はSwaggerを確認ください。
+
+## テスト自動化の学習用の練習サイトとは異なる仕様
+- ユーザーのアイコンの変更(画像のアップロード)が不可である点
 
 # 環境
 - Ruby 3.1.2
 - Rails 7.0.4
 - PostgreSQL
+- devise(認証)
+- DeviseTokenAuth(認証)
+- pundit(認可)
  
 # 使い方
 1.リポジトリクローン
 ```bash
-git clone git@github.com:talasago/hotel-example-site-restapi.git  
+# TODO:URL書く
 cd [repository_root] 
 ```
 
@@ -22,7 +30,7 @@ docker compose run web rails db:migrate
 docker compose run web rails db:seed
 docker compose up -d  
 ```
-3.Swaggerがhttp://localhost:8080 にアクセスすることで見れるようになる
+3.http://localhost:8080 にアクセスするとSwaggerが見れる
 
 4.RSpecを実行する場合
 ```bash
