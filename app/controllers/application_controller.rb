@@ -28,7 +28,7 @@ class ApplicationController < ActionController::API
 
   def render_500_error(error)
     logger.unknown error
-    render json: { errors: [{ message: 'Internal server error.' }] },
+    render json: { message: 'Internal server error.' },
            status: :internal_server_error
   end
 
@@ -39,6 +39,6 @@ class ApplicationController < ActionController::API
 
   def render_401_error(error)
     logger.error error
-    render json: { errors: [{ message: error }] }, status: :unauthorized
+    render json: { message: error.message }, status: :unauthorized
   end
 end
