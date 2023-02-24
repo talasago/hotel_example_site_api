@@ -140,6 +140,10 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
             post '/api/v1/reserve', params: params
           }.to_not change(Reserve, :count)
           expect(response).to have_http_status(400)
+
+          res_body = JSON.parse(response.body)
+          expect(res_body['message']).to_not eq nil
+          expect(res_body['errors']).to_not be_empty
         end
       end
     end

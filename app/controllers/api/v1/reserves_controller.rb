@@ -1,7 +1,10 @@
 class Api::V1::ReservesController < ApplicationController
   def provisional_regist
     reserve = Reserve.new(provisional_reserve_params)
-    render status: 400 and return unless reserve.valid?
+    unless reserve.valid?
+      raise HotelExampleSiteApiExceptions::BadRequestError
+        .new('Input value is invalid.', reserve.errors.full_messages)
+    end
 
     if policy_scope(Plan.where(id: provisional_reserve_params[:plan_id])).empty?
       raise HotelExampleSiteApiExceptions::UnauthorizedError
@@ -53,6 +56,7 @@ class Api::V1::ReservesController < ApplicationController
     params
       .permit(:plan_id, :total_bill, :term, :head_count, :breakfast, :early_check_in,
               :sightseeing, :username, :contact, :tel, :email, :comment)
+      #TODO:日付型以外の時の考慮。nullの時の考慮
       .merge(date: params[:date]&.to_date,
              session_token: SecureRandom.base64,
              session_expires_at: DateTime.now + Rational(5, 24 * 60), # 5分後
