@@ -217,13 +217,11 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
       before do
         Reserve.find(reserve_id).delete
       end
-      #FIXME:何だこの変数名
-      let(:session_token_after_request) { @res_body_provisional_regist['session_token'] }
 
       it 'API call failed' do
         aggregate_failures do
           expect {
-            post "/api/v1/reserve/#{reserve_id}", params: { session_token: session_token_after_request }
+            post "/api/v1/reserve/#{reserve_id}", params: { session_token: session_token }
           }.to_not change(Reserve, :count)
           expect(response).to have_http_status(404)
         end
