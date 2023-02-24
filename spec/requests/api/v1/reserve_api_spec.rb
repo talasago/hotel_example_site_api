@@ -150,9 +150,9 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
       post '/api/v1/reserve', params: { **FactoryBot.attributes_for(:reserve, :with_email) }
       @res_body_provisional_regist = JSON.parse(response.body)
     end
-    let(:reserve_id) { @res_body_provisional_regist['reserve_id'] }
-    let(:reserve_before_post) { Reserve.find(reserve_id).attributes }
-    let(:session_token) { @res_body_provisional_regist['session_token'] }
+    let!(:reserve_id) { @res_body_provisional_regist['reserve_id'] }
+    let!(:reserve_before_request) { Reserve.find(reserve_id).attributes }
+    let!(:session_token) { @res_body_provisional_regist['session_token'] }
 
     context 'when token does match' do
       context 'when session_token does not expires after provisional registration' do
@@ -163,9 +163,9 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
             }.to_not change(Reserve, :count)
             expect(response).to have_http_status(:success)
 
-            #FIXME:このあさーとは意味がない
-            reserve_after_request = Reserve.find(reserve_id).attributes
-            expect(reserve_after_request).to eq reserve_before_post
+            except_keys = ['is_definitive_regist', 'session_token', 'session_expires_at']
+            reserve_after_request = Reserve.find(reserve_id).attributes.except(*except_keys)
+            expect(reserve_after_request).to eq reserve_before_request.except(*except_keys)
           end
         end
       end
@@ -180,7 +180,7 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
           expect(response).to have_http_status(409)
 
           # reservesレコードが変わってないことの確認
-          expect(Reserve.find(reserve_id).attributes).to eq reserve_before_post
+          expect(Reserve.find(reserve_id).attributes).to eq reserve_before_request
         end
       end
     end
@@ -195,9 +195,7 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
           }.to_not change(Reserve, :count)
           expect(response).to have_http_status(400)
 
-          # attributesって何だっけ？値だっけ？
-          reserve_after_request = Reserve.find(reserve_id).attributes
-          expect(reserve_after_request).to eq reserve_before_post
+          expect(Reserve.find(reserve_id).attributes).to eq reserve_before_request
         end
       end
     end
@@ -210,8 +208,7 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
           }.to_not change(Reserve, :count)
           expect(response).to have_http_status(400)
 
-          reserve_after_request = Reserve.find(reserve_id).attributes
-          expect(reserve_after_request).to eq reserve_before_post
+          expect(Reserve.find(reserve_id).attributes).to eq reserve_before_request
         end
       end
     end
@@ -233,10 +230,11 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
       end
     end
 
-    context 'when already provisional registered(is_definitive_regist is true)' do
+    context 'when definitive registered has been already completed(is_definitive_regist is true)' do
       before do
         post "/api/v1/reserve/#{reserve_id}", params: { session_token: session_token }
       end
+      let!(:definitive_reserve_before_request) { Reserve.find(reserve_id).attributes }
 
       it 'API call failed and remain provisional registration' do
         aggregate_failures do
@@ -245,8 +243,7 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
           }.to_not change(Reserve, :count)
           expect(response).to have_http_status(409)
 
-          reserve_after_request = Reserve.find(reserve_id).attributes
-          expect(reserve_after_request).to eq reserve_before_post
+          expect(Reserve.find(reserve_id).attributes).to eq definitive_reserve_before_request
         end
       end
     end
@@ -261,8 +258,9 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
           }.to_not change(Reserve, :count)
           expect(response).to have_http_status(:success)
 
-          reserve_after_request = Reserve.find(reserve_id).attributes
-          expect(reserve_after_request).to eq reserve_before_post
+          except_keys = ['is_definitive_regist', 'session_token', 'session_expires_at']
+          reserve_after_request = Reserve.find(reserve_id).attributes.except(*except_keys)
+          expect(reserve_after_request).to eq reserve_before_request.except(*except_keys)
         end
       end
     end
@@ -275,8 +273,7 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
           }.to_not change(Reserve, :count)
           expect(response).to have_http_status(400)
 
-          reserve_after_request = Reserve.find(reserve_id).attributes
-          expect(reserve_after_request).to eq reserve_before_post
+          expect(Reserve.find(reserve_id).attributes).to eq reserve_before_request
         end
       end
     end
