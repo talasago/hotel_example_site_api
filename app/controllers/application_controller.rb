@@ -1,5 +1,7 @@
 class ApplicationController < ActionController::API
+  # TODO:別ファイル分割
   rescue_from StandardError, with: :render_500_error
+  rescue_from HotelExampleSiteApiExceptions::UnauthorizedError, with: :render_401_error
 
   include DeviseTokenAuth::Concerns::SetUserByToken
   include Pundit::Authorization
@@ -27,5 +29,10 @@ class ApplicationController < ActionController::API
     logger.unknown error
     render json: { errors: [{ message: 'Internal server error.' }] },
            status: :internal_server_error
+  end
+
+  def render_401_error(error)
+    logger.error error
+    render json: { errors: [{ message: error }] }, status: :unauthorized
   end
 end

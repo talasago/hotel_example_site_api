@@ -11,7 +11,10 @@ class Api::V1::PlansController < ApplicationController
   def show
     matched_plan = search_plan
 
-    render status: 401 and return if matched_plan.nil?
+    if matched_plan.nil?
+      raise HotelExampleSiteApiExceptions::UnauthorizedError
+        .new('Only users of the membership rank specified in the plan can access the system.')
+    end
 
     render json: {
       plan: matched_plan.as_json(except: [:id, :room_type_id]),

@@ -4,7 +4,8 @@ class Api::V1::ReservesController < ApplicationController
     render status: 400 and return unless reserve.valid?
 
     if policy_scope(Plan.where(id: provisional_reserve_params[:plan_id])).empty?
-      render status: 401 and return
+      raise HotelExampleSiteApiExceptions::UnauthorizedError
+        .new('Only users of the membership rank specified in the plan can access the system.')
     end
 
     reserve.save
