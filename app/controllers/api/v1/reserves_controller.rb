@@ -19,7 +19,11 @@ class Api::V1::ReservesController < ApplicationController
       render status: 404 and return
     end
 
-    render status: 409 and return if reserve.is_definitive_regist # すでに本登録済みならばエラーとする
+    if reserve.is_definitive_regist || # すでに本登録済みならばエラー
+      DateTime.now > reserve.session_expires_at.to_datetime # 有効時間が過ぎていればエラー
+      render status: 409 and return
+    end
+    # FIXME:右辺と左辺逆
     render status: 400 and return unless reserve.session_token == definitive_reserve_params[:session_token]
 
     update_reserve(reserve)

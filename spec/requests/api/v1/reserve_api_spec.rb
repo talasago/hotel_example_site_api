@@ -155,15 +155,32 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
     let(:session_token) { @res_body_provisional_regist['session_token'] }
 
     context 'when token does match' do
-      it 'API call successful and complete definitive registation' do
-        aggregate_failures do
+      context 'when session_token does not expires after provisional registration' do
+        it 'API call successful and complete definitive registation' do
+          aggregate_failures do
+            expect {
+              post "/api/v1/reserve/#{reserve_id}", params: { session_token: session_token }
+            }.to_not change(Reserve, :count)
+            expect(response).to have_http_status(:success)
+
+            #FIXME:このあさーとは意味がない
+            reserve_after_request = Reserve.find(reserve_id).attributes
+            expect(reserve_after_request).to eq reserve_before_post
+          end
+        end
+      end
+
+      context 'when session_token expires after provisional registration' do
+        it 'API call failed and remain provisional registration' do
+          travel_to(DateTime.now + Rational(5, 24 * 60) + Rational(1, 24 * 60 * 60)) # 現在時刻を変更
+
           expect {
             post "/api/v1/reserve/#{reserve_id}", params: { session_token: session_token }
           }.to_not change(Reserve, :count)
-          expect(response).to have_http_status(:success)
+          expect(response).to have_http_status(409)
 
-          reserve_after_request = Reserve.find(reserve_id).attributes
-          expect(reserve_after_request).to eq reserve_before_post
+          # reservesレコードが変わってないことの確認
+          expect(Reserve.find(reserve_id).attributes).to eq reserve_before_post
         end
       end
     end
@@ -178,6 +195,7 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
           }.to_not change(Reserve, :count)
           expect(response).to have_http_status(400)
 
+          # attributesって何だっけ？値だっけ？
           reserve_after_request = Reserve.find(reserve_id).attributes
           expect(reserve_after_request).to eq reserve_before_post
         end
@@ -202,6 +220,7 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
       before do
         Reserve.find(reserve_id).delete
       end
+      #FIXME:何だこの変数名
       let(:session_token_after_request) { @res_body_provisional_regist['session_token'] }
 
       it 'API call failed' do
