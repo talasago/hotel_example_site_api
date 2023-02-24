@@ -20,11 +20,10 @@ class Api::V1::ReservesController < ApplicationController
     end
 
     if reserve.is_definitive_regist || # すでに本登録済みならばエラー
-      DateTime.now > reserve.session_expires_at.to_datetime # 有効時間が過ぎていればエラー
+       DateTime.now > reserve.session_expires_at.to_datetime # 有効時間が過ぎていればエラー
       render status: 409 and return
     end
-    # FIXME:右辺と左辺逆
-    render status: 400 and return unless reserve.session_token == definitive_reserve_params[:session_token]
+    render status: 400 and return unless definitive_reserve_params[:session_token] == reserve.session_token
 
     update_reserve(reserve)
     render :json
