@@ -27,7 +27,11 @@ class Api::V1::ReservesController < ApplicationController
        DateTime.now > reserve.session_expires_at.to_datetime # 有効時間が過ぎていればエラー
       render status: 409 and return
     end
-    render status: 400 and return unless definitive_reserve_params[:session_token] == reserve.session_token
+
+    unless definitive_reserve_params[:session_token] == reserve.session_token
+      raise HotelExampleSiteApiExceptions::BadRequestError
+        .new('Session token does not match.')
+    end
 
     update_reserve(reserve)
     render :json

@@ -210,8 +210,10 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
           expect {
             post "/api/v1/reserve/#{reserve_id}"
           }.to_not change(Reserve, :count)
-          expect(response).to have_http_status(400)
+          res_body = JSON.parse(response.body)
 
+          expect(response).to have_http_status(400)
+          expect(res_body['message']).to_not eq nil
           expect(Reserve.find(reserve_id).attributes).to eq reserve_before_request
         end
       end
@@ -273,8 +275,10 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
           expect {
             post "/api/v1/reserve/#{reserve_id}", params: generate_unnecessary_params
           }.to_not change(Reserve, :count)
-          expect(response).to have_http_status(400)
+          res_body = JSON.parse(response.body)
 
+          expect(response).to have_http_status(400)
+          expect(res_body['message']).to_not eq nil
           expect(Reserve.find(reserve_id).attributes).to eq reserve_before_request
         end
       end
