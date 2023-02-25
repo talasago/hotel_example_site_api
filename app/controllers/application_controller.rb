@@ -4,6 +4,7 @@ class ApplicationController < ActionController::API
   rescue_from HotelExampleSiteApiExceptions::BadRequestError, with: :render_400_error
   rescue_from HotelExampleSiteApiExceptions::UnauthorizedError, with: :render_401_error
   rescue_from HotelExampleSiteApiExceptions::ForbiddenError, with: :render_403_error
+  rescue_from ActiveRecord::RecordNotFound, with: :render_404_error
 
   include DeviseTokenAuth::Concerns::SetUserByToken
   include Pundit::Authorization
@@ -46,5 +47,10 @@ class ApplicationController < ActionController::API
   def render_403_error(error)
     logger.error error
     render json: { message: error.message }, status: :forbidden
+  end
+
+  def render_404_error(error)
+    logger.error error
+    render json: { message: 'Not found.' }, status: :not_found
   end
 end

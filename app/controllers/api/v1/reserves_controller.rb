@@ -17,11 +17,7 @@ class Api::V1::ReservesController < ApplicationController
   end
 
   def definitive_regist
-    begin
-      reserve = Reserve.find_by!(id: definitive_reserve_params[:reserve_id])
-    rescue ActiveRecord::RecordNotFound
-      render status: 404 and return
-    end
+    reserve = Reserve.find_by!(id: definitive_reserve_params[:reserve_id])
 
     if reserve.is_definitive_regist || # すでに本登録済みならばエラー
        DateTime.now > reserve.session_expires_at.to_datetime # 有効時間が過ぎていればエラー
