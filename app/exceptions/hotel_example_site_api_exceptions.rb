@@ -5,6 +5,7 @@ module HotelExampleSiteApiExceptions
     def initialize(message = nil, details = [])
       @message = message
       @details = details
+      super(message)
     end
   end
 
