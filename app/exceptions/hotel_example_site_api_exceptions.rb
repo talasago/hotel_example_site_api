@@ -11,4 +11,5 @@ module HotelExampleSiteApiExceptions
 
   class UnauthorizedError < ActionController::BadRequest; end
   class ForbiddenError < ActionController::BadRequest; end
+  class ConflictError < ActionController::BadRequest; end
 end

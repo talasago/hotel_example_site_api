@@ -183,6 +183,9 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
           }.to_not change(Reserve, :count)
           expect(response).to have_http_status(409)
 
+          res_body = JSON.parse(response.body)
+          expect(res_body['message']).to_not eq nil
+
           # reservesレコードが変わってないことの確認
           expect(Reserve.find(reserve_id).attributes).to eq reserve_before_request
         end
@@ -249,6 +252,9 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
             post "/api/v1/reserve/#{reserve_id}", params: { session_token: session_token }
           }.to_not change(Reserve, :count)
           expect(response).to have_http_status(409)
+
+          res_body = JSON.parse(response.body)
+          expect(res_body['message']).to_not eq nil
 
           expect(Reserve.find(reserve_id).attributes).to eq definitive_reserve_before_request
         end

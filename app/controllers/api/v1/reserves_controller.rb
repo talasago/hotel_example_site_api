@@ -19,9 +19,13 @@ class Api::V1::ReservesController < ApplicationController
   def definitive_regist
     reserve = Reserve.find_by!(id: definitive_reserve_params[:reserve_id])
 
-    if reserve.is_definitive_regist || # すでに本登録済みならばエラー
-       DateTime.now > reserve.session_expires_at.to_datetime # 有効時間が過ぎていればエラー
-      render status: 409 and return
+    if reserve.is_definitive_regist # すでに本登録済みならばエラー
+      raise HotelExampleSiteApiExceptions::ConflictError
+        .new('Already completed reservation registration.')
+    end
+
+    if DateTime.now > reserve.session_expires_at.to_datetime # 有効時間が過ぎていればエラー
+      raise HotelExampleSiteApiExceptions::ConflictError.new('Session token expiration.')
     end
 
     unless definitive_reserve_params[:session_token] == reserve.session_token
