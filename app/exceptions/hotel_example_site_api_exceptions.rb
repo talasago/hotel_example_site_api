@@ -1,5 +1,4 @@
 module HotelExampleSiteApiExceptions
-  class UnauthorizedError < ActionController::BadRequest; end
   class BadRequestError < ActionController::BadRequest
     attr_reader :message, :details
 
@@ -8,4 +7,7 @@ module HotelExampleSiteApiExceptions
       @details = details
     end
   end
+
+  class UnauthorizedError < ActionController::BadRequest; end
+  class ForbiddenError < ActionController::BadRequest; end
 end

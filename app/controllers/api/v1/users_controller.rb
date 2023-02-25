@@ -7,7 +7,9 @@ class Api::V1::UsersController < ApplicationController
   end
 
   def destroy
-    render status: 403 and return if current_api_v1_user.id.between?(1, 4)
+    if current_api_v1_user.id.between?(1, 4)
+      raise HotelExampleSiteApiExceptions::ForbiddenError.new('Users with IDs 1~4 cannot delete.')
+    end
 
     current_api_v1_user.destroy
   end

@@ -46,6 +46,9 @@ RSpec.describe 'Api::V1::Registrations', type: :request do
           post '/api/v1/auth', params: creating_user, headers: auth_params
         }.to_not change(User, :count)
         expect(response).to have_http_status(403)
+
+        res_body = JSON.parse(response.body)
+        expect(res_body['message']).to_not eq nil
       end
     end
 

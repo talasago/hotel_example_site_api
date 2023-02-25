@@ -59,6 +59,9 @@ RSpec.describe 'Api::V1::Mypages', type: :request do
               delete '/api/v1/mypage', headers: auth_params
             }.to_not change(User, :count)
             expect(response).to have_http_status(403)
+
+            res_body = JSON.parse(response.body)
+            expect(res_body['message']).to_not eq nil
           end
         end
       end
@@ -72,6 +75,9 @@ RSpec.describe 'Api::V1::Mypages', type: :request do
               delete '/api/v1/mypage', headers: auth_params
             }.to_not change(User, :count)
             expect(response).to have_http_status(403)
+
+            res_body = JSON.parse(response.body)
+            expect(res_body['message']).to_not eq nil
           end
         end
       end
