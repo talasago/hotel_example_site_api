@@ -50,10 +50,9 @@ class Api::V1::ReservesController < ApplicationController
 
   def provisional_reserve_params
     params
-      .permit(:plan_id, :total_bill, :term, :head_count, :breakfast, :early_check_in,
+      .permit(:plan_id, :total_bill, :date, :term, :head_count, :breakfast, :early_check_in,
               :sightseeing, :username, :contact, :tel, :email, :comment)
-      .merge(date: params[:date]&.to_date,
-             session_token: SecureRandom.base64,
+      .merge(session_token: SecureRandom.base64,
              session_expires_at: DateTime.now + Rational(5, 24 * 60), # 5分後
              is_definitive_regist: false)
   end
