@@ -12,4 +12,21 @@ class Api::V1::RegistrationsController < DeviseTokenAuth::RegistrationsControlle
   def render_create_success
     render :json
   end
+
+  protected
+
+  # @override
+  def render_error(status, message, data = nil)
+    response = { message: message }
+    response = response.merge(data) if data
+    render json: response, status: status
+  end
+
+  # @override
+  def render_create_error
+    render json: {
+      message: I18n.t('errors.messages.validate_sign_up_params')  ,
+      errors: resource_data
+    }, status: 422
+  end
 end

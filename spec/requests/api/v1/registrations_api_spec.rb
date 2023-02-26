@@ -18,8 +18,13 @@ RSpec.describe 'Api::V1::Registrations', type: :request do
       let(:user) { FactoryBot.attributes_for(:user, :invalid) }
 
       it 'API call failed and not create a user' do
-        expect {post '/api/v1/auth', params: user }.to_not change(User, :count)
-        expect(response).to have_http_status(422)
+        aggregate_failures do
+          expect { post '/api/v1/auth', params: user }.to_not change(User, :count)
+          res_body = JSON.parse(response.body)
+
+          expect(response).to have_http_status(422)
+          expect(res_body['message']).to_not eq nil
+        end
       end
     end
 
@@ -30,9 +35,14 @@ RSpec.describe 'Api::V1::Registrations', type: :request do
       end
 
       it 'API call failed and not create a user' do
-        expect { post '/api/v1/auth', params: user }.to_not change(User, :count)
-        # emailのバリデーションに引っかかるので422
-        expect(response).to have_http_status(422)
+        aggregate_failures do
+          expect { post '/api/v1/auth', params: user }.to_not change(User, :count)
+          # emailのバリデーションに引っかかるので422
+          res_body = JSON.parse(response.body)
+
+          expect(response).to have_http_status(422)
+          expect(res_body['message']).to_not eq nil
+        end
       end
     end
 
@@ -69,7 +79,10 @@ RSpec.describe 'Api::V1::Registrations', type: :request do
       it "API call failed and doesn't create a user" do
         aggregate_failures do
           expect { post '/api/v1/auth', params: params }.to_not change(User, :count)
+          res_body = JSON.parse(response.body)
+
           expect(response).to have_http_status(422)
+          expect(res_body['message']).to_not eq nil
         end
       end
     end
@@ -78,7 +91,10 @@ RSpec.describe 'Api::V1::Registrations', type: :request do
       it "API call failed and doesn't create a user" do
         aggregate_failures do
           expect { post '/api/v1/auth' }.to_not change(User, :count)
+          res_body = JSON.parse(response.body)
+
           expect(response).to have_http_status(422)
+          expect(res_body['message']).to_not eq nil
         end
       end
     end
