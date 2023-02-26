@@ -5,7 +5,9 @@ class Reserve < ApplicationRecord
   belongs_to :plan
 
   validates :plan_id, presence: true
-  validates :total_bill, presence: true, numericality: { equal_to: :calc_total_bill }
+  validates :total_bill, presence: true,
+                         if: Proc.new { !plan_id.blank? && !term.blank? && !date.blank? },
+                         numericality: { equal_to: :calc_total_bill }
   validates :date, presence: true,
                    comparison: {
                      greater_than_or_equal_to: Proc.new { Date.today },
@@ -45,8 +47,6 @@ class Reserve < ApplicationRecord
   end
 
   def calc_total_bill
-    return if plan_id.blank? || term.blank? || date.blank?
-
     calc_basic_bill + calc_additional_bill
   end
 

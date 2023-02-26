@@ -13,6 +13,10 @@ FactoryBot.define do
     contact { 'no' }
     comment { 'comment_test' }
 
+    trait :date_nil do
+      date { nil }
+    end
+
     trait :with_tel do
       contact { 'tel' }
       tel { '09000000000' }

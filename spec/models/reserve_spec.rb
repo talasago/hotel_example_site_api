@@ -1,7 +1,5 @@
 RSpec.describe Reserve, type: :model do
   it { is_expected.to validate_presence_of :plan_id }
-  it { is_expected.to validate_presence_of :total_bill }
-  it { is_expected.to validate_numericality_of :total_bill }
   it { is_expected.to validate_presence_of :term }
   it { is_expected.to validate_presence_of :head_count }
   it { is_expected.to validate_presence_of :username }
@@ -35,6 +33,26 @@ RSpec.describe Reserve, type: :model do
     it 'validation of tel is enable' do
       is_expected.to validate_presence_of :tel
       is_expected.to validate_length_of(:tel).is_equal_to(11)
+    end
+  end
+
+  describe 'when total_bill' do
+    subject { Reserve.new(reserve_for_total_bill) }
+
+    context 'not all plan_id, term, and date are null' do
+      let(:reserve_for_total_bill) { FactoryBot.attributes_for(:reserve) }
+
+      it { is_expected.to validate_presence_of :total_bill }
+      it { is_expected.to validate_numericality_of :total_bill }
+    end
+
+    context 'when date is nil' do
+      let(:reserve_for_total_bill) { FactoryBot.attributes_for(:reserve, :date_nil) }
+
+      it 'be valid' do
+        subject.valid?
+        expect(subject.errors[:total_bill]).to be_empty
+      end
     end
   end
 
@@ -88,6 +106,14 @@ RSpec.describe Reserve, type: :model do
         reserve = Reserve.new(date: Date.new(2022, 12, 1))
         reserve.valid?
         expect(reserve.errors[:date]).to include(include('must be less than or equal to'))
+      end
+    end
+
+    context 'when a string cannot be changed to a date type' do
+      subject { Reserve.new(date: 'hogehogehoge') }
+      it 'be invalid' do
+        subject.valid?
+        expect(subject.errors[:date]).to_not be_empty
       end
     end
 
