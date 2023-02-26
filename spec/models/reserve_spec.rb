@@ -109,6 +109,14 @@ RSpec.describe Reserve, type: :model do
       end
     end
 
+    context 'when a string cannot be changed to a date type' do
+      subject { Reserve.new(date: 'hogehogehoge') }
+      it 'be invalid' do
+        subject.valid?
+        expect(subject.errors[:date]).to_not be_empty
+      end
+    end
+
     describe 'leap year' do
       context 'when 3months later is the end of February in leap year' do
         it 'be valid if the date is February 29' do
