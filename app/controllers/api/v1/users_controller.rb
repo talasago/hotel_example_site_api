@@ -24,4 +24,11 @@ class Api::V1::UsersController < ApplicationController
     res['birthday'] = res['birthday']&.gsub(/-/, '/')
     res
   end
+
+  # @override
+  # devise_token_auth/lib/devise_token_auth./controllers/helpers.rb
+  def render_authenticate_error
+    raise HotelExampleSiteApiExceptions::UnauthorizedError
+      .new('You need to sign in or sign up before continuing.')
+  end
 end
