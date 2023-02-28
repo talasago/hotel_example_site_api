@@ -46,7 +46,7 @@ RSpec.describe 'Api::V1::Registrations', type: :request do
       end
     end
 
-    context 'when auth_params in request header' do
+    context 'when already logged in' do
       let(:registed_user2) { FactoryBot.attributes_for(:user, :registed_user2) }
       let(:auth_params) { sign_in(registed_user2) }
       let(:creating_user) { FactoryBot.attributes_for(:user) }
