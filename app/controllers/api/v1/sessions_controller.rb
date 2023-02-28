@@ -30,9 +30,7 @@ class Api::V1::SessionsController < DeviseTokenAuth::SessionsController
   protected
 
   # @override
-  def render_error(status, message, data = nil)
-    response = { message: message }
-    response = response.merge(data) if data
-    render json: response, status: status
+  def render_error(status, message, _ = nil)
+    render json: { message: message }, status: status
   end
 end
