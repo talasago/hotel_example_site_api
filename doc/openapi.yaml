@@ -58,11 +58,12 @@ paths:
                     type: string
                   address:
                     nullable: true
+                    type: string
                   tel:
                     nullable: true
                     type: string
                   gender:
-                    type: string
+                    type: integer
                   birthday:
                     nullable: true
                     type: string
@@ -84,13 +85,10 @@ paths:
               schema:
                 type: object
                 properties:
-                  errors:
-                    type: array
-                    items:
-                      type: string
+                  message:
+                    type: string
               example:
-                errors:
-                - You need to sign in or sign up before continuing.
+                message: You need to sign in or sign up before continuing.
     delete:
       summary: ユーザーを削除します
       tags:
@@ -109,15 +107,21 @@ paths:
               schema:
                 type: object
                 properties:
-                  errors:
-                    type: array
-                    items:
-                      type: string
+                  message:
+                    type: string
               example:
-                errors:
-                - You need to sign in or sign up before continuing.
+                message: You need to sign in or sign up before continuing.
         '403':
           description: 削除不可(ユーザーID=1~4は削除不可)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: Users with IDs 1~4 cannot delete.
   /auth/sign_in:
     post:
       summary: ログイン(サインイン)し、ログイン状態に必要なaccess-tokenとclientとuidを返します
@@ -156,16 +160,10 @@ paths:
               schema:
                 type: object
                 properties:
-                  success:
-                    type: boolean
-                  errors:
-                    type: array
-                    items:
-                      type: string
+                  message:
+                    type: string
               example:
-                success: false
-                errors:
-                - Invalid login credentials. Please try again.
+                message: Invalid login credentials. Please try again.
   /plans:
     get:
       summary: 宿泊プランの一覧を返します。未ログイン(リクエストヘッダ未設定)の場合、誰でも予約可能なプランを返します。ログイン済み(リクエストヘッダ設定済)の場合、ログインユーザーのランクに応じた予約可能プランを返します。
@@ -208,14 +206,14 @@ paths:
                   plan_name: お得な特典付きプラン
                   room_bill: 7000
                   min_head_count: 1
-                  only:
+                  only: null
                   room_category_type_name: スタンダードツイン
                 - plan_id: 2
                   plan_name: ディナー付きプラン
                   room_bill: 8500
                   min_head_count: 1
                   only: normal
-                  room_category_type_name:
+                  room_category_type_name: null
                 - plan_id: 3
                   plan_name: お得なプラン
                   room_bill: 6000
@@ -226,38 +224,38 @@ paths:
                   plan_name: 素泊まり
                   room_bill: 5500
                   min_head_count: 1
-                  only:
+                  only: null
                   room_category_type_name: シングル
                 - plan_id: 5
                   plan_name: 出張ビジネスプラン
                   room_bill: 7500
                   min_head_count: 1
-                  only:
+                  only: null
                   room_category_type_name: シングル
                 - plan_id: 6
                   plan_name: エステ・マッサージプラン
                   room_bill: 9000
                   min_head_count: 1
-                  only:
+                  only: null
                   room_category_type_name:
                 - plan_id: 7
                   plan_name: 貸し切り露天風呂プラン
                   room_bill: 9000
                   min_head_count: 1
-                  only:
+                  only: null
                   room_category_type_name:
                 - plan_id: 8
                   plan_name: カップル限定プラン
                   room_bill: 8000
                   min_head_count: 2
-                  only:
+                  only: null
                   room_category_type_name: プレミアムツイン
                 - plan_id: 9
                   plan_name: テーマパーク優待プラン
                   room_bill: 10000
                   min_head_count: 1
-                  only:
-                  room_category_type_name:
+                  only: null
+                  room_category_type_name: null
   /plan/{plan_id}:
     get:
       summary: 宿泊予約用に、宿泊プランの詳細を返します。未ログイン(リクエストヘッダ未設定)の場合、誰でも予約可能なプランのIDを指定すると成功します。ログイン済み(リクエストヘッダ設定済)の場合、ログインユーザーのランクに応じた予約可能プランのIDを指定すると成功します。
@@ -321,14 +319,12 @@ paths:
                     nullable: true
                     type: object
                     properties:
-                      user_name:
+                      username:
                         type: string
                       tel:
                         type: string
                         nullable: true
                       email:
-                        type: string
-                      username:
                         type: string
               example:
                 plan:
@@ -348,10 +344,19 @@ paths:
                   room_category_type_name: ['ユニット式バス・トイレ', '独立洗面台']
                 user:
                   username: 松本さくら
-                  tel:
+                  tel: null
                   email: sakura@example.com
         '401':
           description: 認証エラー
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: Only users of the membership rank specified in the plan can access the system.
   /auth:
     post:
       summary: ユーザーを作成し、ログイン状態に必要なaccess-tokenとclientとuidを返します
@@ -395,6 +400,17 @@ paths:
       responses:
         '200':
           description: 成功
+        '403':
+          description: アクセス不可
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: Cannot sign on why you are already signed in.
         '422':
           description: 登録失敗
           content:
@@ -402,90 +418,10 @@ paths:
               schema:
                 type: object
                 properties:
-                  status:
+                  message:
                     type: string
-                  data:
-                    type: object
-                    properties:
-                      id:
-                        nullable: true
-                      provider:
-                        type: string
-                      uid:
-                        type: string
-                      allow_password_change:
-                        type: boolean
-                      username:
-                        nullable: true
-                        type: string
-                      nickname:
-                        nullable: true
-                      image:
-                        nullable: true
-                      email:
-                        nullable: true
-                        type: string
-                      created_at:
-                        nullable: true
-                      updated_at:
-                        nullable: true
-                      rank:
-                        type: string
-                      address:
-                        type: string
-                      tel:
-                        type: string
-                      gender:
-                        type: integer
-                      birthday:
-                        type: string
-                      notification:
-                        type: boolean
-                  errors:
-                    type: array
-                    properties:
-                      password:
-                        type: array
-                        items:
-                          type: string
-                      email:
-                        type: array
-                        items:
-                          type: string
-                      username:
-                        type: array
-                        items:
-                          type: string
-                      full_messages:
-                        type: array
-                        items:
-                          type: string
-                    items:
-                      type: string
-                  success:
-                    type: boolean
               example:
-                status: error
-                data:
-                  id:
-                  provider: email
-                  uid: ''
-                  allow_password_change: false
-                  username: TestUser
-                  nickname:
-                  image:
-                  email: test10@example.com
-                  created_at:
-                  updated_at:
-                  rank: normal
-                  address: HOGE県
-                  tel: '00000000000'
-                  gender: 9
-                  birthday: '1989-12-30'
-                  notification: true
-                errors:
-                - Please submit proper sign up data in request body.
-                success: false
+                message: Please submit proper sign up data in request body.
   /reserve:
     post:
       summary: 宿泊予約を仮登録します
@@ -600,8 +536,32 @@ paths:
                 end_date: 2023/01/09
         '400':
           description: リクエストのパラメータが不正
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: array
+                    items:
+                      type: string
+              example:
+                message: Input value is invalid.
+                errors:
+                - Contact is not included in the list
         '401':
           description: 認証エラー
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: Only users of the membership rank specified in the plan can access the system.
   /reserve/{reserve_id}:
     post:
       summary: 宿泊予約を本登録します
@@ -623,16 +583,47 @@ paths:
                 session_token:
                   type: string
             example:
-              session_token: hogehogehoge
+              session_token: Iqbv4l0nj7/1gt2OwzdPMw==
       responses:
         '200':
           description: 成功
         '400':
           description: リクエストのパラメータが不正
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: array
+                    items: {}
+              example:
+                message: Session token does not match.
+                errors: []
         '404':
-          description: 指定されたデータが非存在
+          description: 指定したデータが非存在
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: Not found.
         '409':
-          description: リクエストのデータが現在の状態と競合
+          description: リクエストしたデータが現在の状態と競合
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: Already completed reservation registration.
   /auth/sign_out:
     delete:
       summary: ログアウトし、ログイン情報(access-tokenとclientとuid)を無効化します
@@ -652,13 +643,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  success:
-                    type: boolean
-                  errors:
-                    type: array
-                    items:
-                      type: string
+                  message:
+                    type: string
               example:
-                success: false
-                errors:
-                - User was not found or was not logged in.
+                message: User was not found or was not logged in.
