@@ -23,8 +23,7 @@ class Api::V1::RegistrationsController < DeviseTokenAuth::RegistrationsControlle
   # @override
   def render_create_error
     render json: {
-      message: I18n.t('errors.messages.validate_sign_up_params')  ,
-      errors: resource_data
+      message: I18n.t('errors.messages.validate_sign_up_params')
     }, status: 422
   end
 end
