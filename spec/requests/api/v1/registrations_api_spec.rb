@@ -9,7 +9,7 @@ RSpec.describe 'Api::V1::Registrations', type: :request do
           expect(response).to have_http_status(:success)
           expect(response.headers.keys).to \
             include('access-token', 'uid', 'client', 'expiry', 'token-type')
-          expect(response.body.strip).to eq ''
+          expect(response.body.strip).to_not eq ''
         end
       end
     end

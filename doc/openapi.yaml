@@ -400,6 +400,15 @@ paths:
       responses:
         '200':
           description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: Create completed.
         '403':
           description: アクセス不可
           content:
