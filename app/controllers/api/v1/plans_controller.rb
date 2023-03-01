@@ -5,7 +5,7 @@ class Api::V1::PlansController < ApplicationController
           .merge({ room_category_type_name: plan.room_type&.room_category_type_name })
     end
 
-    render json: { plans: return_plans }
+    render json: { message: 'Get completed.', data: { plans: return_plans } }
   end
 
   def show
@@ -16,18 +16,22 @@ class Api::V1::PlansController < ApplicationController
         .new('Only users of the membership rank specified in the plan can access the system.')
     end
 
-    render json: {
-      plan: matched_plan.as_json(except: [:id, :room_type_id]),
-      user: api_v1_user_signed_in? ? generate_user_hash : nil,
-      room_type: matched_plan
-        .room_type.as_json(except: [:id, :room_category_name])
-        &.merge({ room_category_type_name: matched_plan.room_type&.room_category_type_name })
-    }
+    render json: { message: 'Get completed.', data: build_response_data(matched_plan) }
   end
 
   private
 
-  def generate_user_hash
+  def build_response_data(plan)
+    {
+      plan: plan.as_json(except: [:id, :room_type_id]),
+      user: api_v1_user_signed_in? ? build_user_hash : nil,
+      room_type: plan
+        .room_type.as_json(except: [:id, :room_category_name])
+        &.merge({ room_category_type_name: plan.room_type&.room_category_type_name })
+    }
+  end
+
+  def build_user_hash
     {
       username: current_api_v1_user.username,
       tel: current_api_v1_user.tel,
