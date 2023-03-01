@@ -162,6 +162,15 @@ paths:
             uid:
               schema:
                 type: string
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: Create completed.
         '401':
           description: 認証エラー
           content:

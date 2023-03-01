@@ -24,7 +24,7 @@ class Api::V1::SessionsController < DeviseTokenAuth::SessionsController
 
   # @override
   def render_create_success
-    render :json
+    render json: { 'message': 'Create completed.' }
   end
 
   protected
