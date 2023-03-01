@@ -105,7 +105,7 @@ RSpec.describe 'Api::V1::Mypages', type: :request do
 
         aggregate_failures do
           expect(response).to have_http_status(:success)
-          expect(res_body).to eq expect_user
+          expect(res_body[:data]).to eq expect_user
         end
       end
     end

@@ -50,34 +50,41 @@ paths:
               schema:
                 type: object
                 properties:
-                  username:
+                  message:
                     type: string
-                  email:
-                    type: string
-                  rank:
-                    type: string
-                  address:
-                    nullable: true
-                    type: string
-                  tel:
-                    nullable: true
-                    type: string
-                  gender:
-                    type: integer
-                  birthday:
-                    nullable: true
-                    type: string
-                  notification:
-                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      username:
+                        type: string
+                      email:
+                        type: string
+                      rank:
+                        type: string
+                      address:
+                        nullable: true
+                        type: string
+                      tel:
+                        nullable: true
+                        type: string
+                      gender:
+                        type: integer
+                      birthday:
+                        nullable: true
+                        type: string
+                      notification:
+                        type: boolean
               example:
-                address: hoge県fuga市piyo1-3-4
-                tel: "08000000000"
-                birthday: 1989/01/01
-                username: TestUser
-                email: test3@example.com
-                rank: premium
-                gender: unregistered
-                notification: false
+                message: 'Get completed.'
+                data:
+                  address: hoge県fuga市piyo1-3-4
+                  tel: "08000000000"
+                  birthday: 1989/01/01
+                  username: TestUser
+                  email: test3@example.com
+                  rank: premium
+                  gender: unregistered
+                  notification: false
         '401':
           description: 認証エラー
           content:

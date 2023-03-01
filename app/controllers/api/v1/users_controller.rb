@@ -3,7 +3,7 @@ class Api::V1::UsersController < ApplicationController
   skip_after_action :update_auth_header, only: [:destroy]
 
   def show
-    render json: generate_response_body
+    render json: { 'message': 'Get completed.', 'data': build_response_data }
   end
 
   def destroy
@@ -18,13 +18,13 @@ class Api::V1::UsersController < ApplicationController
 
   private
 
-  def generate_response_body
-    res = current_api_v1_user.as_json(
+  def build_response_data
+    data = current_api_v1_user.as_json(
       only: [:email, :username, :rank, :address, :tel,
              :gender, :birthday, :notification]
     )
-    res['birthday'] = res['birthday']&.gsub(/-/, '/')
-    res
+    data['birthday'] = data['birthday']&.gsub(/-/, '/')
+    data
   end
 
   # @override
