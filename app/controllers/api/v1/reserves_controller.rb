@@ -12,8 +12,7 @@ class Api::V1::ReservesController < ApplicationController
     end
 
     reserve.save
-
-    render json: generate_response_body(reserve)
+    render json: { message: 'Create completed.', data: build_data(reserve) }
   end
 
   def definitive_regist
@@ -34,12 +33,12 @@ class Api::V1::ReservesController < ApplicationController
     end
 
     update_reserve(reserve)
-    render :json
+    render json: { message: 'Update completed.' }
   end
 
   private
 
-  def generate_response_body(reserve)
+  def build_data(reserve)
     res = reserve.as_json(except: ['plan_id', 'session_expires_at', 'is_definitive_regist'])
     res['plan_name'] = reserve.plan.as_json(only: 'name')['name']
     res['reserve_id'] = res.delete('id')

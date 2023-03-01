@@ -529,57 +529,64 @@ paths:
               schema:
                 type: object
                 properties:
-                  total_bill:
-                    type: integer
-                  term:
-                    type: integer
-                  head_count:
-                    type: integer
-                  username:
+                  message:
                     type: string
-                  breakfast:
-                    type: boolean
-                  early_check_in:
-                    type: boolean
-                  sightseeing:
-                    type: boolean
-                  contact:
-                    type: string
-                  email:
-                    nullable: true
-                    type: string
-                  tel:
-                    nullable: true
-                    type: string
-                  comment:
-                    type: string
-                  session_token:
-                    type: string
-                  plan_name:
-                    type: string
-                  reserve_id:
-                    type: integer
-                  start_date:
-                    type: string
-                  end_date:
-                    type: string
+                  data:
+                    type: object
+                    properties:
+                      total_bill:
+                        type: integer
+                      term:
+                        type: integer
+                      head_count:
+                        type: integer
+                      username:
+                        type: string
+                      breakfast:
+                        type: boolean
+                      early_check_in:
+                        type: boolean
+                      sightseeing:
+                        type: boolean
+                      contact:
+                        type: string
+                      email:
+                        nullable: true
+                        type: string
+                      tel:
+                        nullable: true
+                        type: string
+                      comment:
+                        type: string
+                      session_token:
+                        type: string
+                      plan_name:
+                        type: string
+                      reserve_id:
+                        type: integer
+                      start_date:
+                        type: string
+                      end_date:
+                        type: string
               example:
-                reserve_id: 692
-                total_bill: 13625
-                term: 1
-                head_count: 1
-                username: テスト太郎
-                breakfast: true
-                early_check_in: true
-                sightseeing: true
-                contact: email
-                email: example@example.com
-                tel:
-                comment: comment_test
-                session_token: 8677lh607OzRID1UjFIiNg==
-                plan_name: ディナー付きプラン
-                start_date: 2023/01/08
-                end_date: 2023/01/09
+                message: Create completed.
+                data:
+                  reserve_id: 692
+                  total_bill: 13625
+                  term: 1
+                  head_count: 1
+                  username: テスト太郎
+                  breakfast: true
+                  early_check_in: true
+                  sightseeing: true
+                  contact: email
+                  email: example@example.com
+                  tel:
+                  comment: comment_test
+                  session_token: 8677lh607OzRID1UjFIiNg==
+                  plan_name: ディナー付きプラン
+                  start_date: 2023/01/08
+                  end_date: 2023/01/09
         '400':
           description: リクエストのパラメータが不正
           content:
@@ -633,6 +640,15 @@ paths:
       responses:
         '200':
           description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: Update completed.
         '400':
           description: リクエストのパラメータが不正
           content:
