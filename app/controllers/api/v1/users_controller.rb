@@ -12,6 +12,8 @@ class Api::V1::UsersController < ApplicationController
     end
 
     current_api_v1_user.destroy
+
+    render json: { 'message': 'Delete completed.'  }
   end
 
   private

@@ -100,6 +100,15 @@ paths:
       responses:
         '204':
           description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: Delete completed.
         '401':
           description: 認証エラー
           content:
