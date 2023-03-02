@@ -616,7 +616,7 @@ paths:
               example:
                 message: Only users of the membership rank specified in the plan can access the system.
   /reserve/{reserve_id}:
-    post:
+    put:
       summary: 宿泊予約を本登録します
       tags:
       - Reserve
