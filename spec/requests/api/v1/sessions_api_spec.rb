@@ -22,7 +22,7 @@ RSpec.describe 'Api::V1::Sessions', type: :request do
             expect(response).to have_http_status(:success)
             expect(response.headers.keys).to \
               include('access-token', 'uid', 'client', 'expiry', 'token-type')
-            expect(response.body.strip).to eq ''
+            expect(response.body.strip).to_not eq ''
           end
         end
 
@@ -59,19 +59,29 @@ RSpec.describe 'Api::V1::Sessions', type: :request do
         let(:auth_params_user1) { sign_in(FactoryBot.attributes_for(:user, :registed_user1)) }
 
         it 'API call failed' do
-          post '/api/v1/auth/sign_in', params: {
-            email: user[:email],
-            password: user[:password]
-          }, headers: auth_params_user1
-          expect(response).to have_http_status(401)
+          aggregate_failures do
+            post '/api/v1/auth/sign_in', params: {
+              email: user[:email],
+              password: user[:password]
+            }, headers: auth_params_user1
+            expect(response).to have_http_status(401)
+
+            res_body = JSON.parse(response.body)
+            expect(res_body['message']).to_not eq nil
+          end
         end
       end
     end
 
     context 'when post_params is nil' do
       it 'API call failed' do
-        post '/api/v1/auth/sign_in'
-        expect(response).to have_http_status(401)
+        aggregate_failures do
+          post '/api/v1/auth/sign_in'
+          expect(response).to have_http_status(401)
+
+          res_body = JSON.parse(response.body)
+          expect(res_body['message']).to_not eq nil
+        end
       end
     end
 
@@ -80,6 +90,9 @@ RSpec.describe 'Api::V1::Sessions', type: :request do
         aggregate_failures do
           post '/api/v1/auth/sign_in', params: generate_unnecessary_params
           expect(response).to have_http_status(401)
+
+          res_body = JSON.parse(response.body)
+          expect(res_body['message']).to_not eq nil
         end
       end
     end
@@ -103,7 +116,12 @@ RSpec.describe 'Api::V1::Sessions', type: :request do
     context 'when header is null' do
       it 'API call failed' do
         delete '/api/v1/auth/sign_out'
-        expect(response).to have_http_status(404)
+        res_body = JSON.parse(response.body)
+
+        aggregate_failures do
+          expect(response).to have_http_status(404)
+          expect(res_body['message']).to_not eq nil
+        end
       end
     end
   end

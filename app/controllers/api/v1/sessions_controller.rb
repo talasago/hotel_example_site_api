@@ -3,18 +3,34 @@ class Api::V1::SessionsController < DeviseTokenAuth::SessionsController
 
   def create
     # ログイン済みではない場合にのみログインを許可
-    render status: 401 and return if api_v1_user_signed_in?
+    if api_v1_user_signed_in?
+      raise HotelExampleSiteApiExceptions::UnauthorizedError
+        .new('Already signed in.')
+    end
 
     super
   end
 
   def destroy
+    # TODO:
+    ##レスポンス変えたい。
+    #{
+    #  "success": true
+    #}
+    #
     super
     session['warden.user.user.key'] = nil
   end
 
   # @override
   def render_create_success
-    render :json
+    render json: { 'message': 'Create completed.' }
+  end
+
+  protected
+
+  # @override
+  def render_error(status, message, _ = nil)
+    render json: { message: message }, status: status
   end
 end

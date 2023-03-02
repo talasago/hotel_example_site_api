@@ -27,5 +27,7 @@ module HotelExampleSiteApi
     config.api_only = true
 
     config.active_record.default_timezone = :local
+
+    config.autoload_paths += Dir["#{config.root}/app"]
   end
 end

@@ -28,7 +28,10 @@ RSpec.describe 'Api::V1::Mypages', type: :request do
           expect {
             delete '/api/v1/mypage'
           }.to_not change(User, :count)
+          res_body = JSON.parse(response.body)
+
           expect(response).to have_http_status(401)
+          expect(res_body['message']).to_not eq nil
         end
       end
     end
@@ -59,6 +62,9 @@ RSpec.describe 'Api::V1::Mypages', type: :request do
               delete '/api/v1/mypage', headers: auth_params
             }.to_not change(User, :count)
             expect(response).to have_http_status(403)
+
+            res_body = JSON.parse(response.body)
+            expect(res_body['message']).to_not eq nil
           end
         end
       end
@@ -72,6 +78,9 @@ RSpec.describe 'Api::V1::Mypages', type: :request do
               delete '/api/v1/mypage', headers: auth_params
             }.to_not change(User, :count)
             expect(response).to have_http_status(403)
+
+            res_body = JSON.parse(response.body)
+            expect(res_body['message']).to_not eq nil
           end
         end
       end
@@ -96,7 +105,7 @@ RSpec.describe 'Api::V1::Mypages', type: :request do
 
         aggregate_failures do
           expect(response).to have_http_status(:success)
-          expect(res_body).to eq expect_user
+          expect(res_body[:data]).to eq expect_user
         end
       end
     end
@@ -104,7 +113,12 @@ RSpec.describe 'Api::V1::Mypages', type: :request do
     context 'when non-authenticated' do
       it 'API call failed' do
         get '/api/v1/mypage'
-        expect(response).to have_http_status(401)
+        res_body = JSON.parse(response.body)
+
+        aggregate_failures do
+          expect(response).to have_http_status(401)
+          expect(res_body['message']).to_not eq nil
+        end
       end
     end
 

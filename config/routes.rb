@@ -15,7 +15,7 @@ Rails.application.routes.draw do
       resources :plans, controller: 'plans', only: [:index]
       resources :plan, controller: 'plans', only: [:show]
       post 'reserve/', action: :provisional_regist, controller: 'reserves'
-      post 'reserve/:reserve_id', action: :definitive_regist, controller: 'reserves'
+      put 'reserve/:reserve_id', action: :definitive_regist, controller: 'reserves'
     end
   end
 end

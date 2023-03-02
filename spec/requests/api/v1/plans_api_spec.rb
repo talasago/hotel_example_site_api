@@ -9,14 +9,14 @@ RSpec.describe 'Api::V1::Plans', type: :request do
       it 'API call successful and sort by plan_id asc and include specified keys' do
         get '/api/v1/plans', headers: auth_params
         res_body = JSON.parse(response.body)
-        ids = res_body['plans'].map { |plan| plan['plan_id'] }
-        plan_id0 = res_body['plans'].find { |plan| plan['plan_id'] == 0 }
-        plan_id6 = res_body['plans'].find { |plan| plan['plan_id'] == 6 }
+        ids = res_body['data']['plans'].map { |plan| plan['plan_id'] }
+        plan_id0 = res_body['data']['plans'].find { |plan| plan['plan_id'] == 0 }
+        plan_id6 = res_body['data']['plans'].find { |plan| plan['plan_id'] == 6 }
 
         aggregate_failures do
           expect(response).to have_http_status(:success)
           expect(ids).to eq ids.sort
-          res_body['plans'].each do |plan|
+          res_body['data']['plans'].each do |plan|
             expect(plan.keys).to match_array([
               'plan_id', 'min_head_count', 'only', 'plan_name', 'room_bill', 'room_category_type_name'
             ])
@@ -54,7 +54,7 @@ RSpec.describe 'Api::V1::Plans', type: :request do
 
           aggregate_failures do
             expect(response).to have_http_status(:success)
-            expect(res_body).to eq(
+            expect(res_body[:data]).to eq(
               {
                 plan: {
                   plan_id: 0,
@@ -108,7 +108,7 @@ RSpec.describe 'Api::V1::Plans', type: :request do
 
             aggregate_failures do
               expect(response).to have_http_status(:success)
-              expect(res_body).to eq(
+              expect(res_body[:data]).to eq(
                 {
                   plan: {
                     plan_id: 1,
@@ -166,7 +166,7 @@ RSpec.describe 'Api::V1::Plans', type: :request do
 
             aggregate_failures do
               expect(response).to have_http_status(:success)
-              expect(res_body).to eq(
+              expect(res_body[:data]).to eq(
                 {
                   plan: {
                     plan_id: 3,

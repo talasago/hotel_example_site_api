@@ -1,37 +1,44 @@
 class Api::V1::ReservesController < ApplicationController
   def provisional_regist
     reserve = Reserve.new(provisional_reserve_params)
-    render status: 400 and return unless reserve.valid?
+    unless reserve.valid?
+      raise HotelExampleSiteApiExceptions::BadRequestError
+        .new('Input value is invalid.', reserve.errors.full_messages)
+    end
 
     if policy_scope(Plan.where(id: provisional_reserve_params[:plan_id])).empty?
-      render status: 401 and return
+      raise HotelExampleSiteApiExceptions::UnauthorizedError
+        .new('Only users of the membership rank specified in the plan can access the system.')
     end
 
     reserve.save
-
-    render json: generate_response_body(reserve)
+    render json: { message: 'Create completed.', data: build_data(reserve) }
   end
 
   def definitive_regist
-    begin
-      reserve = Reserve.find_by!(id: definitive_reserve_params[:reserve_id])
-    rescue ActiveRecord::RecordNotFound
-      render status: 404 and return
+    reserve = Reserve.find_by!(id: definitive_reserve_params[:reserve_id])
+
+    if reserve.is_definitive_regist # すでに本登録済みならばエラー
+      raise HotelExampleSiteApiExceptions::ConflictError
+        .new('Already completed reservation registration.')
     end
 
-    if reserve.is_definitive_regist || # すでに本登録済みならばエラー
-       DateTime.now > reserve.session_expires_at.to_datetime # 有効時間が過ぎていればエラー
-      render status: 409 and return
+    if DateTime.now > reserve.session_expires_at.to_datetime # 有効時間が過ぎていればエラー
+      raise HotelExampleSiteApiExceptions::ConflictError.new('Session token expiration.')
     end
-    render status: 400 and return unless definitive_reserve_params[:session_token] == reserve.session_token
+
+    unless definitive_reserve_params[:session_token] == reserve.session_token
+      raise HotelExampleSiteApiExceptions::BadRequestError
+        .new('Session token does not match.')
+    end
 
     update_reserve(reserve)
-    render :json
+    render json: { message: 'Update completed.' }
   end
 
   private
 
-  def generate_response_body(reserve)
+  def build_data(reserve)
     res = reserve.as_json(except: ['plan_id', 'session_expires_at', 'is_definitive_regist'])
     res['plan_name'] = reserve.plan.as_json(only: 'name')['name']
     res['reserve_id'] = res.delete('id')

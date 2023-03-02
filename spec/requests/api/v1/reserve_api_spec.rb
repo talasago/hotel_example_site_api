@@ -10,13 +10,13 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
             expect(response).to have_http_status(:success)
             res_body = JSON.parse(response.body)
 
-            expect(res_body.keys)
+            expect(res_body['data'].keys)
               .to contain_exactly('reserve_id', 'total_bill', 'plan_name', 'start_date', 'end_date', 'term', 'head_count',
                                   'breakfast', 'early_check_in', 'sightseeing', 'username', 'contact', 'tel', 'email',
                                   'comment', 'session_token')
-            expect(res_body['start_date']).to match(/[0-9]{4}(\/[0-9]{2}){2}/) # YYYY/MM/DD形式
-            expect(res_body['end_date']).to match(/[0-9]{4}(\/[0-9]{2}){2}/) # YYYY/MM/DD形式
-            expect(Reserve.find(res_body['reserve_id']).is_definitive_regist).to eq false
+            expect(res_body['data']['start_date']).to match(/[0-9]{4}(\/[0-9]{2}){2}/) # YYYY/MM/DD形式
+            expect(res_body['data']['end_date']).to match(/[0-9]{4}(\/[0-9]{2}){2}/) # YYYY/MM/DD形式
+            expect(Reserve.find(res_body['data']['reserve_id']).is_definitive_regist).to eq false
           end
         end
       end
@@ -140,6 +140,10 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
             post '/api/v1/reserve', params: params
           }.to_not change(Reserve, :count)
           expect(response).to have_http_status(400)
+
+          res_body = JSON.parse(response.body)
+          expect(res_body['message']).to_not eq nil
+          expect(res_body['errors']).to_not be_empty
         end
       end
     end
@@ -150,16 +154,16 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
       post '/api/v1/reserve', params: { **FactoryBot.attributes_for(:reserve, :with_email) }
       @res_body_provisional_regist = JSON.parse(response.body)
     end
-    let!(:reserve_id) { @res_body_provisional_regist['reserve_id'] }
+    let!(:reserve_id) { @res_body_provisional_regist['data']['reserve_id'] }
     let!(:reserve_before_request) { Reserve.find(reserve_id).attributes }
-    let!(:session_token) { @res_body_provisional_regist['session_token'] }
+    let!(:session_token) { @res_body_provisional_regist['data']['session_token'] }
 
     context 'when token does match' do
       context 'when session_token does not expires after provisional registration' do
         it 'API call successful and complete definitive registation' do
           aggregate_failures do
             expect {
-              post "/api/v1/reserve/#{reserve_id}", params: { session_token: session_token }
+              put "/api/v1/reserve/#{reserve_id}", params: { session_token: session_token }
             }.to_not change(Reserve, :count)
             expect(response).to have_http_status(:success)
 
@@ -175,9 +179,12 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
           travel_to(DateTime.now + Rational(5, 24 * 60) + Rational(1, 24 * 60 * 60)) # 現在時刻を変更
 
           expect {
-            post "/api/v1/reserve/#{reserve_id}", params: { session_token: session_token }
+            put "/api/v1/reserve/#{reserve_id}", params: { session_token: session_token }
           }.to_not change(Reserve, :count)
           expect(response).to have_http_status(409)
+
+          res_body = JSON.parse(response.body)
+          expect(res_body['message']).to_not eq nil
 
           # reservesレコードが変わってないことの確認
           expect(Reserve.find(reserve_id).attributes).to eq reserve_before_request
@@ -191,7 +198,7 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
       it 'API call failed and remain provisional registration' do
         aggregate_failures do
           expect {
-            post "/api/v1/reserve/#{reserve_id}", params: { session_token: invalid_session_token }
+            put "/api/v1/reserve/#{reserve_id}", params: { session_token: invalid_session_token }
           }.to_not change(Reserve, :count)
           expect(response).to have_http_status(400)
 
@@ -204,10 +211,12 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
       it 'API call failed and remain provisional registration' do
         aggregate_failures do
           expect {
-            post "/api/v1/reserve/#{reserve_id}"
+            put "/api/v1/reserve/#{reserve_id}"
           }.to_not change(Reserve, :count)
-          expect(response).to have_http_status(400)
+          res_body = JSON.parse(response.body)
 
+          expect(response).to have_http_status(400)
+          expect(res_body['message']).to_not eq nil
           expect(Reserve.find(reserve_id).attributes).to eq reserve_before_request
         end
       end
@@ -221,25 +230,31 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
       it 'API call failed' do
         aggregate_failures do
           expect {
-            post "/api/v1/reserve/#{reserve_id}", params: { session_token: session_token }
+            put "/api/v1/reserve/#{reserve_id}", params: { session_token: session_token }
           }.to_not change(Reserve, :count)
           expect(response).to have_http_status(404)
+
+          res_body = JSON.parse(response.body)
+          expect(res_body['message']).to_not eq nil
         end
       end
     end
 
     context 'when definitive registered has been already completed(is_definitive_regist is true)' do
       before do
-        post "/api/v1/reserve/#{reserve_id}", params: { session_token: session_token }
+        put "/api/v1/reserve/#{reserve_id}", params: { session_token: session_token }
       end
       let!(:definitive_reserve_before_request) { Reserve.find(reserve_id).attributes }
 
       it 'API call failed and remain provisional registration' do
         aggregate_failures do
           expect {
-            post "/api/v1/reserve/#{reserve_id}", params: { session_token: session_token }
+            put "/api/v1/reserve/#{reserve_id}", params: { session_token: session_token }
           }.to_not change(Reserve, :count)
           expect(response).to have_http_status(409)
+
+          res_body = JSON.parse(response.body)
+          expect(res_body['message']).to_not eq nil
 
           expect(Reserve.find(reserve_id).attributes).to eq definitive_reserve_before_request
         end
@@ -252,7 +267,7 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
       it 'API call successful and complete definitive registation' do
         aggregate_failures do
           expect {
-            post "/api/v1/reserve/#{reserve_id}", params: params
+            put "/api/v1/reserve/#{reserve_id}", params: params
           }.to_not change(Reserve, :count)
           expect(response).to have_http_status(:success)
 
@@ -267,10 +282,12 @@ RSpec.describe 'Api::V1::Reserves', type: :request do
       it 'API call failed and remain provisional registration' do
         aggregate_failures do
           expect {
-            post "/api/v1/reserve/#{reserve_id}", params: generate_unnecessary_params
+            put "/api/v1/reserve/#{reserve_id}", params: generate_unnecessary_params
           }.to_not change(Reserve, :count)
-          expect(response).to have_http_status(400)
+          res_body = JSON.parse(response.body)
 
+          expect(response).to have_http_status(400)
+          expect(res_body['message']).to_not eq nil
           expect(Reserve.find(reserve_id).attributes).to eq reserve_before_request
         end
       end

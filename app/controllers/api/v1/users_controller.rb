@@ -3,23 +3,34 @@ class Api::V1::UsersController < ApplicationController
   skip_after_action :update_auth_header, only: [:destroy]
 
   def show
-    render json: generate_response_body
+    render json: { 'message': 'Get completed.', 'data': build_response_data }
   end
 
   def destroy
-    render status: 403 and return if current_api_v1_user.id.between?(1, 4)
+    if current_api_v1_user.id.between?(1, 4)
+      raise HotelExampleSiteApiExceptions::ForbiddenError.new('Users with IDs 1~4 cannot delete.')
+    end
 
     current_api_v1_user.destroy
+
+    render json: { 'message': 'Delete completed.' }
   end
 
   private
 
-  def generate_response_body
-    res = current_api_v1_user.as_json(
+  def build_response_data
+    data = current_api_v1_user.as_json(
       only: [:email, :username, :rank, :address, :tel,
              :gender, :birthday, :notification]
     )
-    res['birthday'] = res['birthday']&.gsub(/-/, '/')
-    res
+    data['birthday'] = data['birthday']&.gsub(/-/, '/')
+    data
+  end
+
+  # @override
+  # devise_token_auth/lib/devise_token_auth./controllers/helpers.rb
+  def render_authenticate_error
+    raise HotelExampleSiteApiExceptions::UnauthorizedError
+      .new('You need to sign in or sign up before continuing.')
   end
 end
