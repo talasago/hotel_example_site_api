@@ -435,7 +435,7 @@ paths:
               birthday: '1989/12/30'
               notification: true
       responses:
-        '200':
+        '201':
           description: 成功
           content:
             application/json:
@@ -522,7 +522,7 @@ paths:
               comment: comment_test
               email: example@example.com
       responses:
-        '200':
+        '201':
           description: 成功
           content:
             application/json:

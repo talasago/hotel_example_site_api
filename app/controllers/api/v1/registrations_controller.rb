@@ -10,7 +10,7 @@ class Api::V1::RegistrationsController < DeviseTokenAuth::RegistrationsControlle
 
   # @override
   def render_create_success
-    render json: { message: 'Create completed.' }
+    render json: { message: 'Create completed.' }, status: :created
   end
 
   protected

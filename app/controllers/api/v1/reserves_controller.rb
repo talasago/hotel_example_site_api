@@ -12,7 +12,10 @@ class Api::V1::ReservesController < ApplicationController
     end
 
     reserve.save
-    render json: { message: 'Create completed.', data: build_data(reserve) }
+    render json: {
+      message: 'Create completed.',
+      data: build_data(reserve)
+    }, status: :created
   end
 
   def definitive_regist
