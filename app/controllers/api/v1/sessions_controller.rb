@@ -12,12 +12,6 @@ class Api::V1::SessionsController < DeviseTokenAuth::SessionsController
   end
 
   def destroy
-    # TODO:
-    ##レスポンス変えたい。
-    #{
-    #  "success": true
-    #}
-    #
     super
     session['warden.user.user.key'] = nil
   end
@@ -25,6 +19,11 @@ class Api::V1::SessionsController < DeviseTokenAuth::SessionsController
   # @override
   def render_create_success
     render json: { 'message': 'Create completed.' }
+  end
+
+  # @override
+  def render_destroy_success
+    render json: { 'message': 'Delete completed.' }
   end
 
   protected

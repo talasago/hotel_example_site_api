@@ -688,7 +688,7 @@ paths:
                 message: Already completed reservation registration.
   /auth/sign_out:
     delete:
-      summary: ログアウトし、ログイン情報(access-tokenとclientとuid)を無効化します
+      summary: ログアウト(サインアウト)し、ログイン情報(access-tokenとclientとuid)を無効化します
       tags:
       - Auth
       security:
@@ -696,8 +696,17 @@ paths:
         access-token: []
         uid: []
       responses:
-        '200':
+        '204':
           description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: Delete completed.
         '404':
           description: 指定されたデータが非存在
           content:
