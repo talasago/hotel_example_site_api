@@ -23,7 +23,7 @@ class Api::V1::SessionsController < DeviseTokenAuth::SessionsController
 
   # @override
   def render_destroy_success
-    render json: { 'message': 'Delete completed.' }
+    render status: :no_content
   end
 
   protected

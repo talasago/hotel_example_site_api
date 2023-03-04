@@ -13,7 +13,7 @@ class Api::V1::UsersController < ApplicationController
 
     current_api_v1_user.destroy
 
-    render json: { 'message': 'Delete completed.' }
+    render status: :no_content
   end
 
   private
