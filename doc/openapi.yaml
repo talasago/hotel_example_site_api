@@ -3,7 +3,7 @@ openapi: 3.0.3
 info:
   title: テスト自動化練習用API
   description: |
-    テスト自動化の学習用練習サイト(https://hotel.testplanisphere.dev/ja/index.html)を模倣した、WebAPI(システムの内部向けAPI)の仕様書です。  
+    テスト自動化の学習用練習サイト(https://hotel.testplanisphere.dev/ja/index.html)を模倣した、WebAPI(システムの内部向けAPI)の仕様書です。
     /auth または /auth/sign_inを呼び出し、Response headersの値をAuthorizeボタン入力後の画面に入力すると、各API呼び出し時にログイン状態とみなして処理します。
   version: 1.0.0
 servers:
@@ -197,28 +197,30 @@ paths:
               schema:
                 type: object
                 properties:
-                  message: 'Get completed.'
-                  type: object
-                  properties:
-                    plans:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          plan_id:
-                            type: integer
-                          plan_name:
-                            type: string
-                          room_bill:
-                            type: integer
-                          min_head_count:
-                            type: integer
-                          only:
-                            type: string
-                            nullable: true
-                          room_category_type_name:
-                            type: string
-                            nullable: true
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      plans:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            plan_id:
+                              type: integer
+                            plan_name:
+                              type: string
+                            room_bill:
+                              type: integer
+                            min_head_count:
+                              type: integer
+                            only:
+                              type: string
+                              nullable: true
+                            room_category_type_name:
+                              type: string
+                              nullable: true
               example:
                 message: 'Get completed.'
                 data:
@@ -459,6 +461,8 @@ paths:
                     type: string
                   errors:
                     type: array
+                    items:
+                      type: string
               example:
                 message: Please submit proper sign up data in request body.
                 errors: []
