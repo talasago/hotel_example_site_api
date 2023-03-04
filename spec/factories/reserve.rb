@@ -1,6 +1,5 @@
 FactoryBot.define do
   factory :reserve do
-    # TODO:プラン毎と、additionalプラン毎、土日で金額変えた方が良い。
     plan_id { 0 }
     total_bill { 11_750 }
     date { Date.today.next_occurring(:sunday).strftime('%Y/%m/%d') }
