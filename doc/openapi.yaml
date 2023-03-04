@@ -1,11 +1,11 @@
 ---
 openapi: 3.0.3
 info:
-  title: APIテスト自動化学習用API
-  description: |-
-    /auth または /auth/sign_inを呼び出し、Response headersの値をAuthorizeボタン入力後の画面に入力すると、
-    各API呼び出し時、ログイン中の状態とみなして処理します。
-  version: 0.1.0
+  title: テスト自動化練習用API
+  description: |
+    テスト自動化の学習用練習サイト(https://hotel.testplanisphere.dev/ja/index.html)を模倣した、WebAPI(システムの内部向けAPI)の仕様書です。  
+    /auth または /auth/sign_inを呼び出し、Response headersの値をAuthorizeボタン入力後の画面に入力すると、各API呼び出し時にログイン状態とみなして処理します。
+  version: 1.0.0
 servers:
   - url: http://localhost:3000/api/v1
 tags:
