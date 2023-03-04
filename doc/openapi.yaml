@@ -466,8 +466,11 @@ paths:
                 properties:
                   message:
                     type: string
+                  errors:
+                    type: array
               example:
                 message: Please submit proper sign up data in request body.
+                errors: []
   /reserve:
     post:
       summary: 宿泊予約を仮登録します
