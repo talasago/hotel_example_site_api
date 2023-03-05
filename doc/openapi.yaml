@@ -31,6 +31,117 @@ components:
       type: apiKey
       name: uid
       in: header
+  requestBodies:
+    reserve:
+      required:
+        - plan_id
+        - total_bill
+        - date
+        - term
+        - head_count
+        - username
+        - contact
+      type: object
+      properties:
+        plan_id:
+          type: integer
+          description: プランID
+        total_bill:
+          type: integer
+          description: 料金合計
+        date:
+          type: string
+          description: 宿泊日(処理日より3ヶ月以内の日付)
+          format: 'YYYY/MM/DD'
+        term:
+          type: string
+          description: 宿泊期間(プランIDに紐づくプランの宿泊最少件数~宿泊最大件数)
+        head_count:
+          type: string
+          description: 人数(プランIDに紐づくプランの宿泊最少人数~宿泊最大人数)
+        breakfast:
+          type: boolean
+          description: 朝食バイキング
+        early_check_in:
+          type: boolean
+          description: 昼からチェックインプラン
+        sightseeing:
+          type: boolean
+          description: お得な観光プラン
+        username:
+          type: string
+          description: 氏名
+        contact:
+          type: string
+          description: 連絡方法 'no'→希望しない、'email'→メールでの連絡、'tel'→電話での連絡
+        comment:
+          nullable: true
+          type: string
+          description: 要望・連絡事項 
+          maxLength: 140
+        tel:
+          nullable: true
+          type: string
+          description: 電話番号 contactが'tel'の場合は必須
+        email:
+          nullable: true
+          type: string
+          description: メールアドレス contactが'email'の場合は必須
+  responses:
+    reserve:
+      type: object
+      properties:
+        total_bill:
+          type: integer
+          description: 料金合計
+        term:
+          type: integer
+          description: 宿泊期間
+        head_count:
+          type: integer
+          description: 人数
+        username:
+          type: string
+          description: 氏名
+        breakfast:
+          type: boolean
+          description: 朝食バイキング
+        early_check_in:
+          type: boolean
+          description: 昼からチェックインプラン
+        sightseeing:
+          type: boolean
+          description: お得な観光プラン
+        contact:
+          type: string
+          description: 連絡方法 'no'→希望しない、'email'→メールでの連絡、'tel'→電話での連絡
+        email:
+          nullable: true
+          type: string
+          description: メールアドレス
+        tel:
+          nullable: true
+          type: string
+          description: 電話番号
+        comment:
+          nullable: true
+          type: string
+          description: 要望・連絡事項 
+        session_token:
+          type: string
+          description: セッショントークン
+        plan_name:
+          type: string
+          description: プラン名
+        reserve_id:
+          type: integer
+          description: 予約ID
+        start_date:
+          type: string
+          description: 宿泊開始日
+        end_date:
+          type: string
+          description: 宿泊終了日
   schemas:
     User:
       type: object
@@ -43,7 +154,7 @@ components:
       properties:
         username:
           type: string
-          description: ユーザー名
+          description: 氏名
         email:
           type: string
           description: メールアドレス
@@ -53,7 +164,7 @@ components:
           description: パスワード
         rank:
           type: string
-          description: 会員ランク 'premium'→プレミアム会員 'normal'→一般会員
+          description: 会員ランク 'premium'→プレミアム会員、'normal'→一般会員
         address:
           type: string
           description: 住所
@@ -554,37 +665,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                plan_id:
-                  type: integer
-                total_bill:
-                  type: integer
-                date:
-                  type: string
-                term:
-                  type: string
-                head_count:
-                  type: string
-                breakfast:
-                  type: boolean
-                early_check_in:
-                  type: boolean
-                sightseeing:
-                  type: boolean
-                username:
-                  type: string
-                contact:
-                  type: string
-                comment:
-                  nullable: true
-                  type: string
-                tel:
-                  nullable: true
-                  type: string
-                email:
-                  nullable: true
-                  type: string
+                $ref: '#/components/requestBodies/reserve'
             example:
               plan_id: 0
               total_bill: 11750
@@ -609,42 +690,7 @@ paths:
                   message:
                     type: string
                   data:
-                    type: object
-                    properties:
-                      total_bill:
-                        type: integer
-                      term:
-                        type: integer
-                      head_count:
-                        type: integer
-                      username:
-                        type: string
-                      breakfast:
-                        type: boolean
-                      early_check_in:
-                        type: boolean
-                      sightseeing:
-                        type: boolean
-                      contact:
-                        type: string
-                      email:
-                        nullable: true
-                        type: string
-                      tel:
-                        nullable: true
-                        type: string
-                      comment:
-                        type: string
-                      session_token:
-                        type: string
-                      plan_name:
-                        type: string
-                      reserve_id:
-                        type: integer
-                      start_date:
-                        type: string
-                      end_date:
-                        type: string
+                    $ref: '#/components/responses/reserve'
               example:
                 message: Create completed.
                 data:
@@ -712,6 +758,7 @@ paths:
               properties:
                 session_token:
                   type: string
+                  description: セッショントークン
             example:
               session_token: Iqbv4l0nj7/1gt2OwzdPMw==
       responses:
