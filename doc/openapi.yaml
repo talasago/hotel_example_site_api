@@ -31,222 +31,83 @@ components:
       type: apiKey
       name: uid
       in: header
-  requestBodies:
-    reserve:
-      required:
-        - plan_id
-        - total_bill
-        - date
-        - term
-        - head_count
-        - username
-        - contact
-      type: object
-      properties:
-        plan_id:
-          type: integer
-          description: プランID
-        total_bill:
-          type: integer
-          description: 料金合計
-        date:
-          type: string
-          description: 宿泊日(処理日より3ヶ月以内の日付)
-          format: 'YYYY/MM/DD'
-        term:
-          type: string
-          description: 宿泊期間(プランIDに紐づくプランの宿泊最少件数~宿泊最大件数)
-        head_count:
-          type: string
-          description: 人数(プランIDに紐づくプランの宿泊最少人数~宿泊最大人数)
-        breakfast:
-          type: boolean
-          description: 朝食バイキング
-        early_check_in:
-          type: boolean
-          description: 昼からチェックインプラン
-        sightseeing:
-          type: boolean
-          description: お得な観光プラン
-        username:
-          type: string
-          description: 氏名
-        contact:
-          type: string
-          description: 連絡方法 'no'→希望しない、'email'→メールでの連絡、'tel'→電話での連絡
-        comment:
-          nullable: true
-          type: string
-          description: 要望・連絡事項 
-          maxLength: 140
-        tel:
-          nullable: true
-          type: string
-          description: 電話番号 contactが'tel'の場合は必須
-        email:
-          nullable: true
-          type: string
-          description: メールアドレス contactが'email'の場合は必須
-  responses:
-    reserve:
-      type: object
-      properties:
-        total_bill:
-          type: integer
-          description: 料金合計
-        term:
-          type: integer
-          description: 宿泊期間
-        head_count:
-          type: integer
-          description: 人数
-        username:
-          type: string
-          description: 氏名
-        breakfast:
-          type: boolean
-          description: 朝食バイキング
-        early_check_in:
-          type: boolean
-          description: 昼からチェックインプラン
-        sightseeing:
-          type: boolean
-          description: お得な観光プラン
-        contact:
-          type: string
-          description: 連絡方法 'no'→希望しない、'email'→メールでの連絡、'tel'→電話での連絡
-        email:
-          nullable: true
-          type: string
-          description: メールアドレス
-        tel:
-          nullable: true
-          type: string
-          description: 電話番号
-        comment:
-          nullable: true
-          type: string
-          description: 要望・連絡事項 
-        session_token:
-          type: string
-          description: セッショントークン
-        plan_name:
-          type: string
-          description: プラン名
-        reserve_id:
-          type: integer
-          description: 予約ID
-        start_date:
-          type: string
-          description: 宿泊開始日
-        end_date:
-          type: string
-          description: 宿泊終了日
-  schemas:
-    User:
-      type: object
-      required:
-        - username
-        - email
-        - rank
-        - gender
-        - password
-      properties:
-        username:
-          type: string
-          description: 氏名
-        email:
-          type: string
-          description: メールアドレス
-          format: /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/
-        password:
-          type: string
-          description: パスワード
-        rank:
-          type: string
-          description: 会員ランク 'premium'→プレミアム会員、'normal'→一般会員
-        address:
-          type: string
-          description: 住所
-          nullable: true
-        tel:
-          type: string
-          description: 電話番号
-          maxLength: 11
-          nullable: true
-        gender:
-          type: integer
-          description: 性別 0→回答しない 1→男性 2→女性 9→その他
-        birthday:
-          type: string
-          description: 生年月日
-          nullable: true
-        notification:
-          type: boolean
-          description: お知らせを受け取る
-          default: false
-    Plan:
-      type: object
-      properties:
-        plan_id:
-          type: integer
-          description: プランID
-        plan_name:
-          type: string
-          description: プラン名
-        room_bill:
-          type: integer
-          description: 1泊あたりの料金
-        min_head_count:
-          type: integer
-          description: 最低宿泊人数
-        max_head_count:
-          type: integer
-          description: 最大宿泊人数
-        min_term:
-          type: integer
-          description: 最低宿泊日数
-        max_term:
-          type: integer
-          description: 最大宿泊日数
 definitions:
+  user:
+    type: object
+    required:
+      - username
+      - email
+      - rank
+      - gender
+      - password
+    properties:
+      username:
+        type: string
+        description: 氏名
+      email:
+        type: string
+        description: メールアドレス
+        format: /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/
+      password:
+        type: string
+        description: パスワード
+      rank:
+        type: string
+        description: 会員ランク 'premium'→プレミアム会員、'normal'→一般会員
+      address:
+        type: string
+        description: 住所
+        nullable: true
+      tel:
+        type: string
+        description: 電話番号
+        maxLength: 11
+        nullable: true
+      gender:
+        type: integer
+        description: 性別 0→回答しない 1→男性 2→女性 9→その他
+      birthday:
+        type: string
+        description: 生年月日
+        nullable: true
+      notification:
+        type: boolean
+        description: お知らせを受け取る
+        default: false
   userForMypage:
     type: object
     properties:
-      user:
-        type: object
-        properties:
-          username:
-            type: string
-            description: ユーザー名
-          email:
-            type: string
-            description: メールアドレス
-            format: /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/
-          rank:
-            type: string
-            description: 会員ランク 'premium'→プレミアム会員 'normal'→一般会員
-          address:
-            type: string
-            description: 住所
-            nullable: true
-          tel:
-            type: string
-            description: 電話番号
-            maxLength: 11
-            nullable: true
-          gender:
-            type: integer
-            description: 性別 0→回答しない 1→男性 2→女性 9→その他
-          birthday:
-            type: string
-            description: 生年月日
-            nullable: true
-          notification:
-            type: boolean
-            description: お知らせを受け取る
-            default: false
-  UserForPlan:
+      username:
+        type: string
+        description: ユーザー名
+      email:
+        type: string
+        description: メールアドレス
+        format: /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/
+      rank:
+        type: string
+        description: 会員ランク 'premium'→プレミアム会員 'normal'→一般会員
+      address:
+        type: string
+        description: 住所
+        nullable: true
+      tel:
+        type: string
+        description: 電話番号
+        maxLength: 11
+        nullable: true
+      gender:
+        type: integer
+        description: 性別 0→回答しない 1→男性 2→女性 9→その他
+      birthday:
+        type: string
+        description: 生年月日
+        nullable: true
+      notification:
+        type: boolean
+        description: お知らせを受け取る
+        default: false
+  userForPlan:
     nullable: true
     type: object
     properties:
@@ -262,7 +123,7 @@ definitions:
         type: string
         description: メールアドレス
         format: /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/
-  SignInParams:
+  signInParams:
     type: object
     properties:
       email:
@@ -272,6 +133,30 @@ definitions:
       password:
         type: string
         description: パスワード
+  plan:
+    type: object
+    properties:
+      plan_id:
+        type: integer
+        description: プランID
+      plan_name:
+        type: string
+        description: プラン名
+      room_bill:
+        type: integer
+        description: 1泊あたりの料金
+      min_head_count:
+        type: integer
+        description: 最低宿泊人数
+      max_head_count:
+        type: integer
+        description: 最大宿泊人数
+      min_term:
+        type: integer
+        description: 最低宿泊日数
+      max_term:
+        type: integer
+        description: 最大宿泊日数
   plans:
     type: array
     items:
@@ -318,6 +203,116 @@ definitions:
         type: string
         description: 部屋
         example: '"スタンダードツイン"、"シングル"、"プレミアムツイン"、"部屋指定なし"'
+  reserve:
+    type: object
+    properties:
+      total_bill:
+        type: integer
+        description: 料金合計
+      term:
+        type: integer
+        description: 宿泊期間
+      head_count:
+        type: integer
+        description: 人数
+      username:
+        type: string
+        description: 氏名
+      breakfast:
+        type: boolean
+        description: 朝食バイキング
+      early_check_in:
+        type: boolean
+        description: 昼からチェックインプラン
+      sightseeing:
+        type: boolean
+        description: お得な観光プラン
+      contact:
+        type: string
+        description: 連絡方法 'no'→希望しない、'email'→メールでの連絡、'tel'→電話での連絡
+      email:
+        nullable: true
+        type: string
+        description: メールアドレス
+      tel:
+        nullable: true
+        type: string
+        description: 電話番号
+      comment:
+        nullable: true
+        type: string
+        description: 要望・連絡事項 
+      session_token:
+        type: string
+        description: セッショントークン
+      plan_name:
+        type: string
+        description: プラン名
+      reserve_id:
+        type: integer
+        description: 予約ID
+      start_date:
+        type: string
+        description: 宿泊開始日
+      end_date:
+        type: string
+        description: 宿泊終了日
+  reserveParams:
+    required:
+      - plan_id
+      - total_bill
+      - date
+      - term
+      - head_count
+      - username
+      - contact
+    type: object
+    properties:
+      plan_id:
+        type: integer
+        description: プランID
+      total_bill:
+        type: integer
+        description: 料金合計
+      date:
+        type: string
+        description: 宿泊日(処理日より3ヶ月以内の日付)
+        format: 'YYYY/MM/DD'
+      term:
+        type: string
+        description: 宿泊期間(プランIDに紐づくプランの宿泊最少件数~宿泊最大件数)
+      head_count:
+        type: string
+        description: 人数(プランIDに紐づくプランの宿泊最少人数~宿泊最大人数)
+      breakfast:
+        type: boolean
+        description: 朝食バイキング
+      early_check_in:
+        type: boolean
+        description: 昼からチェックインプラン
+      sightseeing:
+        type: boolean
+        description: お得な観光プラン
+      username:
+        type: string
+        description: 氏名
+      contact:
+        type: string
+        description: 連絡方法 'no'→希望しない、'email'→メールでの連絡、'tel'→電話での連絡
+      comment:
+        nullable: true
+        type: string
+        description: 要望・連絡事項 
+        maxLength: 140
+      tel:
+        nullable: true
+        type: string
+        description: 電話番号 contactが'tel'の場合は必須
+      email:
+        nullable: true
+        type: string
+        description: メールアドレス contactが'email'の場合は必須
+
 paths:
   /mypage:
     get:
@@ -404,7 +399,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/definitions/SignInParams'
+              $ref: '#/definitions/signInParams'
             example:
               email: ichiro@example.com
               password: password
@@ -553,12 +548,12 @@ paths:
                     type: object
                     properties:
                       plan:
-                        $ref: '#/components/schemas/Plan'
+                        $ref: '#/definitions/plan'
                       room_type:
                         nullable: true
                         $ref: '#/definitions/roomType'
                       user:
-                        $ref: '#/definitions/UserForPlan'
+                        $ref: '#/definitions/userForPlan'
               example:
                 message: 'Get completed.'
                 data:
@@ -602,7 +597,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: '#/definitions/user'
             example:
               email: test9@example.com
               password: password
@@ -661,7 +656,7 @@ paths:
         content:
           application/json:
             schema:
-                $ref: '#/components/requestBodies/reserve'
+              $ref: '#/definitions/reserveParams'
             example:
               plan_id: 0
               total_bill: 11750
@@ -686,7 +681,7 @@ paths:
                   message:
                     type: string
                   data:
-                    $ref: '#/components/responses/reserve'
+                    $ref: '#/definitions/reserve'
               example:
                 message: Create completed.
                 data:
