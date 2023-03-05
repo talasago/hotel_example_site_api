@@ -27,7 +27,7 @@ class Api::V1::PlansController < ApplicationController
       user: api_v1_user_signed_in? ? build_user_hash : nil,
       room_type: plan
         .room_type.as_json(except: [:id, :room_category_name])
-        &.merge({ room_category_type_name: plan.room_type&.room_category_type_name })
+        &.merge({ room_category_type_name: plan.room_type.room_category_type_name })
     }
   end
 

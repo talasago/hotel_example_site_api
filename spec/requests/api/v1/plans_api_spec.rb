@@ -22,7 +22,7 @@ RSpec.describe 'Api::V1::Plans', type: :request do
             ])
           end
           expect(plan_id0['room_category_type_name']).to eq 'スタンダードツイン'
-          expect(plan_id6['room_category_type_name']).to eq nil
+          expect(plan_id6['room_category_type_name']).to eq '部屋指定なし'
         end
       end
     end
@@ -182,7 +182,14 @@ RSpec.describe 'Api::V1::Plans', type: :request do
                     tel: nil,
                     email: 'sakura@example.com'
                   },
-                  room_type: nil
+                  room_type: {
+                    facilities: nil,
+                    max_capacity: nil,
+                    min_capacity: nil,
+                    room_category_type_name: '部屋指定なし',
+                    room_size: nil,
+                    room_type_name: nil
+                  }
                 }
               )
             end
