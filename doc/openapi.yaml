@@ -289,9 +289,6 @@ definitions:
         min_head_count:
           type: integer
           description: 最低宿泊人数
-        only:
-          type: string
-          description: 限定 #TODO:追加で書く。
         room_category_type_name:
           type: integer
           description: 部屋
@@ -556,7 +553,6 @@ paths:
                     type: object
                     properties:
                       plan:
-                        #TODO:不要なonlyがあるので後で変更
                         $ref: '#/components/schemas/Plan'
                       room_type:
                         nullable: true

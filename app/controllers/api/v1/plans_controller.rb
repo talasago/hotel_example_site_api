@@ -62,7 +62,6 @@ class Api::V1::PlansController < ApplicationController
       name AS plan_name,
       room_bill,
       min_head_count,
-      "plans".only,
       room_type_id'
     ).order(:plan_id)
   end

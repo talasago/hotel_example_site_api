@@ -18,7 +18,7 @@ RSpec.describe 'Api::V1::Plans', type: :request do
           expect(ids).to eq ids.sort
           res_body['data']['plans'].each do |plan|
             expect(plan.keys).to match_array([
-              'plan_id', 'min_head_count', 'only', 'plan_name', 'room_bill', 'room_category_type_name'
+              'plan_id', 'min_head_count', 'plan_name', 'room_bill', 'room_category_type_name'
             ])
           end
           expect(plan_id0['room_category_type_name']).to eq 'スタンダードツイン'
