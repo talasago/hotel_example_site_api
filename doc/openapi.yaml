@@ -185,6 +185,31 @@ definitions:
           type: integer
           description: 部屋
           example: '"スタンダードツイン"、"シングル"、"プレミアムツイン"、"部屋指定なし"'
+  roomType:
+    type: object
+    properties:
+      room_type_name:
+        type: string
+        description: 部屋タイプ
+      min_capacity:
+        type: integer
+        description: 最低定員
+      max_capacity:
+        type: integer
+        description: 最高定員
+      room_size:
+        type: integer
+        description: 広さ
+      facilities:
+        type: array
+        description: 設備
+        items:
+          type: string
+          example: '"セパレート式バス・トイレ"、"ユニット式バス・トイレ"、"独立洗面台"'
+      room_category_type_name:
+        type: string
+        description: 部屋
+        example: '"スタンダードツイン"、"シングル"、"プレミアムツイン"、"部屋指定なし"'
 paths:
   /mypage:
     get:
@@ -424,22 +449,7 @@ paths:
                         $ref: '#/components/schemas/Plan'
                       room_type:
                         nullable: true
-                        type: object
-                        properties:
-                          room_type_name:
-                            type: string
-                          min_capacity:
-                            type: integer
-                          max_capacity:
-                            type: integer
-                          room_size:
-                            type: integer
-                          facilities:
-                            type: array
-                            items:
-                              type: string
-                          room_category_type_name:
-                            type: string
+                        $ref: '#/definitions/roomType'
                       user:
                         $ref: '#/definitions/UserForPlan'
               example:
