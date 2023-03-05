@@ -74,6 +74,30 @@ components:
           type: boolean
           description: お知らせを受け取る
           default: false
+    Plan:
+      type: object
+      properties:
+        plan_id:
+          type: integer
+          description: プランID
+        plan_name:
+          type: string
+          description: プラン名
+        room_bill:
+          type: integer
+          description: 1泊あたりの料金
+        min_head_count:
+          type: integer
+          description: 最低宿泊人数
+        max_head_count:
+          type: integer
+          description: 最大宿泊人数
+        min_term:
+          type: integer
+          description: 最低宿泊日数
+        max_term:
+          type: integer
+          description: 最大宿泊日数
 definitions:
   userForMypage:
     type: object
@@ -137,6 +161,30 @@ definitions:
       password:
         type: string
         description: パスワード
+  plans:
+    type: array
+    items:
+      type: object
+      properties:
+        plan_id:
+          type: integer
+          description: プランID
+        plan_name:
+          type: string
+          description: プラン名
+        room_bill:
+          type: integer
+          description: 1泊あたりの料金
+        min_head_count:
+          type: integer
+          description: 最低宿泊人数
+        only:
+          type: string
+          description: 限定 #TODO:追加で書く。
+        room_category_type_name:
+          type: integer
+          description: 部屋
+          example: '"スタンダードツイン"、"シングル"、"プレミアムツイン"、"部屋指定なし"'
 paths:
   /mypage:
     get:
@@ -283,24 +331,7 @@ paths:
                     type: object
                     properties:
                       plans:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            plan_id:
-                              type: integer
-                            plan_name:
-                              type: string
-                            room_bill:
-                              type: integer
-                            min_head_count:
-                              type: integer
-                            only:
-                              type: string
-                              nullable: true
-                            room_category_type_name:
-                              type: string
-                              nullable: true
+                        $ref: '#/definitions/plans'
               example:
                 message: 'Get completed.'
                 data:
@@ -389,22 +420,8 @@ paths:
                     type: object
                     properties:
                       plan:
-                        type: object
-                        properties:
-                          plan_id:
-                            type: integer
-                          plan_name:
-                            type: string
-                          room_bill:
-                            type: integer
-                          min_head_count:
-                            type: integer
-                          max_head_count:
-                            type: integer
-                          min_term:
-                            type: integer
-                          max_term:
-                            type: integer
+                        #TODO:不要なonlyがあるので後で変更
+                        $ref: '#/components/schemas/Plan'
                       room_type:
                         nullable: true
                         type: object
