@@ -17,7 +17,6 @@ tags:
     description: 宿泊プランを操作するAPI
   - name: Reserve
     description: 宿泊予約を操作するAPI
-
 components:
   securitySchemes:
     access-token:
@@ -32,6 +31,112 @@ components:
       type: apiKey
       name: uid
       in: header
+  schemas:
+    User:
+      type: object
+      required:
+        - username
+        - email
+        - rank
+        - gender
+        - password
+      properties:
+        username:
+          type: string
+          description: ユーザー名
+        email:
+          type: string
+          description: メールアドレス
+          format: /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/
+        password:
+          type: string
+          description: パスワード
+        rank:
+          type: string
+          description: 会員ランク 'premium'→プレミアム会員 'normal'→一般会員
+        address:
+          type: string
+          description: 住所
+          nullable: true
+        tel:
+          type: string
+          description: 電話番号
+          maxLength: 11
+          nullable: true
+        gender:
+          type: integer
+          description: 性別 0→回答しない 1→男性 2→女性 9→その他
+        birthday:
+          type: string
+          description: 生年月日
+          nullable: true
+        notification:
+          type: boolean
+          description: お知らせを受け取る
+          default: false
+definitions:
+  userForMypage:
+    type: object
+    properties:
+      user:
+        type: object
+        properties:
+          username:
+            type: string
+            description: ユーザー名
+          email:
+            type: string
+            description: メールアドレス
+            format: /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/
+          rank:
+            type: string
+            description: 会員ランク 'premium'→プレミアム会員 'normal'→一般会員
+          address:
+            type: string
+            description: 住所
+            nullable: true
+          tel:
+            type: string
+            description: 電話番号
+            maxLength: 11
+            nullable: true
+          gender:
+            type: integer
+            description: 性別 0→回答しない 1→男性 2→女性 9→その他
+          birthday:
+            type: string
+            description: 生年月日
+            nullable: true
+          notification:
+            type: boolean
+            description: お知らせを受け取る
+            default: false
+  UserForPlan:
+    nullable: true
+    type: object
+    properties:
+      username:
+        type: string
+        description: ユーザー名
+      tel:
+        type: string
+        description: 電話番号
+        maxLength: 11
+        nullable: true
+      email:
+        type: string
+        description: メールアドレス
+        format: /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/
+  SignInParams:
+    type: object
+    properties:
+      email:
+        type: string
+        description: メールアドレス
+        format: /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/
+      password:
+        type: string
+        description: パスワード
 paths:
   /mypage:
     get:
@@ -53,27 +158,7 @@ paths:
                   message:
                     type: string
                   data:
-                    type: object
-                    properties:
-                      username:
-                        type: string
-                      email:
-                        type: string
-                      rank:
-                        type: string
-                      address:
-                        nullable: true
-                        type: string
-                      tel:
-                        nullable: true
-                        type: string
-                      gender:
-                        type: integer
-                      birthday:
-                        nullable: true
-                        type: string
-                      notification:
-                        type: boolean
+                    $ref: '#/definitions/userForMypage'
               example:
                 message: 'Get completed.'
                 data:
@@ -138,12 +223,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                email:
-                  type: string
-                password:
-                  type: string
+              $ref: '#/definitions/SignInParams'
             example:
               email: ichiro@example.com
               password: password
@@ -344,16 +424,7 @@ paths:
                           room_category_type_name:
                             type: string
                       user:
-                        nullable: true
-                        type: object
-                        properties:
-                          username:
-                            type: string
-                          tel:
-                            type: string
-                            nullable: true
-                          email:
-                            type: string
+                        $ref: '#/definitions/UserForPlan'
               example:
                 message: 'Get completed.'
                 data:
@@ -397,26 +468,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                email:
-                  type: string
-                password:
-                  type: string
-                username:
-                  type: string
-                rank:
-                  type: string
-                address:
-                  type: string
-                tel:
-                  type: string
-                gender:
-                  type: integer
-                birthday:
-                  type: string
-                notification:
-                  type: boolean
+              $ref: '#/components/schemas/User'
             example:
               email: test9@example.com
               password: password
