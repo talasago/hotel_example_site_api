@@ -18,7 +18,7 @@
 # 使い方
 1.リポジトリクローン
 ```bash
-# TODO:URL書く
+git clone git@github.com:talasago/hotel-example-site-api.git
 cd [repository_root]
 ```
 
